@@ -5,6 +5,7 @@
 reports/
 clarifications/
 feedback/
+benchmarks/
 drafts/**
 !drafts/.gitkeep
 !drafts/draft.template.md
