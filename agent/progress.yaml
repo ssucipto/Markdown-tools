@@ -1,0 +1,435 @@
+# Project Progress Tracking
+# Markdown-tools — drag-and-drop markdown viewer with Mermaid and export
+
+project:
+  name: markdown-tools
+  version: 0.1.0
+  started: 2026-06-14
+  status: in_progress
+  current_milestone: M1
+  description: |
+    Desktop-first web app for viewing Markdown with drag-and-drop, sophisticated
+    Mermaid diagrams, and export to Word (.doc) and PDF. Ports viewer from
+    ACPEnhanced-Visual v1.5.4.
+
+milestones:
+  - id: M1
+    name: Foundation & Component Port
+    priority: 0
+    file: agent/milestones/milestone-1-foundation.md
+    status: not_started
+    progress: 0
+    started: null
+    completed: null
+    estimated_weeks: 1
+    tasks_completed: 0
+    tasks_total: 6
+    notes: |
+      Phase 0 — scaffold Vite app, port svg-to-png, prose CSS, split DocsViewer.
+
+  - id: M2
+    name: MVP Markdown Viewer
+    priority: 0
+    file: agent/milestones/milestone-2-mvp-viewer.md
+    status: not_started
+    progress: 0
+    started: null
+    completed: null
+    estimated_weeks: 2
+    tasks_completed: 0
+    tasks_total: 8
+    notes: |
+      Phase 1 — P0 FRs: DnD, GFM, highlight, TOC, Mermaid, Word/PDF export.
+
+  - id: M3
+    name: Polish & Security
+    priority: 1
+    file: agent/milestones/milestone-3-polish.md
+    status: not_started
+    progress: 0
+    started: null
+    completed: null
+    estimated_weeks: 1
+    tasks_completed: 0
+    tasks_total: 5
+    notes: |
+      Phase 1b — DOMPurify, a11y, Mermaid pan, test coverage ≥60%.
+
+  - id: M4
+    name: Enhanced Product
+    priority: 1
+    file: agent/milestones/milestone-4-enhanced.md
+    status: not_started
+    progress: 0
+    started: null
+    completed: null
+    estimated_weeks: 3
+    tasks_completed: 0
+    tasks_total: 6
+    notes: |
+      Phase 2 — folder browser, DOCX, KaTeX, Mermaid copy/SVG, CI.
+
+  - id: M5
+    name: Native Desktop
+    priority: 2
+    file: agent/milestones/milestone-5-native-desktop.md
+    status: not_started
+    progress: 0
+    started: null
+    completed: null
+    estimated_weeks: 2
+    tasks_completed: 0
+    tasks_total: 3
+    notes: |
+      Phase 3 — Tauri 2 wrapper, file associations, CLI. Start after M4.
+
+tasks:
+  milestone_1:
+    - id: task-1
+      name: Scaffold Vite React TypeScript Tailwind App
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-1-foundation/task-1-scaffold-vite-app.md
+      estimated_hours: 4
+      actual_hours: null
+      completed_date: null
+      notes: First implementation task.
+    - id: task-2
+      name: Port svg-to-png and prose-doc CSS
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-1-foundation/task-2-port-svg-and-styles.md
+      estimated_hours: 3
+      actual_hours: null
+      completed_date: null
+      notes: Vendor copy from ACPEnhanced-Visual.
+    - id: task-3
+      name: Extract Markdown Parse Pipeline
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-1-foundation/task-3-extract-markdown-pipeline.md
+      estimated_hours: 6
+      actual_hours: null
+      completed_date: null
+      notes: Preserve mermaid before code-blocks order.
+    - id: task-4
+      name: Split DocsViewer into Components
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-1-foundation/task-4-split-docs-viewer-components.md
+      estimated_hours: 6
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-5
+      name: Project Identity and Vitest Setup
+      priority: 1
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-1-foundation/task-5-project-identity-and-vitest.md
+      estimated_hours: 2
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-6
+      name: Create Sample Markdown Fixtures
+      priority: 1
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-1-foundation/task-6-sample-doc-fixtures.md
+      estimated_hours: 2
+      actual_hours: null
+      completed_date: null
+      notes: ""
+
+  milestone_2:
+    - id: task-7
+      name: Drag-and-Drop and File Picker
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-2-mvp-viewer/task-7-drag-drop-file-input.md
+      estimated_hours: 4
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-8
+      name: GFM Rendering and Table Wrappers
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-2-mvp-viewer/task-8-gfm-rendering.md
+      estimated_hours: 3
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-9
+      name: Syntax Highlighting
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-2-mvp-viewer/task-9-syntax-highlighting.md
+      estimated_hours: 5
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-10
+      name: TOC Scroll Spy and Toolbar
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-2-mvp-viewer/task-10-toc-and-toolbar.md
+      estimated_hours: 5
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-11
+      name: Mermaid Render Engine
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-2-mvp-viewer/task-11-mermaid-engine.md
+      estimated_hours: 6
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-12
+      name: Mermaid Click-to-Zoom Lightbox
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-2-mvp-viewer/task-12-mermaid-lightbox.md
+      estimated_hours: 3
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-13
+      name: Word Export (.doc)
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-2-mvp-viewer/task-13-word-export.md
+      estimated_hours: 4
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-14
+      name: PDF Export (Print)
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-2-mvp-viewer/task-14-pdf-export.md
+      estimated_hours: 3
+      actual_hours: null
+      completed_date: null
+      notes: ""
+
+  milestone_3:
+    - id: task-15
+      name: XSS Hardening and Copy Delegation
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-3-polish/task-15-xss-hardening.md
+      estimated_hours: 5
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-16
+      name: Anchors Image Lightbox Error Boundary
+      priority: 1
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-3-polish/task-16-anchors-lightbox-error-boundary.md
+      estimated_hours: 4
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-17
+      name: Mermaid Pan in Lightbox
+      priority: 1
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-3-polish/task-17-mermaid-pan-zoom.md
+      estimated_hours: 4
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-18
+      name: Accessibility Pass
+      priority: 1
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-3-polish/task-18-accessibility-pass.md
+      estimated_hours: 4
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-19
+      name: Test Coverage and Export QA
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-3-polish/task-19-test-coverage-export.md
+      estimated_hours: 5
+      actual_hours: null
+      completed_date: null
+      notes: ""
+
+  milestone_4:
+    - id: task-20
+      name: Folder Browser
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-4-enhanced/task-20-folder-browser.md
+      estimated_hours: 8
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-21
+      name: True DOCX Export
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-4-enhanced/task-21-docx-export.md
+      estimated_hours: 8
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-22
+      name: KaTeX Math Rendering
+      priority: 1
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-4-enhanced/task-22-katex-math.md
+      estimated_hours: 6
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-23
+      name: Mermaid Copy and Download SVG
+      priority: 1
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-4-enhanced/task-23-mermaid-copy-download.md
+      estimated_hours: 4
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-24
+      name: View Source Toggle
+      priority: 2
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-4-enhanced/task-24-view-source-toggle.md
+      estimated_hours: 3
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-25
+      name: CI Pipeline
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-4-enhanced/task-25-ci-pipeline.md
+      estimated_hours: 3
+      actual_hours: null
+      completed_date: null
+      notes: ""
+
+  milestone_5:
+    - id: task-26
+      name: Tauri 2 Scaffold
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-5-native-desktop/task-26-tauri-scaffold.md
+      estimated_hours: 8
+      actual_hours: null
+      completed_date: null
+      notes: Future — after M4.
+    - id: task-27
+      name: File Associations and Deep Links
+      priority: 0
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-5-native-desktop/task-27-file-associations.md
+      estimated_hours: 6
+      actual_hours: null
+      completed_date: null
+      notes: ""
+    - id: task-28
+      name: CLI Entry Point
+      priority: 1
+      status: not_started
+      started: null
+      file: agent/tasks/milestone-5-native-desktop/task-28-cli-entry-point.md
+      estimated_hours: 4
+      actual_hours: null
+      completed_date: null
+      notes: ""
+
+documentation:
+  design_documents: 2
+  milestone_documents: 5
+  pattern_documents: 0
+  task_documents: 28
+  last_updated: 2026-06-14
+
+progress:
+  planning: 100
+  implementation: 0
+  testing: 0
+  documentation: 40
+  overall: 15
+
+recent_work:
+  - date: 2026-06-14
+    description: |
+      Completed /acp-plan: PRD v1.1, 5 milestones, 28 tasks, ADRs, README.
+    items:
+      - ✅ PRD product decisions resolved
+      - ✅ Milestones M1–M5 created
+      - ✅ Tasks 1–28 created with estimates
+      - ✅ progress.yaml initialized
+      - 📋 Begin M1 task-1 implementation
+
+next_steps:
+  - Run /acp-proceed to start task-1 (scaffold Vite app)
+  - Run /acp-validate to check planning consistency
+  - Implement M1 foundation milestone
+
+notes:
+  - Viewer ported from ACPEnhanced-Visual v1.5.4 (one-time vendor copy)
+  - ADR-001–003 in agent/memory/decisions.md
+  - Web-only through M4; Tauri in M5
+
+current_blockers: []
+
+team:
+  - role: Lead Developer
+    name: Agent
+    focus: |
+      M1 foundation — scaffold and port viewer components
+
+dependencies:
+  libraries:
+    - name: marked
+      version: ^18.0.4
+      purpose: GFM markdown to HTML
+    - name: mermaid
+      version: ^11.15.0
+      purpose: Diagram rendering (lazy loaded)
+    - name: react
+      version: ^19.2.0
+      purpose: UI framework
+  external_services: []
+
+quality:
+  test_coverage: 0
+  code_review_status: pending

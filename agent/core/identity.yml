@@ -1,0 +1,35 @@
+# DO NOT add dynamic content to this file (no dates, no task IDs)
+# This file is prompt-cached by the LLM API after first call
+
+project: markdown-tools
+type: markdown-viewer-application
+description: >
+  Desktop-first web app for viewing Markdown with drag-and-drop, Mermaid diagrams,
+  and export to Word and PDF. Ports viewer from ACPEnhanced-Visual v1.5.4.
+
+stack:
+  - primary: TypeScript (src/ — React 19 + Vite 6)
+  - secondary: React (viewer UI, Mermaid, export)
+  - tertiary: Bash (agent/scripts — ACP workflow only)
+  - format: Markdown (agent/commands, docs fixtures)
+
+platform_constraints:
+  - browsers: Chrome/Edge 120+, Firefox 120+, Safari 17+
+  - client_only: true
+  - no_document_upload: true
+
+team: solo-developer
+
+priorities:
+  - viewer_quality: match ACPEnhanced-Visual P0 feature parity
+  - port_safety: preserve mermaid pipeline order and innerHtml memo
+  - test_coverage: 60%+ on src/markdown by M3
+  - security: DOMPurify for untrusted markdown by M3
+
+repo: github.com/ssucipto/markdown-tools
+version: 0.1.0
+
+git_workflow:
+  default_working_branch: main
+  production_branch: main
+  branch_model: trunk-based
