@@ -6,7 +6,7 @@
 **Version**: 1.5.0  
 **Author**: Product / Engineering (ACP session)  
 **Last reviewed**: 2026-06-14 (M3b sync)
-**Planning**: [agent/progress.yaml](../progress.yaml) · M1–M6 + M3b · 48 tasks · [architecture.md](architecture.md)
+**Planning**: [agent/progress.yaml](../progress.yaml) · M1–M7 · 60 tasks · [architecture.md](architecture.md)
 
 ---
 

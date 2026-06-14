@@ -27,8 +27,8 @@ carryovers:
     finding: Extend M1 task-1 or add task-29 for Vite library mode, package.json exports, peerDependencies before MarkdownViewer API freezes
     status: planned
     fix_applied_date: null
-    verified_in_audit: audit-4-carryover-verification
-    planned_in: M6 task-29
+    verified_in_audit: audit-5-m4-m5-m6-implementation
+    planned_in: M7 task-49, task-50, task-58
 
   - finding_id: AUDIT-001-F4
     audit_ref: agent/reports/audit-1-pre-impl-milestones-plan.md
@@ -151,10 +151,10 @@ carryovers:
     audit_ref: agent/reports/audit-3-m1-m3-implementation-review.md
     severity: high
     finding: M6 library package not implemented — no vite lib mode, peerDependencies, npm exports (blocks visualizer migration)
-    status: planned
+    status: pending
     fix_applied_date: null
-    verified_in_audit: null
-    planned_in: M6 task-29–35
+    verified_in_audit: audit-5-m4-m5-m6-implementation
+    planned_in: M7 task-49, task-50, task-58
 
   - finding_id: AUDIT-003-IND1
     audit_ref: agent/reports/audit-3-m1-m3-implementation-review.md
@@ -178,7 +178,79 @@ carryovers:
     audit_ref: agent/reports/audit-4-carryover-verification.md
     severity: medium
     finding: M3b v0.3.1 remediation complete locally but uncommitted — git HEAD still b149606 (v0.3.0)
+    status: addressed
+    fix_applied_date: 2026-06-14
+    verified_in_audit: audit-5-m4-m5-m6-implementation
+    planned_in: b8ee61c, cf33a3c
+
+  - finding_id: AUDIT-005-C1
+    audit_ref: agent/reports/audit-5-m4-m5-m6-implementation.md
+    severity: critical
+    finding: npm run build:lib fails — vite-plugin-dts api-extractor error on playwright.config.ts path
     status: pending
     fix_applied_date: null
     verified_in_audit: null
-    planned_in: git commit v0.3.1
+    planned_in: M7 task-49
+
+  - finding_id: AUDIT-005-H1
+    audit_ref: agent/reports/audit-5-m4-m5-m6-implementation.md
+    severity: high
+    finding: Folder browser webkitdirectory fallback unreachable on Firefox/Safari — showOpenFolder gated on supportsFolderPicker
+    status: pending
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: M7 task-52
+
+  - finding_id: AUDIT-005-H2
+    audit_ref: agent/reports/audit-5-m4-m5-m6-implementation.md
+    severity: high
+    finding: KaTeX preprocess corrupts math inside fenced code blocks; KaTeX CSS missing from library entry
+    status: pending
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: M7 task-53, task-50
+
+  - finding_id: AUDIT-005-H3
+    audit_ref: agent/reports/audit-5-m4-m5-m6-implementation.md
+    severity: high
+    finding: View source mode breaks Word/DOCX/PDF export — contentRef shows raw pre not rendered article
+    status: pending
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: M7 task-54
+
+  - finding_id: AUDIT-005-H4
+    audit_ref: agent/reports/audit-5-m4-m5-m6-implementation.md
+    severity: high
+    finding: Tauri file open only on cold start — no single-instance or open-while-running
+    status: pending
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: M7 task-56
+
+  - finding_id: AUDIT-005-H5
+    audit_ref: agent/reports/audit-5-m4-m5-m6-implementation.md
+    severity: high
+    finding: DOCX export missing tables/code/images/KaTeX; duplicate mermaid content
+    status: pending
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: M7 task-55
+
+  - finding_id: AUDIT-005-H6
+    audit_ref: agent/reports/audit-5-m4-m5-m6-implementation.md
+    severity: high
+    finding: npm package not publish-ready — private true, React in dependencies, embed-api docs mismatch
+    status: pending
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: M7 task-50
+
+  - finding_id: AUDIT-005-C3
+    audit_ref: agent/reports/audit-5-m4-m5-m6-implementation.md
+    severity: critical
+    finding: README stale at v0.3.1 / M4 next — conflicts with v0.4.0 implementation
+    status: pending
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: M7 task-51
