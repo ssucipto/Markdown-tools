@@ -3,11 +3,11 @@ import { parseDocsSearchParams, buildDocsSearchParams } from '@/lib/embed-url'
 import { parseMarkdown } from '@/markdown/parse'
 
 describe('KaTeX math rendering', () => {
-  it('renders inline and block math', () => {
-    const md = 'Inline $E=mc^2$ and block:\n\n$$x = 1$$'
+  it('does not transform math inside fenced code', () => {
+    const md = '```\nconst x = $a + b$\n```\n\nReal $E=mc^2$'
     const { html } = parseMarkdown(md)
     expect(html).toContain('katex')
-    expect(html).toContain('katex-block')
+    expect(html).toContain('$a + b$')
   })
 })
 

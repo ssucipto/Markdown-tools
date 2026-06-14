@@ -25,7 +25,7 @@ import '@markdown-tools/react/styles.css'
 ```tsx
 import { MarkdownViewer, type DocFile } from '@markdown-tools/react'
 import '@markdown-tools/react/styles.css'
-import { parseDocsSearchParams } from '@markdown-tools/react/embed-url'
+import { parseDocsSearchParams, buildDocsSearchParams } from '@markdown-tools/react'
 
 function DocsRoute({ search }: { search: Record<string, string> }) {
   const { file, anchor } = parseDocsSearchParams(new URLSearchParams(search))

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.1] - 2026-06-14
+
+### Fixed (M7 audit remediation)
+- `build:lib` — dedicated `tsconfig.lib.json`; vite-plugin-dts no longer fails on playwright.config.ts
+- Folder browser 📁 visible on Firefox/Safari via webkitdirectory fallback
+- KaTeX: fenced code protected from math transforms; KaTeX CSS bundled in library entry
+- View source: exports use hidden rendered article; export buttons disabled in source mode
+- DOCX: tables, code blocks, images, mermaid diagrams; no duplicate mermaid paragraphs
+- Tauri: `tauri-plugin-single-instance` forwards file opens to running instance
+- npm: removed `private`, React moved to devDependencies (peerDeps for consumers)
+
+### Added
+- Contract tests for public library exports and URL helper edge cases
+- E2E: view source toggle, DOCX export smoke
+- Unit tests: KaTeX code-fence guard, DOCX export fixtures
+
 ## [0.4.0] - 2026-06-14
 
 ### Added (M4 Enhanced Product)

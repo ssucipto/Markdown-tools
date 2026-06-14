@@ -97,6 +97,10 @@ export function useFolderBrowser() {
   }, [])
 
   const supportsDirectoryPicker = typeof window !== 'undefined' && 'showDirectoryPicker' in window
+  const supportsWebkitDirectory =
+    typeof document !== 'undefined' &&
+    'createElement' in document &&
+    'webkitdirectory' in document.createElement('input')
 
   return {
     files,
@@ -105,6 +109,8 @@ export function useFolderBrowser() {
     openFolderFallback,
     readFile,
     supportsDirectoryPicker,
+    supportsWebkitDirectory,
+    supportsFolderBrowser: supportsDirectoryPicker || supportsWebkitDirectory,
     hasFolder: files.length > 0,
   }
 }

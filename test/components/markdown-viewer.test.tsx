@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MarkdownViewer } from '@/components/MarkdownViewer'
 
@@ -50,8 +50,9 @@ describe('MarkdownViewer', () => {
 
   it('renders controlled markdown content', async () => {
     render(<MarkdownViewer content={SAMPLE_MD} documentPath="test.md" />)
-    expect(await screen.findByRole('heading', { name: 'Test Document' })).toBeInTheDocument()
-    expect(screen.getByText('Col1')).toBeInTheDocument()
+    const main = screen.getByRole('main')
+    expect(await within(main).findByRole('heading', { name: 'Test Document' })).toBeInTheDocument()
+    expect(within(main).getByText('Col1')).toBeInTheDocument()
   })
 
   it('renders mermaid via dynamic import', async () => {

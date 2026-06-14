@@ -9,7 +9,10 @@ export default defineConfig({
     tailwindcss(),
     react(),
     dts({
-      include: ['src/index.ts', 'src/components/MarkdownViewer.tsx', 'src/types/viewer.ts'],
+      tsconfigPath: path.resolve(__dirname, 'tsconfig.lib.json'),
+      include: ['src/**/*.ts', 'src/**/*.tsx'],
+      exclude: ['**/*.test.ts', '**/*.test.tsx', 'e2e/**', 'test/**'],
+      entryRoot: path.resolve(__dirname, 'src'),
       outDir: 'dist-lib',
       rollupTypes: true,
     }),

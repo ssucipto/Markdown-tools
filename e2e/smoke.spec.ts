@@ -40,6 +40,25 @@ test('export word downloads document', async ({ page }) => {
   expect(download.suggestedFilename()).toMatch(/\.doc$/)
 })
 
+test('view source toggle shows raw markdown', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type="file"]').setInputFiles(basicDoc)
+  await expect(page.getByRole('heading', { name: 'Sample Basic' })).toBeVisible()
+  await page.getByLabel('View markdown source').click()
+  await expect(page.getByLabel('Markdown source')).toContainText('# Sample Basic')
+  await expect(page.getByLabel('Export to DOCX')).toBeDisabled()
+})
+
+test('export docx downloads file', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('input[type="file"]').setInputFiles(basicDoc)
+  await expect(page.getByRole('heading', { name: 'Sample Basic' })).toBeVisible()
+  const downloadPromise = page.waitForEvent('download')
+  await page.getByLabel('Export to DOCX').click()
+  const download = await downloadPromise
+  expect(download.suggestedFilename()).toMatch(/\.docx$/)
+})
+
 test('export pdf opens print flow without error', async ({ page, context }) => {
   await page.goto('/')
   await page.locator('input[type="file"]').setInputFiles(basicDoc)

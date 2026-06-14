@@ -27,7 +27,7 @@ priorities:
   - security: DOMPurify for untrusted markdown by M3
 
 repo: github.com/ssucipto/markdown-tools
-version: 0.4.0
+version: 0.4.1
 
 git_workflow:
   default_working_branch: main

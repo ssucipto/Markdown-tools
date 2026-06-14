@@ -5,6 +5,10 @@ import {
   Paragraph,
   TextRun,
   ImageRun,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
 } from 'docx'
 import { svgToPngDataUri } from '@/lib/svg-to-png'
 
@@ -31,6 +35,30 @@ function textFrom(el: Element): string {
   return el.textContent?.replace(/\s+/g, ' ').trim() ?? ''
 }
 
+async function imageParagraph(img: HTMLImageElement): Promise<Paragraph | null> {
+  const src = img.src
+  if (!src || src.startsWith('data:')) {
+    if (!src?.startsWith('data:image')) return new Paragraph({ children: [new TextRun(`[Image: ${img.alt || 'image'}]`)] })
+  }
+  try {
+    const res = await fetch(src)
+    const buf = await res.arrayBuffer()
+    const bytes = new Uint8Array(buf)
+    const type = src.includes('.png') || src.startsWith('data:image/png') ? 'png' : 'jpg'
+    return new Paragraph({
+      children: [
+        new ImageRun({
+          data: bytes,
+          transformation: { width: 400, height: 250 },
+          type,
+        }),
+      ],
+    })
+  } catch {
+    return new Paragraph({ children: [new TextRun(`[Image: ${img.alt || img.getAttribute('src') || 'unavailable'}]`)] })
+  }
+}
+
 async function mermaidImageParagraph(container: HTMLElement): Promise<Paragraph | null> {
   const svg = container.querySelector('svg')
   if (!svg) return null
@@ -55,44 +83,107 @@ async function mermaidImageParagraph(container: HTMLElement): Promise<Paragraph 
   })
 }
 
-async function buildDocxParagraphs(el: HTMLElement): Promise<Paragraph[]> {
-  const blocks: Paragraph[] = []
-
-  for (const node of el.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,pre.mermaid, .mermaid-container')) {
-    if (node.classList.contains('mermaid-container')) {
-      const imgPara = await mermaidImageParagraph(node as HTMLElement)
-      if (imgPara) blocks.push(imgPara)
-      continue
-    }
-    const tag = node.tagName
-    const text = textFrom(node)
-    if (!text) continue
-    const heading = headingForTag(tag)
-    if (heading) {
-      blocks.push(new Paragraph({ text, heading }))
-    } else if (tag === 'PRE') {
-      blocks.push(
-        new Paragraph({
-          children: [new TextRun({ text, font: 'Courier New', size: 20 })],
+function tableFromElement(table: HTMLTableElement): Table {
+  const rows: TableRow[] = []
+  for (const tr of table.querySelectorAll('tr')) {
+    const cells: TableCell[] = []
+    for (const cell of tr.querySelectorAll('th, td')) {
+      cells.push(
+        new TableCell({
+          children: [new Paragraph({ children: [new TextRun(textFrom(cell))] })],
+          width: { size: 2000, type: WidthType.DXA },
         }),
       )
-    } else {
-      blocks.push(new Paragraph({ children: [new TextRun(text)] }))
     }
+    if (cells.length) rows.push(new TableRow({ children: cells }))
+  }
+  return new Table({ rows, width: { size: 100, type: WidthType.PERCENTAGE } })
+}
+
+async function blockToParagraphs(node: Element): Promise<(Paragraph | Table)[]> {
+  const tag = node.tagName
+
+  if (node.classList.contains('mermaid-container')) {
+    const imgPara = await mermaidImageParagraph(node as HTMLElement)
+    return imgPara ? [imgPara] : []
   }
 
-  if (!blocks.length) {
-    blocks.push(new Paragraph({ children: [new TextRun(textFrom(el) || 'Empty document')] }))
+  if (node.classList.contains('code-block-wrapper')) {
+    const code = node.querySelector('code')
+    const text = code?.textContent ?? textFrom(node)
+    if (!text) return []
+    return [
+      new Paragraph({
+        children: [new TextRun({ text, font: 'Courier New', size: 20 })],
+      }),
+    ]
   }
 
-  return blocks
+  if (tag === 'TABLE') {
+    return [tableFromElement(node as HTMLTableElement)]
+  }
+
+  if (tag === 'IMG') {
+    const para = await imageParagraph(node as HTMLImageElement)
+    return para ? [para] : []
+  }
+
+  if (/^H[1-6]$/.test(tag)) {
+    const text = textFrom(node)
+    if (!text) return []
+    const heading = headingForTag(tag)
+    return [new Paragraph({ text, heading })]
+  }
+
+  if (tag === 'PRE' && node.classList.contains('mermaid')) {
+    return []
+  }
+
+  if (tag === 'PRE') {
+    const text = node.textContent ?? ''
+    if (!text.trim()) return []
+    return [
+      new Paragraph({
+        children: [new TextRun({ text: text.trim(), font: 'Courier New', size: 20 })],
+      }),
+    ]
+  }
+
+  if (tag === 'P' || tag === 'LI') {
+    const text = textFrom(node)
+    if (!text) return []
+    return [new Paragraph({ children: [new TextRun(text)] })]
+  }
+
+  if (node.classList.contains('katex-block') || node.classList.contains('katex-inline')) {
+    const text = textFrom(node)
+    return text ? [new Paragraph({ children: [new TextRun(`[math] ${text}`)] })] : []
+  }
+
+  return []
+}
+
+async function buildDocxChildren(el: HTMLElement): Promise<(Paragraph | Table)[]> {
+  const article = el.querySelector('article') ?? el
+  const children: (Paragraph | Table)[] = []
+
+  for (const node of article.children) {
+    const blocks = await blockToParagraphs(node)
+    children.push(...blocks)
+  }
+
+  if (!children.length) {
+    children.push(new Paragraph({ children: [new TextRun(textFrom(article) || 'Empty document')] }))
+  }
+
+  return children
 }
 
 export async function exportDocxDocument(
   el: HTMLElement,
   documentPath: string | null | undefined,
 ): Promise<{ blob: Blob; filename: string }> {
-  const children = await buildDocxParagraphs(el)
+  const children = await buildDocxChildren(el)
   const doc = new Document({ sections: [{ children }] })
   const blob = await Packer.toBlob(doc)
 

@@ -34,9 +34,10 @@ export function MarkdownViewer({
   initialAnchor,
   className = '',
   onOpenFolder,
-  supportsFolderPicker = false,
+  supportsFolderPicker: _supportsFolderPicker = false,
   rawMarkdown,
 }: MarkdownViewerProps) {
+  void _supportsFolderPicker
   const isControlled = controlledContent !== undefined
   const isThemeControlled = controlledTheme !== undefined
 
@@ -61,6 +62,8 @@ export function MarkdownViewer({
   const [activeId, setActiveId] = useState('')
 
   const contentRef = useRef<HTMLDivElement>(null)
+  const exportRef = useRef<HTMLDivElement>(null)
+  const exportMermaidRetryRef = useRef(0)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const mermaidRetryRef = useRef(0)
   const initialFileHandled = useRef(false)
@@ -129,18 +132,29 @@ export function MarkdownViewer({
     attachMermaidToolbars(el)
   }, [html, dark, handleMermaidZoom, viewSource])
 
+  const runExportMermaid = useCallback(async () => {
+    const el = exportRef.current
+    if (!el || !html) return
+    exportMermaidRetryRef.current = 0
+    await renderMermaidDiagrams(el, dark, () => {}, exportMermaidRetryRef)
+    attachMermaidToolbars(el)
+  }, [html, dark])
+
   useEffect(() => {
     if (!html) return
     mermaidRetryRef.current = 0
     let t: ReturnType<typeof setTimeout>
     const raf = requestAnimationFrame(() => {
-      t = setTimeout(() => void runMermaid(), 0)
+      t = setTimeout(() => {
+        void runMermaid()
+        void runExportMermaid()
+      }, 0)
     })
     return () => {
       cancelAnimationFrame(raf)
       if (t) clearTimeout(t)
     }
-  }, [html, runMermaid])
+  }, [html, runMermaid, runExportMermaid])
 
   useEffect(() => {
     const el = contentRef.current
@@ -217,8 +231,12 @@ export function MarkdownViewer({
     [onSelectFile, isControlled, doc],
   )
 
+  const getExportRoot = useCallback((): HTMLElement | null => {
+    return exportRef.current
+  }, [])
+
   const exportWord = useCallback(async () => {
-    const el = contentRef.current
+    const el = getExportRoot()
     if (!el) return
     setExporting(true)
     try {
@@ -235,10 +253,10 @@ export function MarkdownViewer({
     } finally {
       setExporting(false)
     }
-  }, [exportPath, showToast])
+  }, [exportPath, showToast, getExportRoot])
 
   const exportDocx = useCallback(async () => {
-    const el = contentRef.current
+    const el = getExportRoot()
     if (!el) return
     setExporting(true)
     try {
@@ -255,7 +273,7 @@ export function MarkdownViewer({
     } finally {
       setExporting(false)
     }
-  }, [exportPath, showToast])
+  }, [exportPath, showToast, getExportRoot])
 
   const toggleViewSource = useCallback(() => {
     const el = contentRef.current
@@ -278,7 +296,7 @@ export function MarkdownViewer({
   const sourceText = rawMarkdown ?? content ?? ''
 
   const exportPdf = useCallback(async () => {
-    const el = contentRef.current
+    const el = getExportRoot()
     if (!el) return
     showToast('📄 Preparing PDF…')
     try {
@@ -289,7 +307,7 @@ export function MarkdownViewer({
     } catch {
       showToast('⚠️ PDF export failed')
     }
-  }, [exportPath, showToast])
+  }, [exportPath, showToast, getExportRoot])
 
   const fontSizeClass = { sm: 'text-xs', md: 'text-sm', lg: 'text-base' }[fontSize]
   const showFileSidebar = showSidebar && files.length > 0 && !fullscreen
@@ -316,6 +334,15 @@ export function MarkdownViewer({
         aria-hidden="true"
         onChange={onFileInputChange}
       />
+
+      {hasContent && html && (
+        <div ref={exportRef} className="hidden" aria-hidden="true">
+          <article
+            className={`prose-doc max-w-4xl ${dark ? 'prose-invert' : ''}`}
+            dangerouslySetInnerHTML={innerHtml}
+          />
+        </div>
+      )}
 
       {dragOver && <DragOverlay />}
       {showFileSidebar && (
@@ -368,12 +395,13 @@ export function MarkdownViewer({
         fullscreen={fullscreen}
         viewSource={viewSource}
         showViewSource={Boolean(sourceText)}
-        showOpenFolder={Boolean(onOpenFolder) && supportsFolderPicker}
+        showOpenFolder={Boolean(onOpenFolder)}
         onToggleDark={handleToggleDark}
         onToggleFont={() => setFontSize((f) => (f === 'sm' ? 'md' : f === 'md' ? 'lg' : 'sm'))}
         onExportWord={() => void exportWord()}
         onExportDocx={() => void exportDocx()}
         onExportPdf={() => void exportPdf()}
+        exportDisabled={viewSource}
         onScrollTop={() => contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
         onToggleFullscreen={() => setFullscreen((f) => !f)}
         onPickFile={handleFilePick}
