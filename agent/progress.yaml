@@ -735,18 +735,19 @@ tasks:
 documentation:
   design_documents: 2
   milestone_documents: 9
-  pattern_documents: 0
+  pattern_documents: 1
   task_documents: 60
   audit_reports: 5
   prd_version: "1.6.0"
-  readme_version: "0.4.1"
+  readme_version: "0.4.1-comprehensive"
   user_guide: docs/user-guide.md
   last_updated: 2026-06-14
+  last_sync: 2026-06-14
 
 progress:
   planning: 100
   implementation: 100
-  testing: 95
+  testing: 100
   documentation: 100
   overall: 100
 
@@ -757,6 +758,27 @@ current_task:
   status: completed
 
 recent_work:
+  - date: 2026-06-14
+    description: |
+      /acp-sync — README, user guide, architecture, embed-api, CHANGELOG, PRD limitations.
+    items:
+      - ✅ README: TOC, verify-install gate, run-from-anywhere, desktop Rust prereqs, doc index
+      - ✅ user-guide.md: comprehensive run/install/desktop/CLI/troubleshooting (synced)
+      - ✅ architecture.md: StandaloneViewer controlled-mode contract, E2E test ids
+      - ✅ embed-api.md: controlled-mode pitfall for standalone integrators
+      - ✅ CHANGELOG 0.4.1: E2E fix + run/install docs
+      - ✅ PRD known limitations: Rust/CLI constraints
+      - ✓ Artifact health: templates only (no stale research)
+  - date: 2026-06-14
+    description: |
+      Post-M7 stabilization — E2E regression fix, full test verification, run/install docs.
+    items:
+      - ✅ Fixed StandaloneViewer controlled-content bug (empty string blocked file picker)
+      - ✅ E2E stabilized: test ids, scoped locators, 9/9 Playwright pass (CI=true)
+      - ✅ Committed a948ac3 — fix standalone file picker + E2E tests
+      - ✅ Full quality gate verified locally (36 unit, 9 E2E, typecheck, lint, build, build:lib, pack)
+      - 📋 README + docs/user-guide.md expanded (run from anywhere, desktop prereqs, CLI) — uncommitted
+      - ✓ Artifact health: templates only in agent/artifacts/ (no stale research)
   - date: 2026-06-14
     description: |
       /acp-sync — PRD v1.6, architecture, README, user guide (v0.4.1).
@@ -848,16 +870,18 @@ recent_work:
       - 📋 Begin M1 task-1 implementation
 
 next_steps:
-  - git push origin main (3 commits ahead: M7 plan + remediation + prior)
+  - Commit docs sync (README, user-guide, architecture, embed-api, CHANGELOG, progress)
+  - git push origin main (if ahead of remote)
   - npm publish @markdown-tools/react@0.4.1 (npm login, npm publish)
   - Execute task-34 in ACPEnhanced-Visual per docs/visualizer-migration.md (^0.4.1)
-  - npm run tauri:build for desktop installer (requires Rust toolchain)
+  - Install Rust + MSVC build tools, then npm run tauri:build for desktop installer
 
 notes:
   - Viewer ported from ACPEnhanced-Visual v1.5.4 (one-time vendor copy)
   - ADR-001–007 in agent/memory/decisions.md
   - M1–M7 complete at v0.4.1; audit #5 carryovers addressed
-  - HEAD bc91135; origin/main behind by 3 commits
+  - HEAD a948ac3; post-M7 E2E fix committed; run/install docs pending commit
+  - Pattern logged: controlled-content-undefined-not-empty (StandaloneViewer + MarkdownViewer)
 
 current_blockers: []
 
@@ -865,7 +889,7 @@ team:
   - role: Lead Developer
     name: Agent
     focus: |
-      npm publish + cross-repo visualizer migration
+      Commit run/install docs, npm publish, cross-repo visualizer migration, desktop build (Rust)
 
 dependencies:
   libraries:
@@ -885,4 +909,5 @@ quality:
   test_coverage_scope: src/markdown
   unit_tests: 36
   e2e_tests: 9
+  e2e_status: all_passing
   code_review_status: audit-5-remediated

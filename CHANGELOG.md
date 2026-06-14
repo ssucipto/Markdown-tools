@@ -10,11 +10,14 @@
 - DOCX: tables, code blocks, images, mermaid diagrams; no duplicate mermaid paragraphs
 - Tauri: `tauri-plugin-single-instance` forwards file opens to running instance
 - npm: removed `private`, React moved to devDependencies (peerDeps for consumers)
+- Standalone file picker: `StandaloneViewer` passes `content`/`rawMarkdown` as `undefined` until `documentPath` is set (controlled-mode fix)
+- E2E: `data-testid` file picker selectors; math fixture from disk; scoped locators — 9/9 Playwright tests pass
 
 ### Added
 - Contract tests for public library exports and URL helper edge cases
-- E2E: view source toggle, DOCX export smoke
+- E2E: view source toggle, DOCX export smoke, KaTeX render smoke
 - Unit tests: KaTeX code-fence guard, DOCX export fixtures
+- Comprehensive [user guide](docs/user-guide.md) and README run/install documentation (web, CLI, desktop, troubleshooting)
 
 ## [0.4.0] - 2026-06-14
 

@@ -8,6 +8,100 @@ Drop `.md` files, read richly rendered GitHub-flavored preview, **Mermaid** diag
 
 **Current release**: v0.4.1 (M1–M7 complete)
 
+---
+
+## Contents
+
+- [How to run](#how-to-run)
+- [Features](#features)
+- [Verify your install](#verify-your-install)
+- [Development](#development)
+- [Architecture](#architecture)
+- [Embed API](#embed-api)
+- [Documentation](#documentation)
+- [Security](#security)
+- [Known limitations](#known-limitations)
+
+---
+
+## How to run
+
+**Full walkthrough**: [docs/user-guide.md](docs/user-guide.md) — prerequisites, desktop build, running from anywhere, CLI, features, troubleshooting.
+
+### Prerequisites
+
+| Mode | You need |
+|------|----------|
+| **Web app** | [Node.js](https://nodejs.org/) 20+, `npm install` |
+| **Desktop (Tauri)** | Above + [Rust](https://rustup.rs/) + [platform build tools](https://v2.tauri.app/start/prerequisites/) |
+
+### Quick start (browser) — recommended
+
+```bash
+git clone https://github.com/ssucipto/markdown-tools.git
+cd markdown-tools
+npm install
+npm run dev
+```
+
+Open **http://localhost:5173** — drop a `.md` file or use **📂** (single file) / **📁** (folder). Files can live **anywhere on disk**; only the dev server runs from the project folder.
+
+### Run from any folder (CLI)
+
+One-time setup in the project clone:
+
+```bash
+npm link
+```
+
+Then from **any directory**:
+
+```bash
+markdown-tools dev                        # → http://localhost:5173
+markdown-tools open path\to\document.md   # Tauri dev shell (needs Rust)
+```
+
+After `npm publish`, the same commands work via `npm install -g @markdown-tools/react`.
+
+### Desktop installer (native app)
+
+Requires Rust (`cargo --version` must work). On Windows, install **Visual Studio Build Tools** with **Desktop development with C++**.
+
+```bash
+npm run tauri:build
+```
+
+Install the `.msi` from `src-tauri/target/release/bundle/msi/`. Then:
+
+- Double-click any `.md` file in Explorer
+- Or run `markdown-tools open C:\path\to\file.md`
+
+Development with hot reload:
+
+```bash
+npm run tauri:dev
+```
+
+### Production preview (no hot reload)
+
+```bash
+npm run build
+npm run preview      # → http://localhost:4173
+```
+
+### Ways to run (summary)
+
+| Command | Result | Rust? |
+|---------|--------|-------|
+| `npm run dev` | Browser UI, hot reload (port 5173) | No |
+| `npm run preview` | Production build in browser (port 4173) | No |
+| `markdown-tools dev` | Same as `npm run dev`, any cwd after `npm link` | No |
+| `npm run tauri:dev` | Native window + hot reload | Yes |
+| `npm run tauri:build` | OS installer + `.md` file associations | Yes |
+| `markdown-tools open file.md` | Open file in Tauri dev | Yes |
+
+---
+
 ## Status
 
 | Milestone | Status |
@@ -18,7 +112,7 @@ Drop `.md` files, read richly rendered GitHub-flavored preview, **Mermaid** diag
 | M6 | ✅ `@markdown-tools/react` library build |
 | M7 | ✅ Audit #5 remediation — production readiness |
 
-Track progress: [agent/progress.yaml](agent/progress.yaml)
+Track progress: [agent/progress.yaml](agent/progress.yaml) · Release notes: [CHANGELOG.md](CHANGELOG.md)
 
 ## Features
 
@@ -36,25 +130,35 @@ Track progress: [agent/progress.yaml](agent/progress.yaml)
 | npm package `@markdown-tools/react` | ✅ publish-ready |
 | Tauri desktop + `.md` file associations | ✅ |
 
-## Quick start
+## Verify your install
+
+Full quality gate (matches CI):
 
 ```bash
-git clone <repo-url> markdown-tools
-cd markdown-tools
-npm install
-npm run dev
+npm install          # first time only
+npm test             # 36 Vitest tests (unit + contract)
+npm run test:e2e     # 9 Playwright browser tests
+npm run typecheck
+npm run lint
+npm run build        # SPA
+npm run build:lib    # @markdown-tools/react library
+npm pack --dry-run   # publish tarball check
 ```
 
-Open `http://localhost:5173`, drop a `.md` file or use 📂 / 📁.
+If E2E fails with a stale server on port 4173: `CI=true npm run test:e2e`
 
-**User guide**: [docs/user-guide.md](docs/user-guide.md) — full walkthrough of features, export, and troubleshooting.
-
-### Desktop (Tauri)
+## Development
 
 ```bash
-npm run tauri:dev          # Dev with hot reload
-npm run tauri:build        # Native installer
-markdown-tools open README.md
+npm run dev           # Vite dev server (port 5173)
+npm run build         # SPA production build
+npm run build:lib     # @markdown-tools/react library build
+npm run test          # Vitest unit + contract tests (36 tests)
+npm run test:e2e      # Playwright browser tests (9 tests)
+npm run typecheck
+npm run lint
+npm run format:check
+npm run perf:check    # Lighthouse ≥85 gate
 ```
 
 ### Library consumers
@@ -64,20 +168,7 @@ npm run build:lib
 npm pack --dry-run
 ```
 
-## Development
-
-```bash
-npm run dev           # Vite dev server
-npm run build         # SPA production build
-npm run build:lib     # @markdown-tools/react library build
-npm run test          # Vitest unit + contract tests
-npm run test:coverage # Coverage gate: ≥60% on src/markdown/*
-npm run test:e2e      # Playwright smoke tests
-npm run typecheck
-npm run lint
-npm run format:check
-npm run perf:check    # Lighthouse ≥85 gate
-```
+See [docs/embed-api.md](docs/embed-api.md).
 
 ### CI (GitHub Actions)
 
@@ -99,7 +190,7 @@ src/
 ├── hooks/useFolderBrowser.ts       # FSA + webkitdirectory
 ├── hooks/useTauriFileOpen.ts       # Desktop file open events
 ├── markdown/parse.ts               # marked → DOMPurify → KaTeX
-├── markdown/math.ts                  # KaTeX preprocess/restore
+├── markdown/math.ts                # KaTeX preprocess/restore
 ├── markdown/exportDocx.ts          # True .docx export
 ├── markdown/exportWord.ts          # .doc HTML export
 ├── markdown/exportPdf.ts           # Print window helper
@@ -107,7 +198,7 @@ src/
 └── types/viewer.ts                 # MarkdownViewerProps
 ```
 
-Details: [docs/user-guide.md](docs/user-guide.md) · [agent/design/requirements.md](agent/design/requirements.md) · [docs/embed-api.md](docs/embed-api.md)
+Details: [agent/design/architecture.md](agent/design/architecture.md) · [agent/design/requirements.md](agent/design/requirements.md)
 
 ## Embed API
 
@@ -148,7 +239,19 @@ URL routing: `parseDocsSearchParams('?file=docs/a.md&anchor=intro')`
 1. PDF: browser print dialog (allow popups)
 2. View-only — no editor
 3. DOCX: KaTeX exports as `[math]` text placeholder (no OMML yet)
-4. Tauri `tauri:build` requires Rust toolchain locally
+4. Tauri build requires Rust + platform build tools (`cargo` on PATH)
+5. CLI `open` uses Tauri dev — no browser-only “open file” command yet
+6. `npm publish` to registry is manual after `npm login`
+
+## Documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [docs/user-guide.md](docs/user-guide.md) | **Run, install, desktop, CLI, features, troubleshooting** |
+| [docs/embed-api.md](docs/embed-api.md) | Embed `MarkdownViewer` in React apps |
+| [docs/visualizer-migration.md](docs/visualizer-migration.md) | ACPEnhanced-Visual cutover plan |
+| [CHANGELOG.md](CHANGELOG.md) | Release history |
+| [agent/design/architecture.md](agent/design/architecture.md) | System design and module map |
 
 ## ACP workflow
 

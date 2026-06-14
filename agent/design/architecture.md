@@ -1,7 +1,7 @@
 # Markdown-tools — System Architecture
 
 **Status**: Active  
-**Last updated**: 2026-06-14 (M7 / v0.4.1 sync)  
+**Last updated**: 2026-06-14 (post-M7 sync — E2E fix, run/install docs)  
 **PRD**: [requirements.md](requirements.md) v1.6.0  
 **User guide**: [docs/user-guide.md](../../docs/user-guide.md)  
 **ADRs**: [agent/memory/decisions.md](../memory/decisions.md)
@@ -91,9 +91,31 @@ Hidden **export article** (`exportRef`) mirrors rendered HTML for Word/DOCX/PDF 
 ## State management
 
 - **No global store** — hooks wired in `MarkdownViewer`
-- **Controlled vs uncontrolled** — embed passes `content`/`files`; standalone uses `useMarkdownDocument`
+- **Controlled vs uncontrolled** — embed passes `content`/`files`; standalone uses `useMarkdownDocument` until a path is set
 - **Theme** — controlled (`theme` + `onThemeChange`) or internal state (ADR-007)
 - **Mermaid SVG** — must not re-apply innerHTML on unrelated re-renders
+
+### StandaloneViewer controlled-mode contract (v0.4.1+)
+
+`MarkdownViewer` treats `content !== undefined` as **controlled**. An empty string `""` is controlled, not “empty uncontrolled”.
+
+`StandaloneViewer` must pass `content` and `rawMarkdown` only when `doc.documentPath != null`:
+
+```tsx
+content={doc.documentPath != null ? doc.content : undefined}
+rawMarkdown={doc.documentPath != null ? doc.content : undefined}
+```
+
+Until a folder/Tauri path is set, the viewer stays **uncontrolled** so the 📂 file picker and drag-and-drop call `loadDroppedFile` on the internal hook. Passing `content=""` previously blocked file loads (post-M7 fix, commit `a948ac3`).
+
+Pattern: [agent/patterns/local.controlled-content-undefined-not-empty.md](../patterns/local.controlled-content-undefined-not-empty.md)
+
+### E2E test hooks
+
+- `data-testid="file-picker-input"` — single-file input on `MarkdownViewer`
+- `data-testid="folder-picker-input"` — folder input on `StandaloneViewer`
+
+Playwright tests scope KaTeX/Mermaid to `main article` to avoid matching the hidden export clone.
 
 ---
 
@@ -131,6 +153,7 @@ One-time vendor copy from `ACPEnhanced-Visual` v1.5.4. No runtime dependency on 
 ## Related documents
 
 - [requirements.md](requirements.md) — PRD v1.6.0
-- [docs/user-guide.md](../../docs/user-guide.md) — end-user documentation
+- [docs/user-guide.md](../../docs/user-guide.md) — run, install, desktop, CLI, troubleshooting
 - [docs/embed-api.md](../../docs/embed-api.md) — developer embed API
+- [CHANGELOG.md](../../CHANGELOG.md) — release notes
 - [milestone-7-m4-m6-audit-remediation.md](../milestones/milestone-7-m4-m6-audit-remediation.md) — production readiness gate

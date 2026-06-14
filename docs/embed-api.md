@@ -54,6 +54,17 @@ function DocsRoute({ search }: { search: Record<string, string> }) {
 
 The default app uses `StandaloneViewer` — drag-and-drop, single-file picker, and folder browser without a server.
 
+### Controlled-mode pitfall
+
+Do **not** pass `content=""` or `rawMarkdown=""` to `MarkdownViewer`. Use `undefined` until a document path exists:
+
+```tsx
+content={documentPath != null ? content : undefined}
+rawMarkdown={documentPath != null ? content : undefined}
+```
+
+See [architecture — StandaloneViewer contract](../agent/design/architecture.md#standaloneviewer-controlled-mode-contract-v041) and pattern `local.controlled-content-undefined-not-empty`.
+
 ## User guide
 
 End-user documentation: [user-guide.md](./user-guide.md)

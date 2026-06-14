@@ -5,7 +5,7 @@
 **Status**: Active  
 **Version**: 1.6.0  
 **Author**: Product / Engineering (ACP session)  
-**Last reviewed**: 2026-06-14 (M7 / v0.4.1 sync)  
+**Last reviewed**: 2026-06-14 (post-M7 sync — E2E, run/install docs)  
 **Planning**: [agent/progress.yaml](../progress.yaml) · M1–M7 · 60 tasks · [architecture.md](architecture.md)
 
 ---
@@ -658,8 +658,9 @@ Five open questions were reviewed against project goals, source audit, and compe
 2. PDF export uses the browser print dialog (popup must be allowed).
 3. No in-app markdown editing (view-only).
 4. DOCX math exports as `[math]` text placeholder — no OMML yet.
-5. Tauri installer requires local Rust toolchain to build.
-6. ACPEnhanced-Visual cutover pending — see [visualizer-migration.md](../../docs/visualizer-migration.md).
+5. Tauri installer requires local Rust toolchain to build (`cargo` on PATH).
+6. CLI `markdown-tools open` requires Rust (Tauri dev); use `markdown-tools dev` + 📂 for browser-only workflow.
+7. ACPEnhanced-Visual cutover pending — see [visualizer-migration.md](../../docs/visualizer-migration.md).
 
 ---
 

@@ -7,6 +7,21 @@
   branch: main
   tasks_completed: []
   done:
+    - acp-sync-comprehensive-run-install-docs
+    - readme-user-guide-desktop-cli-from-anywhere
+    - architecture-embed-api-changelog-synced
+  deferred:
+    - git-commit-docs-sync → 7 files uncommitted
+    - npm-publish → manual after npm login
+    - visualizer-migration-task-34 → ACPEnhanced-Visual repo
+    - tauri-build → requires Rust toolchain on developer machine
+  key_fact: "docs/user-guide.md and README How to run are canonical for web, CLI, and desktop; Rust+cargo only needed for tauri:build/tauri:dev"
+
+- date: 2026-06-14
+  executor: cursor
+  branch: main
+  tasks_completed: []
+  done:
     - e2e-fix-controlled-content-bug
     - e2e-test-selector-and-locator-updates
     - full-test-suite-verified-9-e2e-pass
