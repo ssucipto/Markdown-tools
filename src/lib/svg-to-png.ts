@@ -1,10 +1,7 @@
 /**
  * SVG to PNG rasterization utility (ported from ACPEnhanced-Visual v1.5.4).
  */
-export async function svgToPngDataUri(
-  svgElement: SVGSVGElement,
-  scale = 2,
-): Promise<string | null> {
+export async function svgToPngDataUri(svgElement: SVGSVGElement, scale = 2): Promise<string | null> {
   try {
     if (!svgElement.querySelector('*') && !svgElement.textContent?.trim()) {
       console.warn('[svgToPng] SVG has no child elements — skipping')
@@ -20,9 +17,19 @@ export async function svgToPngDataUri(
     clone.querySelectorAll('*').forEach((el) => allCloned.push(el as SVGElement))
 
     const PROPS = [
-      'fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-opacity',
-      'stroke-dasharray', 'font-family', 'font-size', 'font-weight',
-      'opacity', 'text-anchor', 'dominant-baseline', 'color',
+      'fill',
+      'fill-opacity',
+      'stroke',
+      'stroke-width',
+      'stroke-opacity',
+      'stroke-dasharray',
+      'font-family',
+      'font-size',
+      'font-weight',
+      'opacity',
+      'text-anchor',
+      'dominant-baseline',
+      'color',
     ]
 
     const SKIP_VALUES = new Set(['normal', 'auto', 'none', 'rgba(0, 0, 0, 0)', '0'])
@@ -52,8 +59,8 @@ export async function svgToPngDataUri(
     if (w <= 0) w = 800
     if (h <= 0) h = 400
 
-    const svgString = '<?xml version="1.0" encoding="UTF-8"?>\n' +
-      new XMLSerializer().serializeToString(clone)
+    const svgString =
+      '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone)
 
     const png = await tryRenderViaBlob(svgString, w, h, scale)
     if (png) return png
@@ -67,7 +74,10 @@ export async function svgToPngDataUri(
 }
 
 async function tryRenderViaBlob(
-  svgString: string, w: number, h: number, scale: number,
+  svgString: string,
+  w: number,
+  h: number,
+  scale: number,
 ): Promise<string | null> {
   try {
     const blob = new Blob([svgString], { type: 'image/svg+xml' })
@@ -81,7 +91,10 @@ async function tryRenderViaBlob(
 }
 
 async function tryRenderViaDataUri(
-  svgString: string, w: number, h: number, scale: number,
+  svgString: string,
+  w: number,
+  h: number,
+  scale: number,
 ): Promise<string | null> {
   try {
     const encoded = encodeURIComponent(svgString)
@@ -92,9 +105,7 @@ async function tryRenderViaDataUri(
   }
 }
 
-function renderImageToCanvas(
-  src: string, w: number, h: number, scale: number,
-): Promise<string | null> {
+function renderImageToCanvas(src: string, w: number, h: number, scale: number): Promise<string | null> {
   return new Promise((resolve) => {
     const img = new Image()
     img.crossOrigin = 'anonymous'

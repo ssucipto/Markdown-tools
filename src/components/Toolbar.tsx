@@ -34,13 +34,31 @@ export function Toolbar({
 
   return (
     <div className="fixed bottom-4 right-4 flex gap-2 z-40" role="toolbar" aria-label="Viewer controls">
-      <button type="button" onClick={onPickFile} title="Open file" className={btn} aria-label="Open markdown file">
+      <button
+        type="button"
+        onClick={onPickFile}
+        title="Open file"
+        className={btn}
+        aria-label="Open markdown file"
+      >
         📂
       </button>
-      <button type="button" onClick={onToggleDark} title="Toggle theme" className={btn} aria-label="Toggle dark mode">
+      <button
+        type="button"
+        onClick={onToggleDark}
+        title="Toggle theme"
+        className={btn}
+        aria-label="Toggle dark mode"
+      >
         {dark ? '☀️' : '🌙'}
       </button>
-      <button type="button" onClick={onToggleFont} title="Font size" className={`${btn} text-xs font-bold`} aria-label="Change font size">
+      <button
+        type="button"
+        onClick={onToggleFont}
+        title="Font size"
+        className={`${btn} text-xs font-bold`}
+        aria-label="Change font size"
+      >
         {fontSize === 'sm' ? 'S' : fontSize === 'md' ? 'M' : 'L'}
       </button>
       <button
@@ -53,10 +71,22 @@ export function Toolbar({
       >
         {exporting ? '⏳' : '📥'}
       </button>
-      <button type="button" onClick={onExportPdf} title="Export to PDF" className={btn} aria-label="Export to PDF">
+      <button
+        type="button"
+        onClick={onExportPdf}
+        title="Export to PDF"
+        className={btn}
+        aria-label="Export to PDF"
+      >
         📄
       </button>
-      <button type="button" onClick={onScrollTop} title="Back to top" className={btn} aria-label="Scroll to top">
+      <button
+        type="button"
+        onClick={onScrollTop}
+        title="Back to top"
+        className={btn}
+        aria-label="Scroll to top"
+      >
         ↑
       </button>
       <button
@@ -104,7 +134,9 @@ export function EmptyState({ dark, dragOver }: { dark: boolean; dragOver: boolea
         <p className={`text-sm font-medium mb-1 ${dark ? 'text-gray-300' : 'text-gray-700'}`}>
           Drop a <code className="px-1 rounded bg-gray-100 dark:bg-gray-700 text-xs">.md</code> file here
         </p>
-        <p className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-400'}`}>or use the 📂 button to open a file</p>
+        <p className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-400'}`}>
+          or use the 📂 button to open a file
+        </p>
       </div>
     </div>
   )

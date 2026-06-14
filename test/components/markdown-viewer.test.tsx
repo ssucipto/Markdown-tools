@@ -49,9 +49,7 @@ describe('MarkdownViewer', () => {
   })
 
   it('renders controlled markdown content', async () => {
-    render(
-      <MarkdownViewer content={SAMPLE_MD} documentPath="test.md" />,
-    )
+    render(<MarkdownViewer content={SAMPLE_MD} documentPath="test.md" />)
     expect(await screen.findByRole('heading', { name: 'Test Document' })).toBeInTheDocument()
     expect(screen.getByText('Col1')).toBeInTheDocument()
   })
@@ -65,6 +63,34 @@ describe('MarkdownViewer', () => {
     render(<MarkdownViewer content="# Hi" documentPath="hi.md" />)
     expect(await screen.findByLabelText('Export to Word')).toBeInTheDocument()
     expect(screen.getByLabelText('Export to PDF')).toBeInTheDocument()
+  })
+
+  it('shows toolbar for content-only embed without documentPath', async () => {
+    render(<MarkdownViewer content="# Hi" />)
+    expect(await screen.findByLabelText('Export to Word')).toBeInTheDocument()
+  })
+
+  it('controlled theme calls onThemeChange instead of internal toggle', async () => {
+    const user = userEvent.setup()
+    const onThemeChange = vi.fn()
+    render(<MarkdownViewer content="# Hi" theme="light" onThemeChange={onThemeChange} />)
+    await user.click(screen.getByLabelText('Toggle dark mode'))
+    expect(onThemeChange).toHaveBeenCalledWith('dark')
+  })
+
+  it('uncontrolled theme toggles internally', async () => {
+    const user = userEvent.setup()
+    render(<MarkdownViewer content="# Hi" />)
+    const btn = screen.getByLabelText('Toggle dark mode')
+    await user.click(btn)
+    expect(btn).toHaveTextContent('☀️')
+  })
+
+  it('scrolls to initialAnchor inside viewer container', async () => {
+    const scrollIntoView = vi.fn()
+    HTMLElement.prototype.scrollIntoView = scrollIntoView
+    render(<MarkdownViewer content={'# Top\n\n## Target Section\n\nbody'} initialAnchor="target-section" />)
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalled(), { timeout: 2000 })
   })
 
   it('renders embed sidebar when files provided', async () => {

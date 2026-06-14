@@ -5,9 +5,11 @@ export async function exportWordDocument(
   documentPath: string | null | undefined,
 ): Promise<{ blob: Blob; filename: string }> {
   const clone = el.cloneNode(true) as HTMLElement
-  clone.querySelectorAll(
-    '.heading-anchor, .code-copy-btn, .code-block-header, .mermaid-loading, .mermaid-error span:first-child',
-  ).forEach((e) => e.remove())
+  clone
+    .querySelectorAll(
+      '.heading-anchor, .code-copy-btn, .code-block-header, .mermaid-loading, .mermaid-error span:first-child',
+    )
+    .forEach((e) => e.remove())
 
   const liveContainers = el.querySelectorAll<HTMLElement>('.mermaid-container')
   const containers = clone.querySelectorAll<HTMLElement>('.mermaid-container')
@@ -88,7 +90,12 @@ export async function exportWordDocument(
         @page{margin:1in}
       </style></head><body>${clone.innerHTML}</body></html>`
 
-  const name = documentPath?.split('/').pop()?.replace(/^\[dropped\] /, '').replace(/\.md$/, '') || 'document'
+  const name =
+    documentPath
+      ?.split('/')
+      .pop()
+      ?.replace(/^\[dropped\] /, '')
+      .replace(/\.md$/, '') || 'document'
   return {
     blob: new Blob([docHtml], { type: 'application/msword' }),
     filename: `${name}.doc`,
@@ -100,9 +107,11 @@ export async function exportPdfDocument(
   documentPath: string | null | undefined,
 ): Promise<{ html: string; title: string }> {
   const clone = el.cloneNode(true) as HTMLElement
-  clone.querySelectorAll(
-    '.heading-anchor, .code-copy-btn, .code-block-header, .mermaid-loading, .mermaid-error span:first-child',
-  ).forEach((e) => e.remove())
+  clone
+    .querySelectorAll(
+      '.heading-anchor, .code-copy-btn, .code-block-header, .mermaid-loading, .mermaid-error span:first-child',
+    )
+    .forEach((e) => e.remove())
 
   const liveSvgs = el.querySelectorAll<SVGSVGElement>('.mermaid-container svg')
   const svgs = clone.querySelectorAll<SVGSVGElement>('.mermaid-container svg')
@@ -124,7 +133,12 @@ export async function exportPdfDocument(
     await Promise.allSettled(conversions)
   }
 
-  const name = documentPath?.split('/').pop()?.replace(/^\[dropped\] /, '').replace(/\.md$/, '') || 'document'
+  const name =
+    documentPath
+      ?.split('/')
+      .pop()
+      ?.replace(/^\[dropped\] /, '')
+      .replace(/\.md$/, '') || 'document'
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${name}</title><style>
         body{font-family:system-ui,sans-serif;line-height:1.6;max-width:800px;margin:40px auto;color:#1f2937;padding:20px}
         h1{font-size:1.5em;margin-top:1em;page-break-before:always}h1:first-child{page-break-before:avoid}

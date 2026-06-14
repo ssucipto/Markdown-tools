@@ -5,13 +5,14 @@ topic: security, accessibility, mermaid, dompurify
 description: XSS hardening, accessibility, Mermaid pan, extended test coverage
 tasks: task-15..task-19
 spec: agent/design/requirements.md
-status: draft
+status: completed
 updated: 2026-06-14
 @acp.meta.end -->
 
 **Goal**: Harden MVP for untrusted markdown, improve UX polish, and meet Phase 1b requirements.  
 **Duration**: 1 week  
-**PRD phase**: Phase 1b
+**PRD phase**: Phase 1b  
+**Strict sign-off**: Completed via M3b (audit-4, v0.3.1)
 
 ---
 
@@ -27,10 +28,11 @@ updated: 2026-06-14
 
 ## Success Criteria
 
-- [ ] FR-2.5, FR-3.4, FR-3.7, FR-3.8, FR-6.4 implemented
-- [ ] No inline `onclick` in generated HTML
-- [ ] Lighthouse accessibility score ≥90 on viewer route
-- [ ] `svg-to-png` unit tests added
+- [x] FR-2.5, FR-3.4, FR-3.7, FR-3.8, FR-6.4 implemented
+- [x] No inline `onclick` in generated HTML
+- [ ] Lighthouse accessibility score ≥90 on viewer route (not gated in CI)
+- [x] `svg-to-png` unit tests added (M3b task-45)
+- [x] ≥60% coverage on `src/markdown/*` (strict completion in M3b)
 
 ---
 
@@ -44,4 +46,4 @@ updated: 2026-06-14
 6. [Task 37](../tasks/milestone-3-polish/task-37-playwright-e2e-smoke.md) — Playwright E2E smoke tests
 7. [Task 38](../tasks/milestone-3-polish/task-38-lighthouse-performance.md) — Lighthouse performance verification
 
-**Next Milestone**: [M4 — Enhanced Product](milestone-4-enhanced.md)
+**Next Milestone**: [M3b Audit Remediation](milestone-3b-audit-remediation.md) ✅ → [M4 — Enhanced Product](milestone-4-enhanced.md)

@@ -1,24 +1,36 @@
 # Markdown-tools
 
-A **desktop-first** markdown viewer: drag-and-drop `.md` files, rich GitHub-flavored preview, interactive **Mermaid** diagrams, and one-click export to **Word** and **PDF** — all in the browser, with no upload of your content.
+A **desktop-first** markdown viewer and **embeddable library** (planned: `@markdown-tools/react`) for [ACPEnhanced-Visual](https://github.com/ssucipto/acp-enhanced) and standalone use.
 
-> Viewer components ported from [ACPEnhanced-Visual](https://github.com/ssucipto/acp-enhanced) (`acp-visualizer` v1.5.4).
+Drop `.md` files, read richly rendered GitHub-flavored preview, interactive **Mermaid** diagrams, and one-click **Word** / **PDF** export — all client-side, no upload.
+
+> Viewer ported from `acp-visualizer` v1.5.4 (`DocsViewer.tsx`). See [ADR-006](agent/memory/decisions.md).
+
+**Current release**: v0.3.1 (M1–M3b complete)
+
+## Status
+
+| Milestone | Status |
+|-----------|--------|
+| M1–M3 | ✅ Complete (v0.3.0) |
+| M3b | ✅ Audit remediation (v0.3.1) — [audit-4](agent/reports/audit-4-carryover-verification.md) verified |
+| **M4** | **Next** — enhanced product (folder browser, DOCX, KaTeX) |
+| M6 | `@markdown-tools/react` + visualizer migration |
+| M5 | Tauri native desktop |
+
+Track progress: [agent/progress.yaml](agent/progress.yaml)
 
 ## Features
 
-| Status | Feature |
-|--------|---------|
-| Done (M2) | Drag-and-drop + file picker for `.md` files |
-| Done (M2) | GFM tables, task lists, syntax highlighting |
-| Done (M2) | Table of contents + scroll spy |
-| Done (M2) | Mermaid diagrams with click-to-zoom + pan |
-| Done (M2) | Export Word (`.doc`) and PDF (print) |
-| Done (M3) | DOMPurify XSS hardening, accessibility labels |
-| Planned (M4) | Folder browser, true `.docx`, KaTeX math |
-| Planned (M6) | `@markdown-tools/react` npm package for ACPEnhanced-Visual |
-| Planned (M5) | Tauri native desktop app |
-
-See [agent/progress.yaml](agent/progress.yaml) for milestone status.
+| Feature | Status |
+|---------|--------|
+| Drag-and-drop + file picker | ✅ |
+| GFM, syntax highlighting, TOC | ✅ |
+| Mermaid + zoom/pan lightbox | ✅ |
+| Word (`.doc`) + PDF export | ✅ |
+| DOMPurify XSS hardening | ✅ |
+| Embed props for acp-visualizer | ✅ API ready (ADR-007); npm package → M6 |
+| npm package `@markdown-tools/react` | 📋 M6 |
 
 ## Quick start
 
@@ -29,46 +41,109 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`, then drop a `.md` file or use the 📂 button.
+Open `http://localhost:5173`, drop a `.md` file or use 📂.
 
 ### Sample documents
 
-Fixtures in `docs/`:
-
-- `docs/sample-basic.md` — headings and lists
-- `docs/sample-gfm.md` — tables and task lists
-- `docs/sample-mermaid.md` — flowchart and sequence diagrams
+- [docs/sample-basic.md](docs/sample-basic.md)
+- [docs/sample-gfm.md](docs/sample-gfm.md)
+- [docs/sample-mermaid.md](docs/sample-mermaid.md)
+- [docs/sample-export-torture.md](docs/sample-export-torture.md)
 
 ## Development
 
 ```bash
-npm run dev          # Vite dev server
-npm run build        # Production build
-npm run test         # Vitest unit tests
-npm run test:e2e     # Playwright smoke tests
-npm run test:coverage
+npm run dev           # Vite dev server
+npm run build         # Production build
+npm run test          # Vitest — 28 unit tests
+npm run test:coverage # Coverage gate: ≥60% on src/markdown/*
+npm run test:e2e      # Playwright — 6 smoke tests
 npm run typecheck
+npm run lint          # ESLint (src, test, e2e)
+npm run format:check  # Prettier check
+npm run perf:check    # Lighthouse ≥85 gate (build + preview + chrome-launcher)
 ```
+
+### CI (GitHub Actions)
+
+| Job | Checks |
+|-----|--------|
+| `build-test` | typecheck, lint, format, prod npm audit, unit tests, coverage, build |
+| `e2e` | Playwright smoke (mermaid, export, invalid file) |
+| `lighthouse` | Performance ≥85 via `npm run perf:check` |
 
 ![CI](https://github.com/ssucipto/markdown-tools/actions/workflows/ci.yml/badge.svg)
 
 ## Architecture
 
-- **Frontend:** React 19 + TypeScript + Vite + Tailwind CSS 4
-- **Markdown:** `marked` (GFM) + `lowlight` + DOMPurify
-- **Diagrams:** `mermaid` (dynamic import)
-- **Export:** HTML-as-Word + browser print-to-PDF; Mermaid rasterized via `svg-to-png`
+```
+src/
+├── components/MarkdownViewer.tsx   # Shell + embed props (ADR-006/007)
+├── hooks/useMarkdownDocument.ts    # Uncontrolled doc state
+├── hooks/useToast.ts               # Toast notifications
+├── lib/html-entities.ts            # Safe code-copy data attributes
+├── lib/svg-to-png.ts               # Mermaid → PNG for export
+├── markdown/parse.ts               # marked → DOMPurify pipeline
+├── markdown/highlight.ts           # lowlight syntax highlighting
+├── markdown/renderMermaid.ts       # Lazy mermaid
+├── markdown/exportWord.ts          # .doc export
+├── markdown/exportPdf.ts           # Print window helper
+└── types/viewer.ts                 # MarkdownViewerProps
+```
 
-Details: [agent/design/requirements.md](agent/design/requirements.md) · [agent/design/architecture.md](agent/design/architecture.md)
+Details: [agent/design/requirements.md](agent/design/requirements.md) (PRD v1.5) · [agent/design/architecture.md](agent/design/architecture.md)
+
+## Embed API (for ACPEnhanced-Visual)
+
+```tsx
+<MarkdownViewer
+  content={markdown}
+  documentPath="docs/readme.md"
+  files={docFiles}
+  onSelectFile={(path) => loadDoc(path)}
+  theme="dark"
+  onThemeChange={setTheme}
+  initialFile="agent/design/requirements.md"
+  initialAnchor="fr-7"
+  showSidebar
+/>
+```
+
+URL shell routing (`?file=` / `?anchor=`) is M6 task-31; props above are implemented in v0.3.1.
+
+## Security
+
+- **Untrusted input**: Dropped/opened files are sanitized with **DOMPurify** after parsing.
+- **No upload**: Content stays in the browser; no server receives document text.
+- **No inline handlers**: Code copy uses `data-code` + React delegation (`html-entities.ts`), not `onclick` in HTML.
+- **Embed**: Production visualizer cutover requires M6 npm publish (`@markdown-tools/react`).
+
+## ACPEnhanced-Visual integration (roadmap)
+
+Markdown-tools will replace `DocsViewer.tsx` in `acp-visualizer`:
+
+1. ~~**M3b** — embed bugs (theme, toolbar, anchors, deep-link)~~ ✅ v0.3.1
+2. **M6** — publish `@markdown-tools/react`; visualizer adds thin `DocsViewerEmbed` wrapper
+3. Visualizer keeps server `listDocs` / `readDoc`; package receives props only
+
+See PRD **FR-7** and [milestone-6](agent/milestones/milestone-6-visualizer-integration.md).
 
 ## Known limitations
 
-1. Word export produces `.doc` (HTML), not `.docx` — until M4
-2. PDF uses the browser print dialog (allow popups)
-3. View-only — no in-app editing
-4. Math (`$...$`) not rendered until M4
-5. No native installer until M5 (Tauri)
+1. Word export: `.doc` (HTML), not `.docx` until M4
+2. PDF: browser print dialog (allow popups)
+3. View-only — no editor
+4. KaTeX math — M4
+5. Native installer — M5 (Tauri)
+6. v0.3.1 changes may be uncommitted locally — see [audit-4](agent/reports/audit-4-carryover-verification.md)
+
+## ACP workflow
+
+- `/acp-proceed` — implement next task
+- `/acp-status` — project snapshot
+- `/acp-audit` — quality reports in `agent/reports/`
+- `/acp-sync` — align docs with code
 
 ## License
 
-MIT (pending — align with port source license)
+MIT (pending — align with port source)

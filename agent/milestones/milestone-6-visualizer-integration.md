@@ -69,7 +69,7 @@ See PRD **FR-7** and ADR-006.
 | `listDocs()` → `files[]` | `files` prop |
 | `readDoc(path)` → `content` | `content` prop + `onSelectFile(path)` |
 | `/docs?file=x&anchor=y` | `initialFile`, `initialAnchor` props |
-| TanStack Start shell / nav | `showSidebar`, `theme` props |
+| TanStack Start shell / nav | `showSidebar`, `theme`, `onThemeChange` props |
 
-**Blockers**: M3 XSS hardening (task-15) must complete before visualizer embed in production.  
+**Blockers**: **M3b** embed fixes (ADR-007) must complete before visualizer cutover. DOMPurify shipped in M3.  
 **Next Milestone**: [M5 Native Desktop](milestone-5-native-desktop.md) (can run in parallel after M4)

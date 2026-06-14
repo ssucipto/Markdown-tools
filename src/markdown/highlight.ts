@@ -17,10 +17,7 @@ export function applySyntaxHighlighting(html: string): string {
       const normalized = LANG_ALIASES[lang] ?? lang
       if (!lowlight.registered(normalized)) return match
       try {
-        const text = inner
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
+        const text = inner.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
         const tree = lowlight.highlight(normalized, text)
         const highlighted = lowlightToHtml(tree)
         return match.replace(inner, highlighted)
@@ -31,11 +28,14 @@ export function applySyntaxHighlighting(html: string): string {
   )
 }
 
-function lowlightToHtml(node: { type: string; value?: string; children?: unknown[]; properties?: { className?: string[] } }): string {
+function lowlightToHtml(node: {
+  type: string
+  value?: string
+  children?: unknown[]
+  properties?: { className?: string[] }
+}): string {
   if (node.type === 'text') return escapeHtml(node.value ?? '')
-  const children = (node.children ?? [])
-    .map((c) => lowlightToHtml(c as typeof node))
-    .join('')
+  const children = (node.children ?? []).map((c) => lowlightToHtml(c as typeof node)).join('')
   const cls = node.properties?.className?.join(' ') ?? ''
   if (cls) return `<span class="${cls}">${children}</span>`
   return children

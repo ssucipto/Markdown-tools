@@ -111,3 +111,26 @@
 - Visualizer keeps DocsViewer; Markdown-tools duplicates (rejected strategic goal)
 
 **Related**: ADR-002 (initial port), M6 milestone, PRD FR-7.
+
+---
+
+## ADR-007 | 2026-06-14 | MarkdownViewer controlled/uncontrolled modes + theme callback
+
+**Status**: Accepted (audit #3 remediation)
+
+**Context**: Audit #3 found theme toggle broken when `theme` prop is set (B2). Embed consumers (acp-visualizer) need shell-synced theme; standalone app needs internal toggle.
+
+**Decision**:
+
+1. **`theme` prop** — when provided, viewer is **controlled** for theme; internal toggle calls `onThemeChange?.(next)` instead of mutating internal state.
+2. **`onThemeChange?: (theme: 'light' | 'dark') => void`** — embed wrapper updates shell state / localStorage.
+3. When **`theme` omitted** — **uncontrolled** mode; internal `useState` + toolbar toggle (standalone app).
+4. **`content` visibility** — toolbar/export use `Boolean(content?.length)`, not `documentPath && content` (B3).
+5. **Deep-link scroll** — scope to `contentRef` container (task-43).
+
+**Consequences**:
+- (+) Visualizer can sync dark mode with TanStack Start shell
+- (+) Standalone app unchanged UX when no theme prop
+- (−) Embed wrapper must implement `onThemeChange` if toggle desired
+
+**Related**: ADR-006, M3b task-39, FR-7.9.

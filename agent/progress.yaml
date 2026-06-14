@@ -3,7 +3,7 @@
 
 project:
   name: markdown-tools
-  version: 0.3.0
+  version: 0.3.1
   started: 2026-06-14
   status: in_progress
   current_milestone: M4
@@ -53,7 +53,21 @@ milestones:
     tasks_completed: 7
     tasks_total: 7
     notes: |
-      Phase 1b complete — DOMPurify, a11y, E2E, perf script.
+      Phase 1b shipped v0.3.0. Strict sign-off completed via M3b (audit-4 verified).
+
+  - id: M3b
+    name: Audit Remediation & Quality Gates
+    priority: 0
+    file: agent/milestones/milestone-3b-audit-remediation.md
+    status: completed
+    progress: 100
+    started: 2026-06-14
+    completed: 2026-06-14
+    estimated_weeks: 1
+    tasks_completed: 10
+    tasks_total: 10
+    notes: |
+      Phase 1c complete v0.3.1 — embed fixes, coverage ≥60%, Lighthouse CI, lint.
 
   - id: M4
     name: Enhanced Product
@@ -96,7 +110,7 @@ milestones:
     tasks_total: 7
     notes: |
       Publish @markdown-tools/react; replace DocsViewer in acp-visualizer.
-      Requires M3 XSS hardening before production embed. Can overlap late M4.
+      M3b embed fixes (ADR-007) verified in audit-4. DOMPurify shipped in M3.
 
 tasks:
   milestone_1:
@@ -323,7 +337,109 @@ tasks:
       estimated_hours: 2
       actual_hours: null
       completed_date: 2026-06-14T13:30:00Z
-      notes: PRD perf ≥85 (audit F8).
+      notes: PRD perf ≥85 (audit F8). Superseded by M3b task-46 for CI gate.
+
+  milestone_3b:
+    - id: task-39
+      name: Embed Theme Contract (ADR-007)
+      priority: 0
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-39-embed-theme-contract.md
+      estimated_hours: 3
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: AUDIT-003-B2.
+    - id: task-40
+      name: Toolbar hasDocument Embed Fix
+      priority: 0
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-40-toolbar-has-document.md
+      estimated_hours: 2
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: AUDIT-003-B3.
+    - id: task-41
+      name: Unique Heading Anchor IDs
+      priority: 0
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-41-anchor-id-dedup.md
+      estimated_hours: 2
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: AUDIT-003-B4.
+    - id: task-42
+      name: Invalid Drop Toast and Code Escaping
+      priority: 0
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-42-drop-toast-code-escape.md
+      estimated_hours: 3
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: AUDIT-003-G3, B5, B6.
+    - id: task-43
+      name: Scoped initialAnchor Scroll
+      priority: 1
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-43-scoped-deep-link-scroll.md
+      estimated_hours: 2
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: audit-3 B7.
+    - id: task-44
+      name: Export Pipeline Unit Tests
+      priority: 0
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-44-export-unit-tests.md
+      estimated_hours: 5
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: AUDIT-003-G2.
+    - id: task-45
+      name: Coverage Gate and svg-to-png Tests
+      priority: 0
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-45-coverage-gate-svg-tests.md
+      estimated_hours: 3
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: task-19 strict completion.
+    - id: task-46
+      name: Lighthouse CI Performance Gate
+      priority: 1
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-46-lighthouse-ci-gate.md
+      estimated_hours: 4
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: AUDIT-003-G4; replaces task-38 stub.
+    - id: task-47
+      name: ESLint Prettier npm audit CI
+      priority: 1
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-47-eslint-prettier-audit-ci.md
+      estimated_hours: 3
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: Industry hygiene audit-3.
+    - id: task-48
+      name: E2E Depth and Docs Sync
+      priority: 1
+      status: completed
+      started: 2026-06-14T13:35:00Z
+      file: agent/tasks/milestone-3b-audit-remediation/task-48-e2e-and-docs-sync.md
+      estimated_hours: 4
+      actual_hours: 0.2
+      completed_date: 2026-06-14T13:45:00Z
+      notes: README security, identity.yml.
 
   milestone_4:
     - id: task-20
@@ -493,17 +609,20 @@ tasks:
 
 documentation:
   design_documents: 2
-  milestone_documents: 6
+  milestone_documents: 8
   pattern_documents: 0
-  task_documents: 38
+  task_documents: 48
+  audit_reports: 1
+  prd_version: "1.5.0"
+  readme_version: "0.3.1"
   last_updated: 2026-06-14
 
 progress:
   planning: 100
-  implementation: 55
-  testing: 60
-  documentation: 40
-  overall: 55
+  implementation: 67
+  testing: 90
+  documentation: 90
+  overall: 76
 
 current_task:
   id: task-20
@@ -512,6 +631,38 @@ current_task:
   status: not_started
 
 recent_work:
+  - date: 2026-06-14
+    description: |
+      /acp-sync — PRD v1.5, README, architecture aligned with v0.3.1.
+    items:
+      - ✅ PRD phases 0–1c marked complete; FR-8 traceability updated
+      - ✅ README embed API, CI jobs, architecture tree
+      - ✅ architecture.md pipeline + dual-build status
+      - ✅ M3 milestone success criteria synced
+      - 📋 Commit v0.3.1 still pending (AUDIT-004-OP1)
+  - date: 2026-06-14
+    description: |
+      /acp-audit audit-4 — carryover verification post-M3b.
+    items:
+      - ✅ 17/20 carryovers verified closed (AUDIT-003 remediation)
+      - ⏳ M6 library package remains planned (F3, 003-M6)
+      - ⚠️ AUDIT-004-OP1 — v0.3.1 uncommitted (HEAD b149606)
+      - ✓ No project artifacts stale (templates only in agent/artifacts/)
+      - 📋 Next: commit v0.3.1, then M4 or M6
+  - date: 2026-06-14
+    description: |
+      /acp-proceed M3b tasks 39–48 — audit remediation v0.3.1.
+    items:
+      - ✅ ADR-007 theme + onThemeChange; embed toolbar/anchor fixes
+      - ✅ Export tests; 82% markdown coverage; Lighthouse CI
+      - ✅ ESLint/Prettier; 6 E2E tests; identity.yml synced
+      - 📋 Next: M4 task-20 folder browser
+  - date: 2026-06-14
+    description: |
+      /acp-proceed M1–M3 — viewer MVP v0.3.0 committed (b149606).
+    items:
+      - ✅ M1–M3 implementation landed
+      - ⚠️ Audit #3 strict gaps → M3b planned
   - date: 2026-06-14
     description: |
       Post-audit planning: PRD v1.3, M6, ADR-006, tasks 29–35.
@@ -541,22 +692,28 @@ recent_work:
       - 📋 Begin M1 task-1 implementation
 
 next_steps:
-  - Run /acp-proceed to start task-1 (scaffold Vite app)
-  - Run /acp-validate to check planning consistency
-  - Implement M1 foundation milestone
+  - Commit v0.3.1 (M3b + audit-4) — resolves AUDIT-004-OP1
+  - Run npm run perf:check before merge (Lighthouse ≥85)
+  - /acp-proceed → M4 task-20 (folder browser) or M6 task-29 (library build)
+  - M6 visualizer cutover after npm publish (tasks 29–35)
 
 notes:
   - Viewer ported from ACPEnhanced-Visual v1.5.4 (one-time vendor copy)
-  - ADR-001–006 in agent/memory/decisions.md
-  - Web-only through M4; Tauri in M5; visualizer embed in M6
+  - ADR-001–007 in agent/memory/decisions.md
+  - M3 strict sign-off complete (audit-4); embed API ready for M6
+  - Open carryovers: AUDIT-001-F3, AUDIT-003-M6 → M6 only
 
-current_blockers: []
+current_blockers:
+  - id: AUDIT-004-OP1
+    description: "M3b v0.3.1 changes uncommitted — git HEAD still b149606 (v0.3.0)"
+    severity: medium
+    action: git commit v0.3.1 milestone
 
 team:
   - role: Lead Developer
     name: Agent
     focus: |
-      M1 foundation — scaffold and port viewer components
+      M4 enhanced product — folder browser, DOCX, KaTeX (or M6 library build)
 
 dependencies:
   libraries:
@@ -572,5 +729,8 @@ dependencies:
   external_services: []
 
 quality:
-  test_coverage: 0
-  code_review_status: pending
+  test_coverage: 82
+  test_coverage_scope: src/markdown
+  unit_tests: 28
+  e2e_tests: 6
+  code_review_status: audit-4-verified

@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.1] - 2026-06-14
+
+### Fixed (M3b audit remediation)
+- ADR-007: controlled `theme` + `onThemeChange` for embed consumers
+- Toolbar/export visible when `content` without `documentPath`
+- Unique heading anchor IDs (`b`, `b-2`, …)
+- Invalid file drop toast; hardened code-copy `data-code` encoding
+- Scoped `initialAnchor` scroll within viewer container
+
+### Added
+- Export pipeline unit tests; ≥60% coverage gate on `src/markdown/*`
+- Lighthouse CI performance gate (≥85)
+- ESLint 9 + Prettier; production `npm audit` in CI
+- E2E: mermaid SVG, invalid file toast, Word/PDF export smoke
+
 ## [0.3.0] - 2026-06-14
 
 ### Added

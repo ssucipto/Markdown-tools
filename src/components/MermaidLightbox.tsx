@@ -77,7 +77,10 @@ export function MermaidLightbox({ svgHtml, onClose }: MermaidLightboxProps) {
         onPointerUp={onPointerUp}
         style={{ transform: `translate(${pan.x}px, ${pan.y}px)` }}
       >
-        <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }} dangerouslySetInnerHTML={{ __html: svgHtml }} />
+        <div
+          style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}
+          dangerouslySetInnerHTML={{ __html: svgHtml }}
+        />
       </div>
     </div>
   )

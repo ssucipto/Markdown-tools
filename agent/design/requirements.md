@@ -3,10 +3,10 @@
 **Project Name**: Markdown-tools  
 **Created**: 2026-06-14  
 **Status**: Active  
-**Version**: 1.3.0  
+**Version**: 1.5.0  
 **Author**: Product / Engineering (ACP session)  
-**Last reviewed**: 2026-06-14  
-**Planning**: [agent/progress.yaml](../progress.yaml) · M1–M6 · 38 tasks · [architecture.md](architecture.md)
+**Last reviewed**: 2026-06-14 (M3b sync)
+**Planning**: [agent/progress.yaml](../progress.yaml) · M1–M6 + M3b · 48 tasks · [architecture.md](architecture.md)
 
 ---
 
@@ -91,7 +91,7 @@ Teams need a single, fast viewer that matches modern documentation UX (GitHub, D
 
 | Gap | Current state | PRD requirement |
 |-----|---------------|-----------------|
-| Syntax highlighting | `lowlight`/`rehype-highlight` in deps but **unused** | **Must implement** (M37 intent) |
+| Syntax highlighting | `lowlight`/`rehype-highlight` in deps but **unused** | ✅ **Implemented** — `highlight.ts` + lowlight (M2) |
 | Word export | HTML blob as `.doc`, not true DOCX | **Decision:** HTML-as-Word for MVP; true DOCX in Phase 2 |
 | PDF export | Browser print dialog only | MVP: acceptable; Phase 2: programmatic PDF option |
 | Mermaid UX | Zoom yes; pan/copy SVG/download **not built** | Phase 1b: pan in zoom; Phase 2: copy/download |
@@ -106,10 +106,13 @@ Markdown string
   → extractMermaid()          # fences → .mermaid-container
   → enhanceCodeBlocks()       # language badge + copy (after mermaid)
   → wrapTables()
-  → addAnchors()              # h1–h3 IDs + TOC data
+  → addAnchors()              # h1–h3 IDs + TOC (deduped ids — FR-8.8)
+  → DOMPurify.sanitize()      # XSS hardening (M3)
   → dangerouslySetInnerHTML on .prose-doc
   → renderMermaid()           # dynamic import, retry, theme sync
 ```
+
+Code copy uses `encodeDataAttribute` / `decodeDataAttribute` (`html-entities.ts`) — no inline `onclick` (M3b).
 
 ---
 
@@ -266,8 +269,22 @@ PDF export must preserve:
 | FR-7.6 | Export `DocFile` TypeScript type matching visualizer `docs.ts` shape | P1 | M6 |
 | FR-7.7 | Documented CSS import path and `peerDependencies` (react, react-dom) | P1 | M6 |
 | FR-7.8 | ACPEnhanced-Visual migration: replace `DocsViewer` import; delete duplicated viewer | P1 | M6 |
+| FR-7.9 | `onThemeChange` callback when `theme` prop controlled (ADR-007) | P1 | M3b |
 
 **Server adapter note**: Visualizer uses **server** `listDocs` / `readDoc` (not client File System Access API). M4 task-20 folder browser is standalone-only; embed consumers use injected props (FR-7.2–7.3).
+
+### FR-8 — Quality gates (audit remediation)
+
+| ID | Requirement | Priority | Phase |
+|----|-------------|----------|-------|
+| FR-8.1 | ≥60% unit test coverage on `src/markdown/*` | P1 | M3b |
+| FR-8.2 | Export pipeline unit tests (Word + PDF) | P1 | M3b |
+| FR-8.3 | Lighthouse Performance ≥85 in CI | P2 | M3b |
+| FR-8.4 | ESLint + Prettier in CI | P2 | M3b |
+| FR-8.5 | npm audit in CI (high severity tracked) | P2 | M3b |
+| FR-8.6 | E2E: Mermaid render + export button smoke | P2 | M3b |
+| FR-8.7 | Invalid file drop shows user-visible error | P1 | M3b |
+| FR-8.8 | Unique heading anchor IDs for TOC/deep-link | P1 | M3b |
 
 ---
 
@@ -282,7 +299,7 @@ PDF export must preserve:
 
 ### Security
 
-- Treat dropped files as **untrusted** by default; plan DOMPurify or marked sanitizer for Phase 1b.
+- Treat dropped files as **untrusted**; **DOMPurify** sanitizes HTML after parse (M3, v0.3.0).
 - No document content sent to external APIs in MVP.
 - Replace inline `onclick` in generated HTML with React delegation.
 
@@ -414,25 +431,31 @@ c:\Project\Markdown-tools\
 
 ### Phase 0 — Foundation (Week 1)
 
-- [ ] Scaffold Vite + React + TypeScript + Tailwind at repo root
-- [ ] Port `svg-to-png.ts`, `prose-doc.css`, Vitest setup
-- [ ] Split `DocsViewer.tsx` into modules per target layout
-- [ ] Update `agent/core/identity.yml` and root `README.md`
+- [x] Scaffold Vite + React + TypeScript + Tailwind at repo root
+- [x] Port `svg-to-png.ts`, `prose-doc.css`, Vitest setup
+- [x] Split `DocsViewer.tsx` into modules per target layout
+- [x] Update `agent/core/identity.yml` and root `README.md`
 
 ### Phase 1 — MVP viewer (Weeks 2–3)
 
-- [ ] FR-1.1–1.3, FR-2.1–2.4, FR-3.1–3.6, FR-3.9
-- [ ] FR-4.1–4.7, FR-5.1–5.5, FR-6.1–6.3
-- [ ] Implement syntax highlighting (close source gap)
-- [ ] Port and extend `docs-viewer.test.tsx`
-- [ ] Sample docs in `docs/` including Mermaid torture test
+- [x] FR-1.1–1.3, FR-2.1–2.4, FR-3.1–3.6, FR-3.9
+- [x] FR-4.1–4.7, FR-5.1–5.5, FR-6.1–6.3
+- [x] Implement syntax highlighting (close source gap)
+- [x] Port and extend component + parse tests
+- [x] Sample docs in `docs/` including Mermaid torture test
 
 ### Phase 1b — Polish (Week 4)
 
-- [ ] FR-3.4, FR-3.7, FR-3.8, FR-6.4
-- [ ] DOMPurify / XSS hardening
-- [ ] FR-4.8 pan in Mermaid lightbox
-- [ ] Accessibility pass (keyboard, contrast)
+- [x] FR-3.4, FR-3.7, FR-3.8, FR-6.4
+- [x] DOMPurify / XSS hardening
+- [x] FR-4.8 pan in Mermaid lightbox
+- [x] Accessibility pass (keyboard, contrast)
+
+### Phase 1c — Audit remediation (Week 4)
+
+- [x] FR-8.1–8.8 — M3b tasks 39–48 (audit #3 carryovers)
+- [x] ADR-007 embed theme contract
+- [x] Strict M3 sign-off before M4 (verified audit-4)
 
 ### Phase 2 — Enhanced product (Weeks 5–8)
 
@@ -627,18 +650,21 @@ Five open questions were reviewed against project goals, source audit, and compe
 
 ---
 
-## Planning traceability (/acp-plan 2026-06-14, updated audit 2026-06-14)
+## Planning traceability (/acp-plan 2026-06-14, audit remediation 2026-06-14)
 
 | PRD phase | Milestone | Tasks | Weeks (est.) |
 |-----------|-----------|-------|--------------|
-| Phase 0 | [M1 Foundation](../milestones/milestone-1-foundation.md) | task-1 … task-6, task-36 | 1 |
-| Phase 1 | [M2 MVP Viewer](../milestones/milestone-2-mvp-viewer.md) | task-7 … task-14 | 2 |
-| Phase 1b | [M3 Polish](../milestones/milestone-3-polish.md) | task-15 … task-19, task-37 … task-38 | 1 |
-| Phase 2 | [M4 Enhanced](../milestones/milestone-4-enhanced.md) | task-20 … task-25 | 3 |
+| Phase 0 | [M1 Foundation](../milestones/milestone-1-foundation.md) | task-1 … task-6, task-36 | 1 ✅ |
+| Phase 1 | [M2 MVP Viewer](../milestones/milestone-2-mvp-viewer.md) | task-7 … task-14 | 2 ✅ |
+| Phase 1b | [M3 Polish](../milestones/milestone-3-polish.md) | task-15 … task-19, task-37 … task-38 | 1 ✅ |
+| Phase 1c | [M3b Audit Remediation](../milestones/milestone-3b-audit-remediation.md) | task-39 … task-48 | 1 ✅ |
+| Phase 2 | [M4 Enhanced](../milestones/milestone-4-enhanced.md) | task-20 … task-25 | 3 ← **current** |
 | Integration | [M6 Visualizer Integration](../milestones/milestone-6-visualizer-integration.md) | task-29 … task-35 | 2 |
 | Phase 3 | [M5 Native Desktop](../milestones/milestone-5-native-desktop.md) | task-26 … task-28 | 2 |
 
-**Total**: 38 tasks · ~148 estimated dev hours · ~11 weeks calendar (M6 can overlap late M4).
+**Total**: 48 tasks · ~179 estimated dev hours · ~12 weeks calendar.
+
+**Execution order**: M4 (current) · M6 (library + visualizer) can start in parallel · M5 after M4.
 
 **ADRs recorded** (see [agent/memory/decisions.md](../memory/decisions.md)):
 
@@ -650,8 +676,11 @@ Five open questions were reviewed against project goals, source audit, and compe
 | ADR-004 | View-only through M4 |
 | ADR-005 | HTML .doc MVP; DOCX in M4 |
 | ADR-006 | Publish `@markdown-tools/react`; visualizer embeds package |
+| ADR-007 | Controlled/uncontrolled theme + onThemeChange embed contract |
 
-**Start implementation**: `/acp-proceed` → task-1 scaffold Vite app (design for library exports per task-29).
+**Embed props status (v0.3.1)**: FR-7.2, 7.4 (props), 7.5, 7.9 implemented in `MarkdownViewer`; FR-7.1, 7.7–7.8 remain M6 (npm publish + visualizer cutover).
+
+**Start implementation**: `/acp-proceed` → **M4 task-20** (folder browser) or **M6 task-29** (library build).
 
 ---
 
@@ -718,7 +747,7 @@ flowchart TB
 | `listDocs()` → `files[]` | Render sidebar from `files` prop |
 | `readDoc(path)` → `content` | Parse, Mermaid, export |
 | Router `?file=&anchor=` | `initialFile`, `initialAnchor` props |
-| App shell / navigation | `showSidebar`, `theme` props |
+| App shell / navigation | `showSidebar`, `theme`, `onThemeChange` props |
 
 ## Appendix B — Test documents (to create in `docs/`)
 

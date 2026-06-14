@@ -1,7 +1,7 @@
 # Markdown-tools — System Architecture
 
 **Status**: Active  
-**Last updated**: 2026-06-14  
+**Last updated**: 2026-06-14 (M3b / v0.3.1 sync)  
 **PRD**: [requirements.md](requirements.md)  
 **ADRs**: [agent/memory/decisions.md](../memory/decisions.md)
 
@@ -38,15 +38,18 @@ Markdown-tools is a **client-only Vite SPA** that also ships as an **embeddable 
 | `src/components/TableOfContents.tsx` | TOC UI + scroll spy |
 | `src/components/MermaidLightbox.tsx` | Diagram zoom overlay |
 | `src/components/Toolbar.tsx` | Theme, font, export actions |
-| `src/hooks/useMarkdownDocument.ts` | `content`, `path`, `droppedRef` |
-| `src/markdown/parse.ts` | marked pipeline → HTML + TOC |
+| `src/hooks/useMarkdownDocument.ts` | `content`, `path`, `loadDroppedFile` (uncontrolled mode) |
+| `src/hooks/useToast.ts` | Toast state for export feedback and invalid file drops |
+| `src/markdown/parse.ts` | marked pipeline → DOMPurify → HTML + TOC |
+| `src/markdown/highlight.ts` | lowlight syntax highlighting |
 | `src/markdown/renderMermaid.ts` | Async mermaid lifecycle |
 | `src/markdown/exportWord.ts` | DOM clone + PNG diagrams → .doc blob |
-| `src/markdown/exportPdf.ts` | Print window with styles |
+| `src/markdown/exportPdf.ts` | Re-exports PDF HTML builder; `openPdfPrintWindow` |
+| `src/lib/html-entities.ts` | `encodeDataAttribute` / `decodeDataAttribute` for code copy |
 | `src/lib/svg-to-png.ts` | Canvas SVG rasterization |
 | `src/styles/prose-doc.css` | Typography, mermaid, print CSS |
 | `src/index.ts` | Library entry — exports `MarkdownViewer`, types (M6) |
-| `src/types/viewer.ts` | `MarkdownViewerProps`, `DocFile` embed contract (M6) |
+| `src/types/viewer.ts` | `MarkdownViewerProps`, `DocFile`; `onThemeChange` per ADR-007 |
 
 ---
 
@@ -57,16 +60,18 @@ Order is **fixed** (regression risk if changed):
 1. `marked({ breaks: true, gfm: true })`
 2. `extractMermaid()` — before code block enhancement
 3. `enhanceCodeBlocks()` — language badge + copy UI
-4. `wrapTables()`
-5. `addAnchors()` — IDs + TOC metadata
-6. Memoized `innerHtml` → `dangerouslySetInnerHTML`
-7. `renderMermaid()` in `useEffect` — lazy `import('mermaid')`
+4. `applySyntaxHighlighting()` — lowlight on code blocks
+5. `wrapTables()`
+6. `addAnchors()` — IDs + TOC metadata (deduped per FR-8.8)
+7. `DOMPurify.sanitize()` — XSS hardening (M3)
+8. Memoized `innerHtml` → `dangerouslySetInnerHTML`
+9. `renderMermaid()` in `useEffect` — lazy `import('mermaid')`
 
 ---
 
 ## State management
 
-- **No global store** — local React state in `MarkdownViewer` + `useMarkdownDocument`
+- **No global store** — `useMarkdownDocument` + `useToast` hooks wired in `MarkdownViewer` (uncontrolled mode); embed uses controlled props
 - **Theme/font** — component state; optional `sessionStorage`
 - **Mermaid SVG** — must not re-apply innerHTML on unrelated re-renders (export toast, etc.)
 
@@ -86,14 +91,17 @@ No runtime dependency on sibling repo for **standalone** use (see ADR-002). **AC
 
 ## Dual build (M1 scaffold → M6 publish)
 
-| Mode | Vite config | Output | Consumer |
-|------|-------------|--------|----------|
-| App | default `build` | `dist/` SPA | Standalone markdown-tools |
-| Library | `build.lib` + `src/index.ts` | ESM + types | acp-visualizer, third parties |
+**Current (v0.3.1)**: SPA build only (`npm run build` → `dist/`). `src/index.ts` exports components for future lib mode but Vite `build.lib` is not configured yet.
+
+| Mode | Vite config | Output | Consumer | Status |
+|------|-------------|--------|----------|--------|
+| App | default `build` | `dist/` SPA | Standalone markdown-tools | ✅ |
+| Library | `build.lib` + `src/index.ts` | ESM + types | acp-visualizer, third parties | M6 task-29 |
 
 - `peerDependencies`: `react`, `react-dom`
 - CSS: `@markdown-tools/react/styles.css` side-effect import
 - Embed API: controlled props only — no `listDocs` / `readDoc` inside package
+- Theme: `theme` + `onThemeChange` when controlled (ADR-007, M3b task-39)
 
 ---
 
@@ -108,5 +116,5 @@ No runtime dependency on sibling repo for **standalone** use (see ADR-002). **AC
 ## Related documents
 
 - [requirements.md](requirements.md) — PRD and product decisions
-- [milestone-1-foundation.md](../milestones/milestone-1-foundation.md) — first implementation phase
+- [milestone-3b-audit-remediation.md](../milestones/milestone-3b-audit-remediation.md) — audit remediation gate
 - [milestone-6-visualizer-integration.md](../milestones/milestone-6-visualizer-integration.md) — npm embed for acp-visualizer

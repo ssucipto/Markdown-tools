@@ -18,6 +18,8 @@ export interface MarkdownViewerProps {
   loading?: boolean
   showSidebar?: boolean
   theme?: 'light' | 'dark'
+  /** Called when user toggles theme in controlled mode (ADR-007). */
+  onThemeChange?: (theme: 'light' | 'dark') => void
   initialFile?: string
   initialAnchor?: string
   className?: string

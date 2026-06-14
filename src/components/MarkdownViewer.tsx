@@ -1,11 +1,7 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type DragEvent,
-} from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react'
+import { useMarkdownDocument } from '@/hooks/useMarkdownDocument'
+import { useToast } from '@/hooks/useToast'
+import { decodeDataAttribute } from '@/lib/html-entities'
 import { openPdfPrintWindow, exportPdfDocument } from '@/markdown/exportPdf'
 import { exportWordDocument } from '@/markdown/exportWord'
 import { parseMarkdown } from '@/markdown/parse'
@@ -17,6 +13,12 @@ import { ImageLightbox, MermaidLightbox } from './MermaidLightbox'
 import { TableOfContents } from './TableOfContents'
 import { DragOverlay, EmptyState, Toolbar } from './Toolbar'
 
+const MD_EXT = /\.(md|markdown)$/i
+
+function isMarkdownFile(name: string): boolean {
+  return MD_EXT.test(name)
+}
+
 export function MarkdownViewer({
   content: controlledContent,
   documentPath: controlledPath,
@@ -25,19 +27,21 @@ export function MarkdownViewer({
   loading = false,
   showSidebar = false,
   theme: controlledTheme,
+  onThemeChange,
   initialFile,
   initialAnchor,
   className = '',
 }: MarkdownViewerProps) {
   const isControlled = controlledContent !== undefined
+  const isThemeControlled = controlledTheme !== undefined
 
-  const [internalContent, setInternalContent] = useState('')
-  const [internalPath, setInternalPath] = useState<string | null>(null)
+  const doc = useMarkdownDocument()
   const [internalDark, setInternalDark] = useState(false)
 
-  const content = isControlled ? controlledContent : internalContent
-  const documentPath = isControlled ? (controlledPath ?? null) : internalPath
-  const dark = controlledTheme ? controlledTheme === 'dark' : internalDark
+  const content = isControlled ? controlledContent : doc.content
+  const documentPath = isControlled ? (controlledPath ?? null) : doc.documentPath
+  const exportPath = documentPath ?? 'document.md'
+  const dark = isThemeControlled ? controlledTheme === 'dark' : internalDark
 
   const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md')
   const [showToc, setShowToc] = useState(true)
@@ -46,7 +50,7 @@ export function MarkdownViewer({
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
   const [mermaidZoom, setMermaidZoom] = useState<string | null>(null)
   const [exporting, setExporting] = useState(false)
-  const [toast, setToast] = useState<string | null>(null)
+  const { toast, showToast } = useToast()
   const [activeId, setActiveId] = useState('')
 
   const contentRef = useRef<HTMLDivElement>(null)
@@ -54,13 +58,17 @@ export function MarkdownViewer({
   const mermaidRetryRef = useRef(0)
   const initialFileHandled = useRef(false)
 
-  const showToast = useCallback((msg: string) => {
-    setToast(msg)
-    setTimeout(() => setToast(null), 3000)
-  }, [])
-
   const { html, toc } = useMemo(() => parseMarkdown(content ?? ''), [content])
   const innerHtml = useMemo(() => ({ __html: html }), [html])
+  const hasContent = Boolean(content?.length)
+
+  const handleToggleDark = useCallback(() => {
+    if (isThemeControlled) {
+      onThemeChange?.(dark ? 'light' : 'dark')
+    } else {
+      setInternalDark((d) => !d)
+    }
+  }, [dark, isThemeControlled, onThemeChange])
 
   // Deep-link: initialFile via embed (M6)
   useEffect(() => {
@@ -72,7 +80,10 @@ export function MarkdownViewer({
   useEffect(() => {
     if (!initialAnchor || !html) return
     const t = setTimeout(() => {
-      document.getElementById(initialAnchor)?.scrollIntoView({ behavior: 'smooth' })
+      const root = contentRef.current
+      const escaped = CSS.escape(initialAnchor)
+      const target = root?.querySelector<HTMLElement>(`#${escaped}`) ?? document.getElementById(initialAnchor)
+      target?.scrollIntoView({ behavior: 'smooth' })
     }, 300)
     return () => clearTimeout(t)
   }, [initialAnchor, html])
@@ -137,7 +148,8 @@ export function MarkdownViewer({
   const handleContentClick = useCallback((e: React.MouseEvent) => {
     const copyBtn = (e.target as HTMLElement).closest('.code-copy-btn')
     if (copyBtn instanceof HTMLButtonElement) {
-      const code = copyBtn.getAttribute('data-code')?.replace(/&quot;/g, '"').replace(/&amp;/g, '&')
+      const raw = copyBtn.getAttribute('data-code')
+      const code = raw ? decodeDataAttribute(raw) : null
       if (code) {
         void navigator.clipboard.writeText(code).then(() => {
           copyBtn.textContent = 'Copied!'
@@ -152,23 +164,27 @@ export function MarkdownViewer({
     if (img instanceof HTMLImageElement && img.src) setLightboxSrc(img.src)
   }, [])
 
+  const loadFile = useCallback(
+    (file: File) => {
+      if (!isMarkdownFile(file.name)) {
+        showToast('⚠️ Only .md files are supported')
+        return
+      }
+      if (isControlled) return
+      doc.loadDroppedFile(file)
+    },
+    [doc, isControlled, showToast],
+  )
+
   const handleDrop = useCallback(
     (e: DragEvent) => {
       e.preventDefault()
       setDragOver(false)
       const file = e.dataTransfer.files[0]
       if (!file) return
-      if (!file.name.endsWith('.md') && !file.name.endsWith('.markdown')) return
-      const reader = new FileReader()
-      reader.onload = () => {
-        if (!isControlled) {
-          setInternalPath(`[dropped] ${file.name}`)
-          setInternalContent(reader.result as string)
-        }
-      }
-      reader.readAsText(file)
+      loadFile(file)
     },
-    [isControlled],
+    [loadFile],
   )
 
   const handleFilePick = useCallback(() => fileInputRef.current?.click(), [])
@@ -177,25 +193,18 @@ export function MarkdownViewer({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
       if (!file) return
-      const reader = new FileReader()
-      reader.onload = () => {
-        if (!isControlled) {
-          setInternalPath(`[dropped] ${file.name}`)
-          setInternalContent(reader.result as string)
-        }
-      }
-      reader.readAsText(file)
+      loadFile(file)
       e.target.value = ''
     },
-    [isControlled],
+    [loadFile],
   )
 
   const handleSelectFile = useCallback(
     (path: string) => {
       if (onSelectFile) onSelectFile(path)
-      else if (!isControlled) setInternalPath(path)
+      else if (!isControlled) doc.selectPath(path)
     },
-    [onSelectFile, isControlled],
+    [onSelectFile, isControlled, doc],
   )
 
   const exportWord = useCallback(async () => {
@@ -203,7 +212,7 @@ export function MarkdownViewer({
     if (!el) return
     setExporting(true)
     try {
-      const { blob, filename } = await exportWordDocument(el, documentPath)
+      const { blob, filename } = await exportWordDocument(el, exportPath)
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -216,24 +225,23 @@ export function MarkdownViewer({
     } finally {
       setExporting(false)
     }
-  }, [documentPath, showToast])
+  }, [exportPath, showToast])
 
   const exportPdf = useCallback(async () => {
     const el = contentRef.current
     if (!el) return
     showToast('📄 Preparing PDF…')
     try {
-      const { html: pdfHtml, title } = await exportPdfDocument(el, documentPath)
+      const { html: pdfHtml, title } = await exportPdfDocument(el, exportPath)
       if (!openPdfPrintWindow(pdfHtml, title)) {
         showToast('⚠️ Popup blocked — allow popups for PDF export')
       }
     } catch {
       showToast('⚠️ PDF export failed')
     }
-  }, [documentPath, showToast])
+  }, [exportPath, showToast])
 
   const fontSizeClass = { sm: 'text-xs', md: 'text-sm', lg: 'text-base' }[fontSize]
-  const hasDocument = Boolean(documentPath && content)
   const showFileSidebar = showSidebar && files.length > 0 && !fullscreen
 
   if (loading) {
@@ -270,7 +278,7 @@ export function MarkdownViewer({
           onClick={handleContentClick}
           className={`flex-1 overflow-y-auto p-6 ${fontSizeClass}`}
         >
-          {!hasDocument ? (
+          {!hasContent ? (
             <EmptyState dark={dark} dragOver={dragOver} />
           ) : !html ? (
             <div className="animate-pulse text-gray-400">Rendering…</div>
@@ -294,16 +302,16 @@ export function MarkdownViewer({
       </main>
 
       <Toolbar
-        visible={hasDocument}
+        visible={hasContent}
         dark={dark}
         fontSize={fontSize}
         exporting={exporting}
         fullscreen={fullscreen}
-        onToggleDark={() => setInternalDark((d) => !d)}
+        onToggleDark={handleToggleDark}
         onToggleFont={() => setFontSize((f) => (f === 'sm' ? 'md' : f === 'md' ? 'lg' : 'sm'))}
         onExportWord={() => void exportWord()}
         onExportPdf={() => void exportPdf()}
-        onScrollTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onScrollTop={() => contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
         onToggleFullscreen={() => setFullscreen((f) => !f)}
         onPickFile={handleFilePick}
       />
@@ -312,7 +320,10 @@ export function MarkdownViewer({
       <MermaidLightbox svgHtml={mermaidZoom} onClose={() => setMermaidZoom(null)} />
 
       {toast && (
-        <div className="fixed bottom-20 right-4 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg text-sm" role="status">
+        <div
+          className="fixed bottom-20 right-4 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg text-sm"
+          role="status"
+        >
           {toast}
         </div>
       )}

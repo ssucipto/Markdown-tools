@@ -31,6 +31,22 @@ describe('parseMarkdown', () => {
     expect(toc[0]?.id).toBe('my-section')
   })
 
+  it('dedupes duplicate heading ids', () => {
+    const { html, toc } = addAnchors('<h1>A</h1><h2>B</h2><h2>B</h2>')
+    expect(html).toContain('id="a"')
+    expect(html).toContain('id="b"')
+    expect(html).toContain('id="b-2"')
+    expect(toc.map((t) => t.id)).toEqual(['a', 'b', 'b-2'])
+  })
+
+  it('preserves special chars in code copy data attribute', () => {
+    const md = '```js\nif (a < b) return "ok"\n```'
+    const { html } = parseMarkdown(md)
+    expect(html).toContain('data-code=')
+    expect(html).not.toContain('onclick=')
+    expect(html).toContain('&lt;')
+  })
+
   it('sanitizes script tags', () => {
     const { html } = parseMarkdown('# Safe\n\n<script>alert(1)</script>')
     expect(html).not.toContain('<script>')
