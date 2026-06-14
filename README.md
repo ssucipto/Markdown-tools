@@ -47,6 +47,8 @@ npm run dev
 
 Open `http://localhost:5173`, drop a `.md` file or use 📂 / 📁.
 
+**User guide**: [docs/user-guide.md](docs/user-guide.md) — full walkthrough of features, export, and troubleshooting.
+
 ### Desktop (Tauri)
 
 ```bash
@@ -97,6 +99,7 @@ src/
 ├── hooks/useFolderBrowser.ts       # FSA + webkitdirectory
 ├── hooks/useTauriFileOpen.ts       # Desktop file open events
 ├── markdown/parse.ts               # marked → DOMPurify → KaTeX
+├── markdown/math.ts                  # KaTeX preprocess/restore
 ├── markdown/exportDocx.ts          # True .docx export
 ├── markdown/exportWord.ts          # .doc HTML export
 ├── markdown/exportPdf.ts           # Print window helper
@@ -104,7 +107,7 @@ src/
 └── types/viewer.ts                 # MarkdownViewerProps
 ```
 
-Details: [agent/design/requirements.md](agent/design/requirements.md) · [docs/embed-api.md](docs/embed-api.md)
+Details: [docs/user-guide.md](docs/user-guide.md) · [agent/design/requirements.md](agent/design/requirements.md) · [docs/embed-api.md](docs/embed-api.md)
 
 ## Embed API
 

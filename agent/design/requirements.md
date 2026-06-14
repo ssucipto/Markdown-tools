@@ -3,16 +3,18 @@
 **Project Name**: Markdown-tools  
 **Created**: 2026-06-14  
 **Status**: Active  
-**Version**: 1.5.0  
+**Version**: 1.6.0  
 **Author**: Product / Engineering (ACP session)  
-**Last reviewed**: 2026-06-14 (M3b sync)
+**Last reviewed**: 2026-06-14 (M7 / v0.4.1 sync)  
 **Planning**: [agent/progress.yaml](../progress.yaml) · M1–M7 · 60 tasks · [architecture.md](architecture.md)
 
 ---
 
 ## Overview
 
-**Markdown-tools** is a desktop-first web application for viewing, navigating, and exporting Markdown documents. Users open files via drag-and-drop or a file browser, read richly rendered content (including Mermaid diagrams), and export to Word or PDF for sharing outside the browser.
+**Markdown-tools** is a desktop-first web application for viewing, navigating, and exporting Markdown documents. Users open files via drag-and-drop, file picker, or folder browser; read richly rendered content (Mermaid diagrams, KaTeX math); and export to Word (`.doc`), DOCX, or PDF — all client-side.
+
+The product also ships as **`@markdown-tools/react`** for embedding in ACPEnhanced-Visual and third-party React apps. A **Tauri 2** desktop build provides native file associations and offline install.
 
 The product reuses proven viewer components from **ACPEnhanced-Visual** (`C:\Project\ACP\ACPEnhanced-Visual`, package `acp-visualizer` v1.5.4) while stripping ACP progress-dashboard coupling and focusing on a standalone markdown workflow.
 
@@ -46,10 +48,10 @@ Teams need a single, fast viewer that matches modern documentation UX (GitHub, D
 
 ### Secondary Goals
 
-1. Optional folder browser for project-local `.md` files (adapted from source `docs.ts` API).
-2. Offline-capable client bundle (no cloud upload of document content).
+1. Optional folder browser for project-local `.md` files — ✅ M4 (FSA + webkitdirectory fallback).
+2. Offline-capable client bundle (no cloud upload of document content) — ✅.
 3. ACP Enhanced integration — `/acp-visualize` can still launch the full visualizer when progress tracking is needed.
-4. Future: true `.docx` export, CLI entry point, native desktop wrapper (Tauri — Phase 3).
+4. ~~Future: true `.docx` export, CLI entry point, native desktop wrapper (Tauri)~~ — ✅ M4–M5 (v0.4.0); publish-ready library M6; audit remediation M7.
 
 ### Success Metrics (MVP)
 
@@ -92,9 +94,9 @@ Teams need a single, fast viewer that matches modern documentation UX (GitHub, D
 | Gap | Current state | PRD requirement |
 |-----|---------------|-----------------|
 | Syntax highlighting | `lowlight`/`rehype-highlight` in deps but **unused** | ✅ **Implemented** — `highlight.ts` + lowlight (M2) |
-| Word export | HTML blob as `.doc`, not true DOCX | **Decision:** HTML-as-Word for MVP; true DOCX in Phase 2 |
-| PDF export | Browser print dialog only | MVP: acceptable; Phase 2: programmatic PDF option |
-| Mermaid UX | Zoom yes; pan/copy SVG/download **not built** | Phase 1b: pan in zoom; Phase 2: copy/download |
+| Word export | HTML blob as `.doc` + true `.docx` via `docx` library | ✅ **Implemented** — M4 + M7 parity |
+| PDF export | Browser print dialog | ✅ MVP; programmatic PDF deferred |
+| Mermaid UX | Zoom, pan, copy source, download SVG | ✅ M3b pan + M4 copy/download |
 | XSS surface | `dangerouslySetInnerHTML` + inline `onclick` | Sanitize untrusted MD; React event delegation for copy |
 | Monolithic component | Single 610-line file | Refactor into `src/markdown/*` modules |
 
@@ -102,12 +104,15 @@ Teams need a single, fast viewer that matches modern documentation UX (GitHub, D
 
 ```
 Markdown string
+  → preprocessMath()          # KaTeX placeholders (fenced code protected)
   → marked({ breaks: true, gfm: true })
   → extractMermaid()          # fences → .mermaid-container
   → enhanceCodeBlocks()       # language badge + copy (after mermaid)
+  → applySyntaxHighlighting() # lowlight
   → wrapTables()
   → addAnchors()              # h1–h3 IDs + TOC (deduped ids — FR-8.8)
   → DOMPurify.sanitize()      # XSS hardening (M3)
+  → restoreMath()             # KaTeX HTML placeholders
   → dangerouslySetInnerHTML on .prose-doc
   → renderMermaid()           # dynamic import, retry, theme sync
 ```
@@ -457,26 +462,33 @@ c:\Project\Markdown-tools\
 - [x] ADR-007 embed theme contract
 - [x] Strict M3 sign-off before M4 (verified audit-4)
 
-### Phase 2 — Enhanced product (Weeks 5–8)
+### Phase 2 — Enhanced product (Weeks 5–8) ✅
 
-- [ ] FR-1.4–1.5 folder browser (client FS API — standalone only)
-- [ ] FR-5.6 true DOCX export (`html-to-docx` or `docx` library)
-- [ ] FR-4.9–4.10 advanced Mermaid UX
-- [ ] KaTeX math in preview + export (FR-2.8)
-- [ ] FR-2.9 read-only “View source” toggle
-- [ ] CI pipeline (task-25)
+- [x] FR-1.4–1.5 folder browser (FSA + webkitdirectory fallback)
+- [x] FR-5.6 true DOCX export (`docx` library)
+- [x] FR-4.9–4.10 advanced Mermaid UX (copy source, download SVG)
+- [x] KaTeX math in preview (FR-2.8)
+- [x] FR-2.9 read-only “View source” toggle
+- [x] CI library build job (task-25)
 
-### Phase Integration — Visualizer embed (Weeks 9–10, can overlap late M4)
+### Phase Integration — Visualizer embed (Weeks 9–10) ✅
 
-- [ ] FR-7.1–7.8 — library build, embed props API, deep-link, npm publish
-- [ ] ACPEnhanced-Visual DocsViewer replacement (task-34)
-- [ ] Cross-repo contract tests (task-35)
+- [x] FR-7.1–7.7 — library build, embed props API, deep-link, npm package configured
+- [x] Migration guide for ACPEnhanced-Visual (task-34 — **execute in visualizer repo**)
+- [x] Cross-repo contract tests (task-35)
 
-### Phase 3 — Native desktop (Weeks 11–12)
+### Phase 3 — Native desktop (Weeks 11–12) ✅
 
-- [ ] Tauri 2 desktop wrapper (native file associations, offline install)
-- [ ] Optional split-pane markdown editor (out of scope until viewer is stable)
-- [ ] CLI: `markdown-tools open <file.md>`
+- [x] Tauri 2 desktop wrapper (file associations, single-instance open)
+- [ ] Optional split-pane markdown editor (deferred — view-only retained)
+- [x] CLI: `markdown-tools open <file.md>`
+
+### Phase 2b — Audit remediation (M7) ✅
+
+- [x] `build:lib` production-ready; npm publish hygiene
+- [x] Cross-browser folder fallback; KaTeX code-fence protection
+- [x] View-source export fix; DOCX parity (tables, code, images)
+- [x] Tauri single-instance; docs sync; expanded E2E
 
 ---
 
@@ -640,13 +652,14 @@ Five open questions were reviewed against project goals, source audit, and compe
 | FR-2.8 | KaTeX rendering for `$...$` and `$$...$$` in preview | P2 | Phase 2 |
 | FR-2.9 | Read-only “View source” toggle showing raw `.md` | P2 | Phase 2 |
 
-### Known limitations (MVP — communicate in README)
+### Known limitations (v0.4.1 — communicate in README and [user guide](../../docs/user-guide.md))
 
-1. Word export produces `.doc` (HTML), not `.docx`.
+1. Word export offers both `.docx` (primary) and `.doc` (HTML fallback).
 2. PDF export uses the browser print dialog (popup must be allowed).
-3. No in-app markdown editing.
-4. Math expressions not rendered until Phase 2.
-5. No native desktop installer until Phase 3.
+3. No in-app markdown editing (view-only).
+4. DOCX math exports as `[math]` text placeholder — no OMML yet.
+5. Tauri installer requires local Rust toolchain to build.
+6. ACPEnhanced-Visual cutover pending — see [visualizer-migration.md](../../docs/visualizer-migration.md).
 
 ---
 
@@ -658,29 +671,20 @@ Five open questions were reviewed against project goals, source audit, and compe
 | Phase 1 | [M2 MVP Viewer](../milestones/milestone-2-mvp-viewer.md) | task-7 … task-14 | 2 ✅ |
 | Phase 1b | [M3 Polish](../milestones/milestone-3-polish.md) | task-15 … task-19, task-37 … task-38 | 1 ✅ |
 | Phase 1c | [M3b Audit Remediation](../milestones/milestone-3b-audit-remediation.md) | task-39 … task-48 | 1 ✅ |
-| Phase 2 | [M4 Enhanced](../milestones/milestone-4-enhanced.md) | task-20 … task-25 | 3 ← **current** |
-| Integration | [M6 Visualizer Integration](../milestones/milestone-6-visualizer-integration.md) | task-29 … task-35 | 2 |
-| Phase 3 | [M5 Native Desktop](../milestones/milestone-5-native-desktop.md) | task-26 … task-28 | 2 |
+| Phase 2 | [M4 Enhanced](../milestones/milestone-4-enhanced.md) | task-20 … task-25 | 3 ✅ |
+| Integration | [M6 Visualizer Integration](../milestones/milestone-6-visualizer-integration.md) | task-29 … task-35 | 2 ✅ |
+| Phase 3 | [M5 Native Desktop](../milestones/milestone-5-native-desktop.md) | task-26 … task-28 | 2 ✅ |
+| Phase 2b | [M7 Audit Remediation](../milestones/milestone-7-m4-m6-audit-remediation.md) | task-49 … task-60 | 2 ✅ |
 
-**Total**: 48 tasks · ~179 estimated dev hours · ~12 weeks calendar.
+**Total**: 60 tasks · M1–M7 complete · **v0.4.1 release-ready**.
 
-**Execution order**: M4 (current) · M6 (library + visualizer) can start in parallel · M5 after M4.
+**Remaining external work**: `npm publish @markdown-tools/react`; execute task-34 in ACPEnhanced-Visual repo.
 
-**ADRs recorded** (see [agent/memory/decisions.md](../memory/decisions.md)):
+**Embed props status (v0.4.1)**: FR-7.1–7.7 implemented in package; FR-7.8 (visualizer repo cutover) pending external execution.
 
-| ADR | Decision |
-|-----|----------|
-| ADR-001 | Vite SPA, no TanStack Start SSR |
-| ADR-002 | One-time vendor copy from ACPEnhanced-Visual (amended by ADR-006) |
-| ADR-003 | marked + lazy mermaid pipeline |
-| ADR-004 | View-only through M4 |
-| ADR-005 | HTML .doc MVP; DOCX in M4 |
-| ADR-006 | Publish `@markdown-tools/react`; visualizer embeds package |
-| ADR-007 | Controlled/uncontrolled theme + onThemeChange embed contract |
+**User documentation**: [docs/user-guide.md](../../docs/user-guide.md) · [docs/embed-api.md](../../docs/embed-api.md)
 
-**Embed props status (v0.3.1)**: FR-7.2, 7.4 (props), 7.5, 7.9 implemented in `MarkdownViewer`; FR-7.1, 7.7–7.8 remain M6 (npm publish + visualizer cutover).
-
-**Start implementation**: `/acp-proceed` → **M4 task-20** (folder browser) or **M6 task-29** (library build).
+**ADRs** (see [agent/memory/decisions.md](../memory/decisions.md)): ADR-001 Vite SPA · ADR-002 vendor copy · ADR-003 marked+mermaid · ADR-004 view-only · ADR-005 DOCX · ADR-006 npm embed · ADR-007 theme contract
 
 ---
 

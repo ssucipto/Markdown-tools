@@ -7,7 +7,7 @@ Replace in-repo `DocsViewer.tsx` with `@markdown-tools/react` embed wrapper.
 ```json
 {
   "dependencies": {
-    "@markdown-tools/react": "^0.4.0"
+    "@markdown-tools/react": "^0.4.1"
   }
 }
 ```

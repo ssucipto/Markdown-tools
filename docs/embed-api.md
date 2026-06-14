@@ -50,9 +50,13 @@ function DocsRoute({ search }: { search: Record<string, string> }) {
 }
 ```
 
-## Standalone (DnD only)
+## Standalone (DnD + folder)
 
-The default app uses `StandaloneViewer` internally — drag-and-drop and single-file picker without server.
+The default app uses `StandaloneViewer` — drag-and-drop, single-file picker, and folder browser without a server.
+
+## User guide
+
+End-user documentation: [user-guide.md](./user-guide.md)
 
 ## URL deep-link contract
 

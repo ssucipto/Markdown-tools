@@ -5,7 +5,7 @@ project:
   name: markdown-tools
   version: 0.4.1
   started: 2026-06-14
-  status: in_progress
+  status: release_ready
   current_milestone: M7
   description: |
     Desktop-first web app for viewing Markdown with drag-and-drop, sophisticated
@@ -629,6 +629,7 @@ tasks:
       name: Fix Library Build (build:lib)
       priority: 0
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-49-fix-library-build.md
       estimated_hours: 2
@@ -637,6 +638,7 @@ tasks:
       name: npm Publish Hygiene
       priority: 0
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-50-npm-publish-hygiene.md
       estimated_hours: 3
@@ -645,6 +647,7 @@ tasks:
       name: Documentation Sync v0.4.x
       priority: 0
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-51-docs-sync-v04.md
       estimated_hours: 2
@@ -653,6 +656,7 @@ tasks:
       name: Folder Browser Cross-Browser
       priority: 1
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-52-folder-browser-cross-browser.md
       estimated_hours: 4
@@ -661,6 +665,7 @@ tasks:
       name: KaTeX Pipeline Security & Lib CSS
       priority: 1
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-53-katex-pipeline-security.md
       estimated_hours: 4
@@ -669,6 +674,7 @@ tasks:
       name: View Source Export Fix
       priority: 1
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-54-view-source-export-fix.md
       estimated_hours: 2
@@ -677,6 +683,7 @@ tasks:
       name: DOCX Export Parity
       priority: 1
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-55-docx-export-parity.md
       estimated_hours: 6
@@ -685,6 +692,7 @@ tasks:
       name: Tauri Single-Instance File Open
       priority: 1
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-56-tauri-single-instance.md
       estimated_hours: 4
@@ -693,6 +701,7 @@ tasks:
       name: Tauri CSP, CLI & Version Alignment
       priority: 2
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-57-tauri-cli-hardening.md
       estimated_hours: 3
@@ -700,6 +709,7 @@ tasks:
       name: Library Contract Tests & Consumer CI
       priority: 1
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-58-library-contract-ci.md
       estimated_hours: 4
@@ -708,6 +718,7 @@ tasks:
       name: E2E Expansion (M4 Features)
       priority: 2
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-59-e2e-m4-expansion.md
       estimated_hours: 5
@@ -715,6 +726,7 @@ tasks:
       name: Audit #5 Verification & Carryover Closure
       priority: 0
       status: completed
+      started: 2026-06-14T17:00:00Z
       completed_date: 2026-06-14T18:30:00Z
       file: agent/tasks/milestone-7-m4-m6-audit-remediation/task-60-audit5-verification.md
       estimated_hours: 2
@@ -726,16 +738,17 @@ documentation:
   pattern_documents: 0
   task_documents: 60
   audit_reports: 5
-  prd_version: "1.5.0"
+  prd_version: "1.6.0"
   readme_version: "0.4.1"
+  user_guide: docs/user-guide.md
   last_updated: 2026-06-14
 
 progress:
   planning: 100
   implementation: 100
   testing: 95
-  documentation: 98
-  overall: 99
+  documentation: 100
+  overall: 100
 
 current_task:
   id: null
@@ -744,6 +757,23 @@ current_task:
   status: completed
 
 recent_work:
+  - date: 2026-06-14
+    description: |
+      /acp-sync — PRD v1.6, architecture, README, user guide (v0.4.1).
+    items:
+      - ✅ PRD phases 2–3 + M7 marked complete; pipeline + limitations updated
+      - ✅ architecture.md dual-build, Tauri, KaTeX, export modules
+      - ✅ docs/user-guide.md created; README + embed-api + visualizer-migration linked
+      - ✓ Artifact health: templates only (no stale research)
+  - date: 2026-06-14
+    description: |
+      /acp-update — progress sync verified post-M7 (HEAD bc91135).
+    items:
+      - ✅ M1–M7 all complete; v0.4.1 release-ready; 0 blockers
+      - ✅ 36 unit tests, 9 E2E; build:lib + npm pack verified in M7
+      - ✓ Artifact health: templates only in agent/artifacts/ (no stale research)
+      - 📋 Branch ahead of origin/main by 3 commits — push pending
+      - 📋 Next: npm publish, ACPEnhanced-Visual task-34 migration
   - date: 2026-06-14
     description: |
       /acp-proceed --complete M7 — audit #5 remediation v0.4.1.
@@ -818,15 +848,16 @@ recent_work:
       - 📋 Begin M1 task-1 implementation
 
 next_steps:
-  - npm publish @markdown-tools/react (npm login, npm publish)
-  - Execute task-34 in ACPEnhanced-Visual per docs/visualizer-migration.md
-  - git push origin main
-  - npm run tauri:build for desktop installer (requires Rust)
+  - git push origin main (3 commits ahead: M7 plan + remediation + prior)
+  - npm publish @markdown-tools/react@0.4.1 (npm login, npm publish)
+  - Execute task-34 in ACPEnhanced-Visual per docs/visualizer-migration.md (^0.4.1)
+  - npm run tauri:build for desktop installer (requires Rust toolchain)
 
 notes:
   - Viewer ported from ACPEnhanced-Visual v1.5.4 (one-time vendor copy)
   - ADR-001–007 in agent/memory/decisions.md
   - M1–M7 complete at v0.4.1; audit #5 carryovers addressed
+  - HEAD bc91135; origin/main behind by 3 commits
 
 current_blockers: []
 
