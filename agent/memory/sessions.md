@@ -7,6 +7,20 @@
   branch: main
   tasks_completed: []
   done:
+    - audit-6-visualizer-migration-guide
+    - visualizer-migration-comprehensive-rewrite
+    - embed-api-task34-carryovers-synced
+  deferred:
+    - git-commit-audit-6-docs → visualizer-migration, embed-api, task-34, carryovers uncommitted
+    - npm-publish → blocks visualizer Option A install (AUDIT-006-B1)
+    - fr-7-8-visualizer-cutover → ACPEnhanced-Visual repo (AUDIT-006-B2)
+  key_fact: "Visualizer keeps listDocs/readDoc; @markdown-tools/react is render-only plugin — DocsViewerEmbed must sync documentPath on sidebar click and wire theme via ADR-007"
+
+- date: 2026-06-14
+  executor: cursor
+  branch: main
+  tasks_completed: []
+  done:
     - acp-sync-comprehensive-run-install-docs
     - readme-user-guide-desktop-cli-from-anywhere
     - architecture-embed-api-changelog-synced

@@ -12,7 +12,7 @@ Replace `DocsViewer.tsx` in ACPEnhanced-Visual with `@markdown-tools/react` embe
 
 ## Steps (in ACPEnhanced-Visual repo)
 
-1. Add dependency: `"@markdown-tools/react": "^0.1.0"`
+1. Add dependency: `"@markdown-tools/react": "^0.4.1"`
 2. Create `src/components/DocsViewerEmbed.tsx` thin wrapper:
    - `listDocs()` / `readDoc()` unchanged (server)
    - Pass props to `<MarkdownViewer />`

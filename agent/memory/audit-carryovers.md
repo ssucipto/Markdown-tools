@@ -254,3 +254,30 @@ carryovers:
     fix_applied_date: 2026-06-14
     verified_in_audit: null
     planned_in: M7 task-51
+
+  - finding_id: AUDIT-006-B1
+    audit_ref: agent/reports/audit-6-visualizer-migration.md
+    severity: high
+    finding: "@markdown-tools/react not published to npm — visualizer must use npm link or file: dependency until npm publish"
+    status: pending
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: npm publish manual step
+
+  - finding_id: AUDIT-006-B2
+    audit_ref: agent/reports/audit-6-visualizer-migration.md
+    severity: high
+    finding: "FR-7.8 visualizer cutover not executed — DocsViewer.tsx still in ACPEnhanced-Visual repo (external team)"
+    status: pending
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: ACPEnhanced-Visual per docs/visualizer-migration.md
+
+  - finding_id: AUDIT-006-D9
+    audit_ref: agent/reports/audit-6-visualizer-migration.md
+    severity: low
+    finding: "task-34-visualizer-migration.md still references @markdown-tools/react ^0.1.0 instead of ^0.4.1"
+    status: addressed
+    fix_applied_date: 2026-06-14
+    verified_in_audit: audit-6-visualizer-migration
+    planned_in: task-34 doc update

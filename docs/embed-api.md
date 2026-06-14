@@ -80,4 +80,4 @@ Use `parseDocsSearchParams()` to map TanStack Router search params.
 
 ## Visualizer migration
 
-See [visualizer-migration.md](./visualizer-migration.md) for replacing `DocsViewer.tsx` in ACPEnhanced-Visual.
+See [visualizer-migration.md](./visualizer-migration.md) for replacing `DocsViewer.tsx` in ACPEnhanced-Visual (comprehensive cutover guide).
