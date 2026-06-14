@@ -1,4 +1,4 @@
-export type MermaidZoomHandler = (svgHtml: string) => void
+export type MermaidZoomHandler = (svgHtml: string, source: string) => void
 
 export async function renderMermaidDiagrams(
   container: HTMLElement,
@@ -54,11 +54,11 @@ export async function renderMermaidDiagrams(
           svgEl.setAttribute('title', 'Click to zoom')
           svgEl.setAttribute('role', 'button')
           svgEl.setAttribute('tabindex', '0')
-          svgEl.addEventListener('click', () => onZoom(svgEl.outerHTML))
+          svgEl.addEventListener('click', () => onZoom(svgEl.outerHTML, code))
           svgEl.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault()
-              onZoom(svgEl.outerHTML)
+              onZoom(svgEl.outerHTML, code)
             }
           })
         }

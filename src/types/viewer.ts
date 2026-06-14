@@ -23,4 +23,9 @@ export interface MarkdownViewerProps {
   initialFile?: string
   initialAnchor?: string
   className?: string
+  /** Standalone: open folder via File System Access API */
+  onOpenFolder?: () => void
+  supportsFolderPicker?: boolean
+  /** Raw markdown for view-source toggle (standalone) */
+  rawMarkdown?: string
 }

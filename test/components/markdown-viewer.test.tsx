@@ -61,13 +61,13 @@ describe('MarkdownViewer', () => {
 
   it('shows toolbar when document is loaded', async () => {
     render(<MarkdownViewer content="# Hi" documentPath="hi.md" />)
-    expect(await screen.findByLabelText('Export to Word')).toBeInTheDocument()
+    expect(await screen.findByLabelText('Export to DOCX')).toBeInTheDocument()
     expect(screen.getByLabelText('Export to PDF')).toBeInTheDocument()
   })
 
   it('shows toolbar for content-only embed without documentPath', async () => {
     render(<MarkdownViewer content="# Hi" />)
-    expect(await screen.findByLabelText('Export to Word')).toBeInTheDocument()
+    expect(await screen.findByLabelText('Export to DOCX')).toBeInTheDocument()
   })
 
   it('controlled theme calls onThemeChange instead of internal toggle', async () => {

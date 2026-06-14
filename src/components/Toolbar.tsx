@@ -4,13 +4,19 @@ interface ToolbarProps {
   exporting: boolean
   fullscreen: boolean
   visible: boolean
+  viewSource: boolean
+  showViewSource: boolean
+  showOpenFolder: boolean
   onToggleDark: () => void
   onToggleFont: () => void
   onExportWord: () => void
+  onExportDocx: () => void
   onExportPdf: () => void
   onScrollTop: () => void
   onToggleFullscreen: () => void
   onPickFile: () => void
+  onOpenFolder?: () => void
+  onToggleViewSource: () => void
 }
 
 export function Toolbar({
@@ -19,13 +25,19 @@ export function Toolbar({
   exporting,
   fullscreen,
   visible,
+  viewSource,
+  showViewSource,
+  showOpenFolder,
   onToggleDark,
   onToggleFont,
   onExportWord,
+  onExportDocx,
   onExportPdf,
   onScrollTop,
   onToggleFullscreen,
   onPickFile,
+  onOpenFolder,
+  onToggleViewSource,
 }: ToolbarProps) {
   if (!visible) return null
 
@@ -43,6 +55,29 @@ export function Toolbar({
       >
         📂
       </button>
+      {showOpenFolder && onOpenFolder && (
+        <button
+          type="button"
+          onClick={onOpenFolder}
+          title="Open folder"
+          className={btn}
+          aria-label="Open folder of markdown files"
+        >
+          📁
+        </button>
+      )}
+      {showViewSource && (
+        <button
+          type="button"
+          onClick={onToggleViewSource}
+          title={viewSource ? 'Show rendered view' : 'View source'}
+          className={`${btn} ${viewSource ? 'ring-2 ring-blue-400' : ''}`}
+          aria-label={viewSource ? 'Show rendered view' : 'View markdown source'}
+          aria-pressed={viewSource}
+        >
+          {'</>'}
+        </button>
+      )}
       <button
         type="button"
         onClick={onToggleDark}
@@ -63,13 +98,23 @@ export function Toolbar({
       </button>
       <button
         type="button"
-        onClick={onExportWord}
-        title="Export to Word"
+        onClick={onExportDocx}
+        title="Export to DOCX"
         disabled={exporting}
         className={`${btn} disabled:opacity-50`}
-        aria-label="Export to Word"
+        aria-label="Export to DOCX"
       >
-        {exporting ? '⏳' : '📥'}
+        {exporting ? '⏳' : 'W'}
+      </button>
+      <button
+        type="button"
+        onClick={onExportWord}
+        title="Export to Word (.doc)"
+        disabled={exporting}
+        className={`${btn} disabled:opacity-50 text-xs`}
+        aria-label="Export to Word HTML"
+      >
+        .doc
       </button>
       <button
         type="button"

@@ -90,6 +90,26 @@
 .prose-doc .mermaid-container pre.mermaid { background: transparent; padding: 0; margin: 0; border: none; }
 .prose-doc .mermaid-container pre.mermaid:not(:has(svg)) { color: #374151; font-size: 0.75rem; white-space: pre-wrap; opacity: 0.6; }
 
+.mermaid-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+.mermaid-toolbar button {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #d1d5db;
+  background: white;
+  cursor: pointer;
+}
+.mermaid-toolbar button:hover { background: #f3f4f6; }
+.prose-doc .katex-block { margin: 1em 0; overflow-x: auto; }
+.prose-doc .katex-inline { display: inline-block; }
+
 @media print {
   aside, nav, .fixed, header { display: none !important; }
   .prose-doc { color: #000; }

@@ -3,6 +3,7 @@ import { marked } from 'marked'
 import { encodeDataAttribute } from '@/lib/html-entities'
 import type { TocEntry } from '@/types/viewer'
 import { applySyntaxHighlighting } from './highlight'
+import { preprocessMath, restoreMath } from './math'
 
 export function wrapTables(html: string): string {
   return html
@@ -69,17 +70,19 @@ const SANITIZE_CONFIG = {
     'aria-hidden',
     'aria-label',
   ],
-  ADD_TAGS: ['button'],
+  ADD_TAGS: ['button', 'span', 'math'],
 }
 
 export function parseMarkdown(content: string): { html: string; toc: TocEntry[] } {
   if (!content) return { html: '', toc: [] }
-  const raw = marked(content, { breaks: true, gfm: true }) as string
+  const { text: withMath, blocks, inlines } = preprocessMath(content)
+  const raw = marked(withMath, { breaks: true, gfm: true }) as string
   const withMermaid = extractMermaid(raw)
   const withCode = enhanceCodeBlocks(withMermaid)
   const withHighlight = applySyntaxHighlighting(withCode)
   const withTables = wrapTables(withHighlight)
   const { html, toc } = addAnchors(withTables)
   const sanitized = DOMPurify.sanitize(html, SANITIZE_CONFIG) as string
-  return { html: sanitized, toc }
+  const withKatex = restoreMath(sanitized, blocks, inlines)
+  return { html: withKatex, toc }
 }

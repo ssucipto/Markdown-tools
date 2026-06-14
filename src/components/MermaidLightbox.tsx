@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { copyMermaidSource, downloadSvg } from '@/lib/mermaid-actions'
 
 interface MermaidLightboxProps {
   svgHtml: string | null
+  source: string
   onClose: () => void
 }
 
-export function MermaidLightbox({ svgHtml, onClose }: MermaidLightboxProps) {
+export function MermaidLightbox({ svgHtml, source, onClose }: MermaidLightboxProps) {
   const [scale, setScale] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const dragging = useRef(false)
@@ -60,14 +62,38 @@ export function MermaidLightbox({ svgHtml, onClose }: MermaidLightboxProps) {
       aria-modal="true"
       aria-label="Mermaid diagram zoom"
     >
-      <button
-        type="button"
-        onClick={onClose}
-        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 text-white text-xl hover:bg-white/30 transition-colors"
-        aria-label="Close diagram"
-      >
-        ✕
-      </button>
+      <div className="absolute top-4 right-4 flex gap-2">
+        {source && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              void copyMermaidSource(source)
+            }}
+            className="px-3 py-2 rounded-lg bg-white/20 text-white text-sm hover:bg-white/30 transition-colors"
+          >
+            Copy source
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            downloadSvg(svgHtml, 'diagram.svg')
+          }}
+          className="px-3 py-2 rounded-lg bg-white/20 text-white text-sm hover:bg-white/30 transition-colors"
+        >
+          Download SVG
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="w-10 h-10 rounded-full bg-white/20 text-white text-xl hover:bg-white/30 transition-colors"
+          aria-label="Close diagram"
+        >
+          ✕
+        </button>
+      </div>
       <div
         className="max-w-[95vw] max-h-[95vh] overflow-hidden bg-white rounded-lg shadow-2xl p-4 cursor-grab active:cursor-grabbing"
         onClick={(e) => e.stopPropagation()}

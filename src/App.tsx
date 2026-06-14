@@ -1,4 +1,4 @@
-import { MarkdownViewerWithBoundary } from '@/components/MarkdownViewer'
+import { StandaloneViewer } from '@/components/StandaloneViewer'
 import '@/styles/prose-doc.css'
 
 export default function App() {
@@ -7,7 +7,7 @@ export default function App() {
       <header className="border-b border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-950">
         <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Markdown-tools</h1>
       </header>
-      <MarkdownViewerWithBoundary />
+      <StandaloneViewer />
     </div>
   )
 }

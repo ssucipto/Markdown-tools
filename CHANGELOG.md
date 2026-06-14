@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.4.0] - 2026-06-14
+
+### Added (M4 Enhanced Product)
+- Folder browser via File System Access API + webkitdirectory fallback
+- True `.docx` export (docx library) with Word heading styles; `.doc` HTML fallback retained
+- KaTeX math rendering (`$inline$`, `$$block$$`); `docs/sample-math.md` fixture
+- Mermaid copy source + download SVG (container toolbar + lightbox)
+- View source toggle (read-only raw markdown panel)
+
+### Added (M5 Native Desktop)
+- Tauri 2 scaffold (`npm run tauri:dev`, `npm run tauri:build`)
+- `.md` file associations on Windows; CLI file open on launch
+- `markdown-tools` CLI (`bin/markdown-tools.mjs`)
+
+### Added (M6 Visualizer Integration)
+- Vite library build (`npm run build:lib`) → `@markdown-tools/react`
+- Package exports, peerDependencies, `prepack` script
+- `parseDocsSearchParams` / `buildDocsSearchParams` embed URL helpers
+- Embed API docs (`docs/embed-api.md`) + visualizer migration guide
+- Contract tests for `MarkdownViewerProps` API surface
+
+### Changed
+- Standalone app uses `StandaloneViewer` with folder sidebar
+- CI: library build + `npm pack --dry-run` job
+
 ## [0.3.1] - 2026-06-14
 
 ### Fixed (M3b audit remediation)

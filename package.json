@@ -1,11 +1,44 @@
 {
-  "name": "markdown-tools",
-  "version": "0.3.1",
+  "name": "@markdown-tools/react",
+  "version": "0.4.0",
+  "description": "React markdown viewer with Mermaid, KaTeX, export, and embed API",
   "private": true,
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ssucipto/markdown-tools"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "markdown-tools": "./bin/markdown-tools.mjs"
+  },
+  "main": "./dist-lib/markdown-tools-react.js",
+  "module": "./dist-lib/markdown-tools-react.js",
+  "types": "./dist-lib/markdown-tools-react.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist-lib/markdown-tools-react.js",
+      "types": "./dist-lib/markdown-tools-react.d.ts"
+    },
+    "./styles.css": "./dist-lib/styles.css"
+  },
+  "files": [
+    "dist-lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:lib": "vite build --config vite.lib.config.ts",
+    "build:all": "npm run build && npm run build:lib",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -15,10 +48,17 @@
     "lint": "eslint src test e2e",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"test/**/*.{ts,tsx}\" \"e2e/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"test/**/*.{ts,tsx}\" \"e2e/**/*.ts\"",
-    "perf:check": "node scripts/lighthouse-check.mjs"
+    "perf:check": "node scripts/lighthouse-check.mjs",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "prepack": "npm run build:lib"
   },
   "dependencies": {
+    "@tauri-apps/api": "^2.5.0",
+    "docx": "^9.5.0",
     "dompurify": "^3.2.6",
+    "katex": "^0.17.0",
     "lowlight": "^3.3.0",
     "marked": "^18.0.4",
     "mermaid": "^11.15.0",
@@ -29,10 +69,12 @@
     "@eslint/js": "^9.28.0",
     "@playwright/test": "^1.52.0",
     "@tailwindcss/vite": "^4.1.18",
+    "@tauri-apps/cli": "^2.11.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/dompurify": "^3.2.0",
+    "@types/katex": "^0.16.8",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^4.5.2",
@@ -49,6 +91,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.33.1",
     "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "^3.2.4"
   }
 }

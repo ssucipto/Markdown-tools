@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } fro
 import { useMarkdownDocument } from '@/hooks/useMarkdownDocument'
 import { useToast } from '@/hooks/useToast'
 import { decodeDataAttribute } from '@/lib/html-entities'
+import { attachMermaidToolbars } from '@/lib/mermaid-actions'
+import { exportDocxDocument } from '@/markdown/exportDocx'
 import { openPdfPrintWindow, exportPdfDocument } from '@/markdown/exportPdf'
 import { exportWordDocument } from '@/markdown/exportWord'
 import { parseMarkdown } from '@/markdown/parse'
@@ -31,6 +33,9 @@ export function MarkdownViewer({
   initialFile,
   initialAnchor,
   className = '',
+  onOpenFolder,
+  supportsFolderPicker = false,
+  rawMarkdown,
 }: MarkdownViewerProps) {
   const isControlled = controlledContent !== undefined
   const isThemeControlled = controlledTheme !== undefined
@@ -48,8 +53,10 @@ export function MarkdownViewer({
   const [dragOver, setDragOver] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
-  const [mermaidZoom, setMermaidZoom] = useState<string | null>(null)
+  const [mermaidZoom, setMermaidZoom] = useState<{ svg: string; source: string } | null>(null)
   const [exporting, setExporting] = useState(false)
+  const [viewSource, setViewSource] = useState(false)
+  const scrollPosRef = useRef(0)
   const { toast, showToast } = useToast()
   const [activeId, setActiveId] = useState('')
 
@@ -111,13 +118,16 @@ export function MarkdownViewer({
     }
   }, [html])
 
-  const handleMermaidZoom = useCallback((svgHtml: string) => setMermaidZoom(svgHtml), [])
+  const handleMermaidZoom = useCallback((svgHtml: string, source: string) => {
+    setMermaidZoom({ svg: svgHtml, source })
+  }, [])
 
   const runMermaid = useCallback(async () => {
     const el = contentRef.current
-    if (!el || !html) return
+    if (!el || !html || viewSource) return
     await renderMermaidDiagrams(el, dark, handleMermaidZoom, mermaidRetryRef)
-  }, [html, dark, handleMermaidZoom])
+    attachMermaidToolbars(el)
+  }, [html, dark, handleMermaidZoom, viewSource])
 
   useEffect(() => {
     if (!html) return
@@ -227,6 +237,46 @@ export function MarkdownViewer({
     }
   }, [exportPath, showToast])
 
+  const exportDocx = useCallback(async () => {
+    const el = contentRef.current
+    if (!el) return
+    setExporting(true)
+    try {
+      const { blob, filename } = await exportDocxDocument(el, exportPath)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      a.click()
+      setTimeout(() => URL.revokeObjectURL(url), 1000)
+      showToast(`✅ Exported as ${filename}`)
+    } catch {
+      showToast('⚠️ DOCX export failed')
+    } finally {
+      setExporting(false)
+    }
+  }, [exportPath, showToast])
+
+  const toggleViewSource = useCallback(() => {
+    const el = contentRef.current
+    if (el && !viewSource) scrollPosRef.current = el.scrollTop
+    setViewSource((v) => !v)
+  }, [viewSource])
+
+  useEffect(() => {
+    if (!viewSource && scrollPosRef.current) {
+      const el = contentRef.current
+      if (el) {
+        const pos = scrollPosRef.current
+        requestAnimationFrame(() => {
+          el.scrollTop = pos
+        })
+      }
+    }
+  }, [viewSource])
+
+  const sourceText = rawMarkdown ?? content ?? ''
+
   const exportPdf = useCallback(async () => {
     const el = contentRef.current
     if (!el) return
@@ -280,6 +330,15 @@ export function MarkdownViewer({
         >
           {!hasContent ? (
             <EmptyState dark={dark} dragOver={dragOver} />
+          ) : viewSource ? (
+            <pre
+              className={`whitespace-pre-wrap font-mono text-sm p-4 rounded-lg border ${
+                dark ? 'bg-gray-800 border-gray-700 text-gray-200' : 'bg-gray-50 border-gray-200 text-gray-800'
+              }`}
+              aria-label="Markdown source"
+            >
+              {sourceText}
+            </pre>
           ) : !html ? (
             <div className="animate-pulse text-gray-400">Rendering…</div>
           ) : (
@@ -307,17 +366,27 @@ export function MarkdownViewer({
         fontSize={fontSize}
         exporting={exporting}
         fullscreen={fullscreen}
+        viewSource={viewSource}
+        showViewSource={Boolean(sourceText)}
+        showOpenFolder={Boolean(onOpenFolder) && supportsFolderPicker}
         onToggleDark={handleToggleDark}
         onToggleFont={() => setFontSize((f) => (f === 'sm' ? 'md' : f === 'md' ? 'lg' : 'sm'))}
         onExportWord={() => void exportWord()}
+        onExportDocx={() => void exportDocx()}
         onExportPdf={() => void exportPdf()}
         onScrollTop={() => contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
         onToggleFullscreen={() => setFullscreen((f) => !f)}
         onPickFile={handleFilePick}
+        onOpenFolder={onOpenFolder}
+        onToggleViewSource={toggleViewSource}
       />
 
       <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
-      <MermaidLightbox svgHtml={mermaidZoom} onClose={() => setMermaidZoom(null)} />
+      <MermaidLightbox
+        svgHtml={mermaidZoom?.svg ?? null}
+        source={mermaidZoom?.source ?? ''}
+        onClose={() => setMermaidZoom(null)}
+      />
 
       {toast && (
         <div
