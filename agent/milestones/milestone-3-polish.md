@@ -41,5 +41,7 @@ updated: 2026-06-14
 3. [Task 17](../tasks/milestone-3-polish/task-17-mermaid-pan-zoom.md) — Mermaid pan in lightbox
 4. [Task 18](../tasks/milestone-3-polish/task-18-accessibility-pass.md) — Accessibility pass
 5. [Task 19](../tasks/milestone-3-polish/task-19-test-coverage-export.md) — Extend tests and export QA
+6. [Task 37](../tasks/milestone-3-polish/task-37-playwright-e2e-smoke.md) — Playwright E2E smoke tests
+7. [Task 38](../tasks/milestone-3-polish/task-38-lighthouse-performance.md) — Lighthouse performance verification
 
 **Next Milestone**: [M4 — Enhanced Product](milestone-4-enhanced.md)

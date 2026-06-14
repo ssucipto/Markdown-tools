@@ -3,10 +3,10 @@
 **Project Name**: Markdown-tools  
 **Created**: 2026-06-14  
 **Status**: Active  
-**Version**: 1.2.0  
+**Version**: 1.3.0  
 **Author**: Product / Engineering (ACP session)  
 **Last reviewed**: 2026-06-14  
-**Planning**: [agent/progress.yaml](../progress.yaml) · M1–M5 · 28 tasks · [architecture.md](architecture.md)
+**Planning**: [agent/progress.yaml](../progress.yaml) · M1–M6 · 38 tasks · [architecture.md](architecture.md)
 
 ---
 
@@ -42,6 +42,7 @@ Teams need a single, fast viewer that matches modern documentation UX (GitHub, D
 3. **Drag-and-drop first** — drop `.md` files onto the app for instant preview without server setup.
 4. **Export to Word and PDF** — share documents with stakeholders who do not use Markdown tooling.
 5. **Reuse ACPEnhanced-Visual** — port `DocsViewer`, `svg-to-png`, and prose styles; avoid rebuilding from scratch.
+6. **Shared viewer for acp-visualizer** — publish `@markdown-tools/react` so ACPEnhanced-Visual embeds the same component instead of maintaining duplicate `DocsViewer.tsx` (ADR-006, M6).
 
 ### Secondary Goals
 
@@ -253,6 +254,21 @@ PDF export must preserve:
 | FR-6.3 | Toolbar: theme, font, fullscreen, export buttons | P0 | DocsViewer |
 | FR-6.4 | Error boundary for render failures | P1 | ErrorBoundary pattern |
 
+### FR-7 — Embeddable library (ACPEnhanced-Visual integration)
+
+| ID | Requirement | Priority | Phase |
+|----|-------------|----------|-------|
+| FR-7.1 | Publish `@markdown-tools/react` with Vite library build and `package.json` exports | P1 | M6 |
+| FR-7.2 | `MarkdownViewer` accepts controlled props: `content`, `files`, `onSelectFile`, `documentPath`, `loading` | P1 | M6 |
+| FR-7.3 | No server-side `listDocs` / `readDoc` inside package — consumer injects data | P1 | M6 |
+| FR-7.4 | Deep-link props `initialFile`, `initialAnchor` for `SourceLink` (`?file=&anchor=`) parity | P1 | M6 |
+| FR-7.5 | Optional `showSidebar`, `theme` for embed in TanStack Start shell | P2 | M6 |
+| FR-7.6 | Export `DocFile` TypeScript type matching visualizer `docs.ts` shape | P1 | M6 |
+| FR-7.7 | Documented CSS import path and `peerDependencies` (react, react-dom) | P1 | M6 |
+| FR-7.8 | ACPEnhanced-Visual migration: replace `DocsViewer` import; delete duplicated viewer | P1 | M6 |
+
+**Server adapter note**: Visualizer uses **server** `listDocs` / `readDoc` (not client File System Access API). M4 task-20 folder browser is standalone-only; embed consumers use injected props (FR-7.2–7.3).
+
 ---
 
 ## Non-Functional Requirements
@@ -420,12 +436,20 @@ c:\Project\Markdown-tools\
 
 ### Phase 2 — Enhanced product (Weeks 5–8)
 
-- [ ] FR-1.4–1.5 folder browser (adapt `docs.ts`)
+- [ ] FR-1.4–1.5 folder browser (client FS API — standalone only)
 - [ ] FR-5.6 true DOCX export (`html-to-docx` or `docx` library)
 - [ ] FR-4.9–4.10 advanced Mermaid UX
 - [ ] KaTeX math in preview + export (FR-2.8)
+- [ ] FR-2.9 read-only “View source” toggle
+- [ ] CI pipeline (task-25)
 
-### Phase 3 — Native & editor (future)
+### Phase Integration — Visualizer embed (Weeks 9–10, can overlap late M4)
+
+- [ ] FR-7.1–7.8 — library build, embed props API, deep-link, npm publish
+- [ ] ACPEnhanced-Visual DocsViewer replacement (task-34)
+- [ ] Cross-repo contract tests (task-35)
+
+### Phase 3 — Native desktop (Weeks 11–12)
 
 - [ ] Tauri 2 desktop wrapper (native file associations, offline install)
 - [ ] Optional split-pane markdown editor (out of scope until viewer is stable)
@@ -551,24 +575,25 @@ Five open questions were reviewed against project goals, source audit, and compe
 
 ---
 
-### 5. Monorepo / source dependency — **Vendor copy once; no runtime sibling dependency**
+### 5. Monorepo / source dependency — **Vendor copy once; publish library for visualizer**
 
 | Option | Verdict |
 |--------|---------|
 | Ongoing dependency on `ACPEnhanced-Visual` repo | Rejected |
-| One-time port into Markdown-tools `src/` | **Selected** |
+| One-time port into Markdown-tools `src/` | **Selected (M1)** |
+| Publish `@markdown-tools/react`; visualizer consumes npm package | **Selected (M6)** — ADR-006 |
 
 **Rationale**
 
 - Markdown-tools must be a **standalone product** with its own release cycle.
-- Sibling path `C:\Project\ACP\ACPEnhanced-Visual` is a dev-time reference only.
+- Sibling path `C:\Project\ACP\ACPEnhanced-Visual` is a dev-time reference only for M1 port.
 - Phase 0 copies Tier 1 files, refactors into modules, then **owns the code**.
-- Avoids git submodule pain and version skew between repos.
+- M6 publishes library; **acp-visualizer depends on `@markdown-tools/react`**, not duplicated viewer code.
 
 **Implications**
 
 - Phase 0 includes one-time extraction from ACPEnhanced-Visual v1.5.4 (document commit/hash in `agent/memory/decisions.md` or port README).
-- No `npm` dependency on `acp-visualizer` package.
+- Markdown-tools does **not** depend on `acp-visualizer`; dependency is **reverse** (visualizer → markdown-tools).
 - `/acp-visualize` remains optional for full ACP progress dashboard — separate concern.
 - Attribution: note fork provenance in root `README.md` (one line).
 
@@ -582,7 +607,8 @@ Five open questions were reviewed against project goals, source audit, and compe
 | 2 | Editing | View-only | MVP–2: view · 3: editor optional |
 | 3 | Math | KaTeX deferred | Phase 2 |
 | 4 | DOCX fidelity | HTML-as-Word OK for MVP | MVP: `.doc` · Phase 2: `.docx` |
-| 5 | Source repo | Vendor copy once | Phase 0 port |
+| 5 | Source repo | Vendor copy once; publish npm for visualizer | Phase 0 port · M6 publish |
+| 6 | Visualizer integration | `@markdown-tools/react` embed | M6 |
 
 ### New functional requirement (from math decision)
 
@@ -601,29 +627,31 @@ Five open questions were reviewed against project goals, source audit, and compe
 
 ---
 
-## Planning traceability (/acp-plan 2026-06-14)
+## Planning traceability (/acp-plan 2026-06-14, updated audit 2026-06-14)
 
 | PRD phase | Milestone | Tasks | Weeks (est.) |
 |-----------|-----------|-------|--------------|
-| Phase 0 | [M1 Foundation](../milestones/milestone-1-foundation.md) | task-1 … task-6 | 1 |
+| Phase 0 | [M1 Foundation](../milestones/milestone-1-foundation.md) | task-1 … task-6, task-36 | 1 |
 | Phase 1 | [M2 MVP Viewer](../milestones/milestone-2-mvp-viewer.md) | task-7 … task-14 | 2 |
-| Phase 1b | [M3 Polish](../milestones/milestone-3-polish.md) | task-15 … task-19 | 1 |
+| Phase 1b | [M3 Polish](../milestones/milestone-3-polish.md) | task-15 … task-19, task-37 … task-38 | 1 |
 | Phase 2 | [M4 Enhanced](../milestones/milestone-4-enhanced.md) | task-20 … task-25 | 3 |
+| Integration | [M6 Visualizer Integration](../milestones/milestone-6-visualizer-integration.md) | task-29 … task-35 | 2 |
 | Phase 3 | [M5 Native Desktop](../milestones/milestone-5-native-desktop.md) | task-26 … task-28 | 2 |
 
-**Total**: 28 tasks · ~107 estimated dev hours · ~9 weeks calendar (sequential).
+**Total**: 38 tasks · ~148 estimated dev hours · ~11 weeks calendar (M6 can overlap late M4).
 
 **ADRs recorded** (see [agent/memory/decisions.md](../memory/decisions.md)):
 
 | ADR | Decision |
 |-----|----------|
 | ADR-001 | Vite SPA, no TanStack Start SSR |
-| ADR-002 | One-time vendor copy from ACPEnhanced-Visual |
+| ADR-002 | One-time vendor copy from ACPEnhanced-Visual (amended by ADR-006) |
 | ADR-003 | marked + lazy mermaid pipeline |
 | ADR-004 | View-only through M4 |
 | ADR-005 | HTML .doc MVP; DOCX in M4 |
+| ADR-006 | Publish `@markdown-tools/react`; visualizer embeds package |
 
-**Start implementation**: `/acp-proceed` → task-1 scaffold Vite app.
+**Start implementation**: `/acp-proceed` → task-1 scaffold Vite app (design for library exports per task-29).
 
 ---
 
@@ -665,6 +693,32 @@ flowchart LR
   CSS --> STYLES
   TEST --> target
 ```
+
+## Appendix C — Visualizer embed contract (ADR-006)
+
+```mermaid
+flowchart TB
+  subgraph visualizer [ACPEnhanced-Visual acp-visualizer]
+    DOCS[docs.ts server]
+    ROUTE[/docs route]
+    EMBED[DocsViewerEmbed wrapper]
+    DOCS -->|listDocs readDoc| EMBED
+    ROUTE -->|search file anchor| EMBED
+  end
+  subgraph pkg ["@markdown-tools/react"]
+    MV[MarkdownViewer]
+    STY[prose-doc.css]
+  end
+  EMBED -->|content files onSelectFile initialFile initialAnchor| MV
+  EMBED --> STY
+```
+
+| Visualizer responsibility | Package responsibility |
+|---------------------------|------------------------|
+| `listDocs()` → `files[]` | Render sidebar from `files` prop |
+| `readDoc(path)` → `content` | Parse, Mermaid, export |
+| Router `?file=&anchor=` | `initialFile`, `initialAnchor` props |
+| App shell / navigation | `showSidebar`, `theme` props |
 
 ## Appendix B — Test documents (to create in `docs/`)
 

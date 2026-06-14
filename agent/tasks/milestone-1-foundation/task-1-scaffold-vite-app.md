@@ -28,7 +28,10 @@ Create the Markdown-tools application scaffold at repository root with Vite 6, R
 3. Add `tsconfig.json` (strict, paths `@/*` → `src/*`)
 4. Create `index.html`, `src/main.tsx`, `src/App.tsx` (placeholder “Markdown-tools”)
 5. Add root `.gitignore` (`node_modules`, `dist`, `coverage`)
-6. Run `npm install && npm run build`
+6. Add placeholder `src/index.ts` (library entry stub for M6 task-29)
+7. Run `npm install && npm run build`
+
+**Note (ADR-006)**: Scaffold should allow future dual build — keep `src/index.ts` as library entry; avoid coupling viewer to app-only routes.
 
 ## User-Observable Acceptance
 

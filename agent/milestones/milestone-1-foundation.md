@@ -61,6 +61,7 @@ No feature-complete viewer yet — this milestone delivers buildable app + extra
 4. [Task 4](../tasks/milestone-1-foundation/task-4-split-docs-viewer-components.md) — Split DocsViewer into components
 5. [Task 5](../tasks/milestone-1-foundation/task-5-project-identity-and-vitest.md) — Update identity.yml and Vitest setup
 6. [Task 6](../tasks/milestone-1-foundation/task-6-sample-doc-fixtures.md) — Create sample markdown fixtures
+7. [Task 36](../tasks/milestone-1-foundation/task-36-early-ci-pipeline.md) — Early CI pipeline (GitHub Actions)
 
 ---
 

@@ -1,13 +1,16 @@
-# Task 25: CI Pipeline
+# Task 25: CI Pipeline Extensions
 
-**Milestone**: M4 | **Est**: 3h | **Depends**: task-19
+**Milestone**: M4 | **Est**: 2h | **Depends**: task-36, task-19
 
 ## Objective
-GitHub Actions: install, typecheck, test, build on PR and main.
+
+Extend early CI (task-36) with coverage gates, E2E job, and library-build verification before M6 publish.
 
 ## Steps
-1. Add `.github/workflows/ci.yml` (node 22, npm ci, test, build)
-2. Badge in README
+1. Add coverage threshold enforcement to CI (align with M3 task-19)
+2. Add Playwright job (from task-37) to workflow if not already merged
+3. Add `npm run build:lib` job when task-29 library mode exists
+4. Badge in README
 
 ## Acceptance
-- [ ] CI workflow file exists and passes locally equivalent commands
+- [ ] CI runs typecheck, unit tests, E2E, app build, and library build on PR

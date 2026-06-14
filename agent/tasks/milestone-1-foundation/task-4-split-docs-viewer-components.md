@@ -17,6 +17,7 @@ Create component shells and extract export/Mermaid logic from source `DocsViewer
 3. Create `src/components/MarkdownViewer.tsx` (layout shell, no full wiring yet)
 4. Create stubs: `TableOfContents.tsx`, `MermaidLightbox.tsx`, `Toolbar.tsx`
 5. Create `src/hooks/useMarkdownDocument.ts` for content/path state
+6. Create `src/types/viewer.ts` — `MarkdownViewerProps` and `DocFile` types per ADR-006 (stub; full wiring in M6 task-30)
 
 ## User-Observable Acceptance
 

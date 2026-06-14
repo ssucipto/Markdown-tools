@@ -19,6 +19,8 @@ updated: 2026-06-14
 
 Wire extracted modules into a working `MarkdownViewer` at app root route. Achieve feature parity with ACPEnhanced-Visual `DocsViewer` for all P0 functional requirements (FR-1.1–1.3, FR-2.1–2.4, FR-3.1–3.6, FR-3.9, FR-4.1–4.7, FR-5.1–5.5, FR-6.1–6.3).
 
+**Embed note (ADR-006)**: Standalone DnD mode uses the same `MarkdownViewer` shell defined in M1 task-4 (`MarkdownViewerProps` stub). Full controlled-component wiring and deep-link props ship in M6 tasks 30–31; do not bake server `listDocs` calls into the viewer during M2.
+
 ---
 
 ## Deliverables

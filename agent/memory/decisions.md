@@ -35,6 +35,8 @@
 
 **Reference commit**: ACPEnhanced-Visual v1.5.4 (package.json version).
 
+**Amendment (2026-06-14)**: Initial port remains a one-time vendor copy (M1). **ADR-006** supersedes the “no npm dependency” consequence for the **output direction**: Markdown-tools publishes `@markdown-tools/react`; ACPEnhanced-Visual consumes it and deletes duplicated `DocsViewer.tsx`.
+
 ---
 
 ## ADR-003 | 2026-06-14 | marked + lazy mermaid (preserve source pipeline)
@@ -76,3 +78,36 @@
 **Decision**: MVP (M2) ships **Export Word (.doc)**. M4 adds **true .docx** as default; `.doc` remains fallback.
 
 **Consequences**: UI must label format clearly; README lists limitation.
+
+---
+
+## ADR-006 | 2026-06-14 | ACPEnhanced-Visual integration via @markdown-tools/react
+
+**Status**: Accepted
+
+**Context**: Audit #1 found visualizer integration absent from M1–M5 plan. ACPEnhanced-Visual (`acp-visualizer`) embeds `DocsViewer.tsx` with server-side `listDocs` / `readDoc` (`server/routes/api/docs.ts`). Strategic goal: Markdown-tools becomes the **shared markdown viewer**; visualizer replaces local component with npm package.
+
+**Decision**:
+
+1. Publish **`@markdown-tools/react`** (and optionally `@markdown-tools/core` for parse/export modules) from this repo.
+2. **Standalone app** and **embed** share the same `MarkdownViewer` component — dual Vite build (SPA + library mode).
+3. **Controlled props API** — no server imports inside the package:
+   - `content`, `documentPath`, `files`, `onSelectFile`, `loading`, `showSidebar`, `theme`, `initialFile`, `initialAnchor`
+4. **Visualizer keeps** `docs.ts` server routes; thin embed wrapper fetches and passes props.
+5. **Deep-link parity**: support `initialFile` + `initialAnchor` for `SourceLink` (`?file=&anchor=`).
+6. **Migration** in M6 task-34: visualizer adds dependency, removes `DocsViewer.tsx`.
+
+**Consequences**:
+- (+) Single source of truth for viewer; bug fixes ship once
+- (+) Standalone product + embed without duplicate maintenance
+- (+) Semver contract for visualizer upgrades
+- (−) Must design props API before M2 freeze (task-30)
+- (−) Requires npm publish pipeline and cross-repo contract tests (task-35)
+- (−) DOMPurify (M3) required before production visualizer embed
+
+**Alternatives rejected**:
+- Git submodule / monorepo merge (couples release cycles)
+- Ongoing manual vendor copy both directions (ADR-002 only — drift risk)
+- Visualizer keeps DocsViewer; Markdown-tools duplicates (rejected strategic goal)
+
+**Related**: ADR-002 (initial port), M6 milestone, PRD FR-7.
