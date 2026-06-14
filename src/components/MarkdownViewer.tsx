@@ -330,6 +330,7 @@ export function MarkdownViewer({
         ref={fileInputRef}
         type="file"
         accept=".md,.markdown"
+        data-testid="file-picker-input"
         className="hidden"
         aria-hidden="true"
         onChange={onFileInputChange}

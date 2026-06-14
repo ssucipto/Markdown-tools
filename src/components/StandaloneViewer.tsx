@@ -68,6 +68,7 @@ export function StandaloneViewer() {
         type="file"
         accept=".md,.markdown"
         multiple
+        data-testid="folder-picker-input"
         // @ts-expect-error webkitdirectory is non-standard but widely supported
         webkitdirectory=""
         className="hidden"
@@ -75,7 +76,7 @@ export function StandaloneViewer() {
         onChange={onFolderInputChange}
       />
       <MarkdownViewerWithBoundary
-        content={doc.content}
+        content={doc.documentPath != null ? doc.content : undefined}
         documentPath={doc.documentPath}
         files={folder.files}
         onSelectFile={handleSelectFile}
@@ -83,7 +84,7 @@ export function StandaloneViewer() {
         showSidebar={showSidebar}
         onOpenFolder={handleOpenFolder}
         supportsFolderPicker={folder.supportsDirectoryPicker}
-        rawMarkdown={doc.content}
+        rawMarkdown={doc.documentPath != null ? doc.content : undefined}
       />
     </>
   )

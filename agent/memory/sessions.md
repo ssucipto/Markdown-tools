@@ -5,6 +5,20 @@
 - date: 2026-06-14
   executor: cursor
   branch: main
+  tasks_completed: []
+  done:
+    - e2e-fix-controlled-content-bug
+    - e2e-test-selector-and-locator-updates
+    - full-test-suite-verified-9-e2e-pass
+  deferred:
+    - git-commit-e2e-fix → uncommitted working tree
+    - npm-publish → manual after npm login
+    - visualizer-migration-task-34 → ACPEnhanced-Visual repo
+  key_fact: "StandaloneViewer must pass content/rawMarkdown as undefined until documentPath is set; empty string triggers isControlled and blocks the file picker in MarkdownViewer"
+
+- date: 2026-06-14
+  executor: cursor
+  branch: main
   tasks_completed:
     - task-49
     - task-50
