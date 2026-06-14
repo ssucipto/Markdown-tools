@@ -1,0 +1,30 @@
+---
+description: Execute ACP Enhanced slash commands (/acp-*) and aliases — load full steps from agent/commands/
+alwaysApply: true
+---
+
+# ACP Slash Commands
+
+When the user invokes an ACP command, **execute** it — do not only read the wrapper or skill file.
+
+## Canonical invocation
+
+Prefer `/acp-<action>` (e.g. `/acp-init`, `/acp-plan`, `/acp-status`).
+
+## Equivalent forms (same execution path)
+
+| Form | Example |
+|------|---------|
+| Slash command / skill | `/acp-init` |
+| Mention alias | `@acp-init` |
+| Source file | `@agent/commands/acp.init.md` |
+
+## Execution rules
+
+1. Resolve the command to its canonical source under `agent/commands/`.
+2. Read and follow **every step** in that source file.
+3. Treat any text after the command in the user's message as CLI-style arguments.
+4. Run associated scripts listed in the command `**Scripts**:` field when required.
+5. Do not substitute a summary for the full command workflow.
+
+See `agent/wiki/cursor-integration.md` for sync and troubleshooting.
