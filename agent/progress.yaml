@@ -859,16 +859,20 @@ current_task:
 recent_work:
   - date: 2026-06-21
     description: |
-      /acp-update — post-sync progress update after Tauri drag-drop fix and PRD sync.
+      /acp-update — final sync after shortcut cleanup, commit, and docs verification.
     items:
-      - ✅ Tauri drag-drop: added Rust-level FileDrop handler in lib.rs — reads dropped .md files and emits open-file-content event
-      - ✅ Toolbar fix: file picker 📂 always visible (was hidden when empty — catch-22)
-      - ✅ EmptyState clickable: click the drop zone to open a file
-      - ✅ PRD v1.7.0: stale version refs updated, M8 added to phase table, known limitations freshened
-      - ✅ CLI test adapted for Rust-installed environment (was asserting "not available" when Rust now exists)
-      - ✅ /acp-validate: 8/8 pass, all docs consistent
+      - ✅ All 16 shortcuts from code review addressed and committed (8376bb8)
+      - ✅ Dead code removed: useTauriFileDrop hook + import cleaned up
+      - ✅ test-baseline.md: 36→44 unit tests, added CLI smoke row (53 total)
+      - ✅ progress.yaml: duplicate recent_work entries consolidated
+      - ✅ README: duplicate "Verify your install" sections merged
+      - ✅ handleDrop: clarifying comment for Tauri's empty dataTransfer
+      - ✅ CLI smoke test: robust Rust detection, shorter timeout
+      - ✅ cargo build verified (not just cargo check)
+      - ✅ /acp-sync: all docs consistent with code (no drift found)
+      - ✅ /acp-validate: 8/8 pass, 38/38 carryovers addressed
       - ✓ Artifact health: templates only in agent/artifacts/ (no stale research)
-      - 📋 Next: git commit, git push, npm publish, visualizer migration
+      - 📋 Next: npm publish, visualizer migration
   - date: 2026-06-21
     description: |
       /acp-audit M8 plan — 10 findings; /acp-plan revision with audit corrections + task-67.
