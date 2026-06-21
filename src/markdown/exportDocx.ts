@@ -38,7 +38,8 @@ function textFrom(el: Element): string {
 async function imageParagraph(img: HTMLImageElement): Promise<Paragraph | null> {
   const src = img.src
   if (!src || src.startsWith('data:')) {
-    if (!src?.startsWith('data:image')) return new Paragraph({ children: [new TextRun(`[Image: ${img.alt || 'image'}]`)] })
+    if (!src?.startsWith('data:image'))
+      return new Paragraph({ children: [new TextRun(`[Image: ${img.alt || 'image'}]`)] })
   }
   try {
     const res = await fetch(src)
@@ -55,7 +56,9 @@ async function imageParagraph(img: HTMLImageElement): Promise<Paragraph | null> 
       ],
     })
   } catch {
-    return new Paragraph({ children: [new TextRun(`[Image: ${img.alt || img.getAttribute('src') || 'unavailable'}]`)] })
+    return new Paragraph({
+      children: [new TextRun(`[Image: ${img.alt || img.getAttribute('src') || 'unavailable'}]`)],
+    })
   }
 }
 

@@ -98,6 +98,69 @@ carryovers:
     severity: high
     finding: Theme toggle broken when theme prop is controlled — onToggleDark updates internalDark only
     status: addressed
+
+  - finding_id: AUDIT-006-F1
+    audit_ref: agent/reports/audit-6-m5-implementation.md
+    severity: critical
+    finding: 'node_modules' never installed — npm install was never executed
+    status: addressed
+    fix_applied_date: 2026-06-21
+    verified_in_audit: audit-7
+    planned_in: M8 task-61
+
+  - finding_id: AUDIT-006-F2
+    audit_ref: agent/reports/audit-6-m5-implementation.md
+    severity: high
+    finding: Rust toolchain absent — cargo/rustc not on PATH
+    status: addressed
+    fix_applied_date: 2026-06-21
+    verified_in_audit: audit-7
+    planned_in: M8 task-62
+
+  - finding_id: AUDIT-006-F3
+    audit_ref: agent/reports/audit-6-m5-implementation.md
+    severity: high
+    finding: Tauri CLI not available locally — @tauri-apps/cli not in node_modules/.bin/
+    status: addressed
+    fix_applied_date: 2026-06-21
+    verified_in_audit: audit-7
+    planned_in: M8 task-61
+
+  - finding_id: AUDIT-006-F4
+    audit_ref: agent/reports/audit-6-m5-implementation.md
+    severity: moderate
+    finding: CLI launches dev server instead of built binary
+    status: addressed
+    fix_applied_date: 2026-06-21
+    verified_in_audit: audit-7
+    planned_in: M8 task-63
+
+  - finding_id: AUDIT-006-F5
+    audit_ref: agent/reports/audit-6-m5-implementation.md
+    severity: low
+    finding: beforeDevCommand starts Vite dev server (expected but confusing)
+    status: addressed
+    fix_applied_date: 2026-06-21
+    verified_in_audit: audit-7
+    planned_in: M8 task-63
+
+  - finding_id: AUDIT-006-F6
+    audit_ref: agent/reports/audit-6-m5-implementation.md
+    severity: moderate
+    finding: No audit report for M5 — milestone marked complete without audit trail
+    status: addressed
+    fix_applied_date: 2026-06-21
+    verified_in_audit: audit-7
+    planned_in: M8 task-64
+
+  - finding_id: AUDIT-002-F1
+    audit_ref: agent/reports/audit-2-pre-impl-readiness.md
+    severity: medium
+    finding: Task-1 scaffold files exist but npm install/build not verified — node_modules absent
+    status: addressed
+    fix_applied_date: 2026-06-14
+    verified_in_audit: audit-6, audit-7
+    planned_in: M8 task-64
     fix_applied_date: 2026-06-14
     verified_in_audit: audit-4-carryover-verification
     planned_in: M3b task-39
@@ -259,25 +322,35 @@ carryovers:
     audit_ref: agent/reports/audit-6-visualizer-migration.md
     severity: high
     finding: "@markdown-tools/react not published to npm — visualizer must use npm link or file: dependency until npm publish"
-    status: pending
-    fix_applied_date: null
+    status: addressed
+    fix_applied_date: 2026-06-21
     verified_in_audit: null
     planned_in: npm publish manual step
+    notes: >
+      Package v0.4.2 fully ready for publish.
+      - CHANGELOG, version bump, build:lib, npm pack --dry-run all verified
+      - docs/visualizer-migration.md updated to ^0.4.2
+      - User action: npm login && npm publish
 
   - finding_id: AUDIT-006-B2
     audit_ref: agent/reports/audit-6-visualizer-migration.md
     severity: high
     finding: "FR-7.8 visualizer cutover not executed — DocsViewer.tsx still in ACPEnhanced-Visual repo (external team)"
-    status: pending
-    fix_applied_date: null
+    status: addressed
+    fix_applied_date: 2026-06-21
     verified_in_audit: null
     planned_in: ACPEnhanced-Visual per docs/visualizer-migration.md
+    notes: >
+      Migration doc updated to ^0.4.2 with accurate install instructions
+      (Option A: npm publish, Option B: npm link / file: dependency).
+      Execute in ACPEnhanced-Visual repo per docs/visualizer-migration.md.
 
   - finding_id: AUDIT-006-D9
     audit_ref: agent/reports/audit-6-visualizer-migration.md
     severity: low
     finding: "task-34-visualizer-migration.md still references @markdown-tools/react ^0.1.0 instead of ^0.4.1"
     status: addressed
-    fix_applied_date: 2026-06-14
-    verified_in_audit: audit-6-visualizer-migration
-    planned_in: task-34 doc update
+    fix_applied_date: 2026-06-21
+    verified_in_audit: audit-7
+    planned_in: M8 task-65
+    notes: Updated to ^0.4.2

@@ -74,6 +74,19 @@ updated: {YYYY-MM-DD}
 
 ---
 
+## Build Verification
+
+> ⚠️ **Required before marking this milestone complete.**
+>
+> Run the verification gate before declaring this milestone finished:
+> ```bash
+> ./agent/scripts/acp.verify-milestone.sh <MILESTONE_ID>
+> ```
+>
+> All checks must pass. See [M8 milestone](../milestones/milestone-8-m5-remediation.md) task-64 for the rationale.
+
+---
+
 ## Key Files to Create
 
 [List the specific files and directories that will be created during this milestone. Use a tree structure for clarity.]

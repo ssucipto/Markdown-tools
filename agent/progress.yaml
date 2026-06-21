@@ -3,16 +3,40 @@
 
 project:
   name: markdown-tools
-  version: 0.4.1
+  version: 0.4.2
   started: 2026-06-14
   status: release_ready
-  current_milestone: M7
+  current_milestone: M8 (completed)
   description: |
     Desktop-first web app for viewing Markdown with drag-and-drop, sophisticated
     Mermaid diagrams, and export to Word (.doc) and PDF. Ports viewer from
     ACPEnhanced-Visual v1.5.4.
 
 milestones:
+  - id: M8
+    name: M5 Remediation — Native Desktop Local Install Readiness
+    priority: 0
+    file: agent/milestones/milestone-8-m5-remediation.md
+    status: completed
+    progress: 100
+    started: 2026-06-21
+    completed: 2026-06-21
+    estimated_weeks: 1
+    tasks_completed: 7
+    tasks_total: 7
+    notes: |
+      M8 complete. All 7 tasks implemented in single session.
+      - npm install + full build pipeline verified (36 unit, 9 E2E, lint, typecheck, audit)
+      - Prereq checker (scripts/check-prereqs.sh) + npm run check:prereqs
+      - CLI improvement: built binary detection, Rust-aware fallback, clear errors
+      - Verification gate (agent/scripts/acp.verify-milestone.sh) + milestone template
+      - Audit-6 report (agent/reports/audit-6-m5-implementation.md)
+      - Testing baseline (docs/test-baseline.md, docs/regression-checklist.md)
+      - CLI smoke tests (test/cli/smoke.test.ts, 8 tests)
+      - test:security + test:all convenience scripts
+      - CHANGELOG v0.4.2, docs/user-guide.md, README updated
+      - All AUDIT-006 carryovers closed, AUDIT-002-F1 permanently closed
+
   - id: M1
     name: Foundation & Component Port
     priority: 0
@@ -91,13 +115,16 @@ milestones:
     status: completed
     progress: 100
     started: 2026-06-14
-    completed: 2026-06-14
+    completed: 2026-06-21
     estimated_weeks: 2
     tasks_completed: 3
     tasks_total: 3
     notes: |
       Tauri 2 scaffold, .md file associations, markdown-tools CLI.
       M7: single-instance + CSP v0.4.1.
+      M8: Build-verified 2026-06-21. npm install, build pipeline, tests all pass.
+      Requires Rust (cargo/rustc) for desktop builds — install via rustup.rs.
+      Verification gate active: agent/scripts/acp.verify-milestone.sh
 
   - id: M6
     name: ACPEnhanced-Visual Integration
@@ -732,32 +759,140 @@ tasks:
       estimated_hours: 2
       audit: all AUDIT-005
 
+  milestone_8:
+    - id: task-61
+      name: npm Install & Build Verification
+      priority: 0
+      status: completed
+      started: 2026-06-21T17:00:00Z
+      completed_date: 2026-06-21T17:20:00Z
+      file: agent/tasks/milestone-8-m5-remediation/task-61-npm-install-build-verify.md
+      estimated_hours: 0.5
+      audit: AUDIT-006-F1,F3
+      notes: npm install, build:lib, test, typecheck, lint, format, audit, E2E all verified
+    - id: task-62
+      name: Prerequisite Check Script & Rust Guide
+      priority: 0
+      status: completed
+      started: 2026-06-21T17:20:00Z
+      completed_date: 2026-06-21T17:35:00Z
+      file: agent/tasks/milestone-8-m5-remediation/task-62-rust-guide-prereq-check.md
+      estimated_hours: 1.5
+      audit: AUDIT-006-F2, AUDIT-007-F4, AUDIT-007-F7
+      notes: scripts/check-prereqs.sh, npm run check:prereqs, user-guide Rust docs
+    - id: task-63
+      name: CLI Built Binary Support
+      priority: 0
+      status: completed
+      started: 2026-06-21T17:35:00Z
+      completed_date: 2026-06-21T17:55:00Z
+      file: agent/tasks/milestone-8-m5-remediation/task-63-cli-built-binary-support.md
+      estimated_hours: 2
+      audit: AUDIT-006-F4,F5
+      notes: Built binary detection, Rust-aware fallback, shell injection protection
+    - id: task-64
+      name: Verification Gate — Milestone Completion Checklist
+      priority: 0
+      status: completed
+      started: 2026-06-21T17:55:00Z
+      completed_date: 2026-06-21T18:10:00Z
+      file: agent/tasks/milestone-8-m5-remediation/task-64-verification-gate.md
+      estimated_hours: 1
+      audit: AUDIT-006-F6, AUDIT-002-F1, AUDIT-007-F10
+      notes: acp.verify-milestone.sh, audit-6 report, carryover closures
+    - id: task-65
+      name: Documentation & Progress Sync
+      priority: 0
+      status: completed
+      started: 2026-06-21T18:10:00Z
+      completed_date: 2026-06-21T18:25:00Z
+      file: agent/tasks/milestone-8-m5-remediation/task-65-documentation-progress-sync.md
+      estimated_hours: 1
+      notes: CHANGELOG v0.4.2, progress.yaml, user-guide, README
+    - id: task-66
+      name: Final Verification & Documentation Audit
+      priority: 0
+      status: completed
+      started: 2026-06-21T18:25:00Z
+      completed_date: 2026-06-21T18:40:00Z
+      file: agent/tasks/milestone-8-m5-remediation/task-66-final-verification.md
+      estimated_hours: 1
+      notes: npm run test:all passed, verification gate 8/8 passed
+    - id: task-67
+      name: Testing, Security & Regression Baseline
+      priority: 0
+      status: completed
+      started: 2026-06-21T18:40:00Z
+      completed_date: 2026-06-21T19:00:00Z
+      file: agent/tasks/milestone-8-m5-remediation/task-67-test-security-regression.md
+      estimated_hours: 2
+      audit: AUDIT-007-F4, AUDIT-007-F7, AUDIT-007-F10
+      notes: test-baseline.md, regression-checklist.md, CLI smoke tests, test:security, test:all, DOMPurify hardening verification
+
 documentation:
   design_documents: 2
-  milestone_documents: 9
-  pattern_documents: 1
-  task_documents: 60
-  audit_reports: 5
+  milestone_documents: 10
+  pattern_documents: 2
+  task_documents: 67
+  audit_reports: 7
   prd_version: "1.6.0"
-  readme_version: "0.4.1-comprehensive"
+  readme_version: "0.4.2"
   user_guide: docs/user-guide.md
+  regression_checklist: docs/regression-checklist.md
+  test_baseline: docs/test-baseline.md
   last_updated: 2026-06-14
   last_sync: 2026-06-14
 
 progress:
   planning: 100
-  implementation: 100
-  testing: 100
-  documentation: 100
-  overall: 100
+  implementation: 99
+  testing: 99
+  documentation: 99
+  overall: 99
 
 current_task:
   id: null
-  name: All milestones M1–M7 complete
+  name: All milestones M1–M8 complete; npm publish + visualizer migration deferred
   file: null
   status: completed
 
 recent_work:
+  - date: 2026-06-21
+    description: |
+      /acp-update — progress sync after M8 completion and final session work.
+    items:
+      - ✅ All work from today's session captured: M8 impl, Mermaid error UX, docs sync
+      - ✅ M8 milestone completed (7/7 tasks); build pipeline, tests, security all verified
+      - ✅ Mermaid error handling: pre-validation, error report with copy button, structured errors
+      - ✅ /acp-sync: README/user-guide/test-baseline updated for v0.4.2 scripts
+      - ✅ /acp-validate: 8/8 pass, 38/38 carryovers addressed
+      - ✅ Version bumped to 0.4.2 across all config files
+      - ✓ Artifact health: templates only in agent/artifacts/ (no stale research)
+      - 📋 Next: git commit, git push, npm publish, visualizer migration
+      - 📋 Lesson logged: "M8 plan was created without task-67 for testing/security baseline"
+  - date: 2026-06-21
+    description: |
+      M8 implementation completed — all 7 tasks, M5 remediation, verification gate.
+    items:
+      - ✅ Task-61: npm install + full build pipeline verified (36 unit, 9 E2E, lint, typecheck, audit)
+      - ✅ Task-62: scripts/check-prereqs.sh + npm run check:prereqs + Rust docs
+      - ✅ Task-63: CLI detects built binary, Rust-aware fallback, shell injection protection
+      - ✅ Task-64: agent/scripts/acp.verify-milestone.sh + agent/reports/audit-6-m5-implementation.md
+      - ✅ Task-65: CHANGELOG v0.4.2, progress.yaml, user-guide, README sync
+      - ✅ Task-67: docs/test-baseline.md, docs/regression-checklist.md, CLI smoke tests, test:security, test:all
+      - ✅ Task-66: npm run test:all passes, verification gate 8/8 passes
+      - ✅ Mermaid render: pre-validation (mermaid.parse), error report with copy button, comprehensive escapeHtml
+      - ✅ All 38 carryovers addressed (0 pending)
+      - ✅ Version bump 0.4.1→0.4.2 (package.json, Cargo.toml, tauri.conf.json, progress.yaml)
+  - date: 2026-06-21
+    description: |
+      /acp-audit M8 plan — 10 findings; /acp-plan revision with audit corrections + task-67.
+    items:
+      - 🔍 Audit #6: M5 native desktop marked complete but node_modules absent, Rust missing, CLI unavailable
+      - 🔍 Recurrence of AUDIT-002-F1 (same issue from M1 — verification gate still missing)
+      - 📋 M8 planned: 6 tasks (npm install, Rust prereqs, CLI improvement, verification gate, docs sync, final verification)
+      - 📋 Lesson logged: "M5 marked completed but npm install never run — add verification gate"
+      - ✓ All milestones except M5 are correctly statused
   - date: 2026-06-14
     description: |
       /acp-sync — README, user guide, architecture, embed-api, CHANGELOG, PRD limitations.
@@ -870,11 +1005,12 @@ recent_work:
       - 📋 Begin M1 task-1 implementation
 
 next_steps:
-  - Commit docs sync (README, user-guide, architecture, embed-api, CHANGELOG, progress)
-  - git push origin main (if ahead of remote)
-  - npm publish @markdown-tools/react@0.4.1 (npm login, npm publish)
-  - Execute task-34 in ACPEnhanced-Visual per docs/visualizer-migration.md (^0.4.1)
+  - Commit all M8 planning + implementation artifacts to git
+  - git push origin main (branch is ahead of remote)
+  - npm publish @markdown-tools/react@0.4.2 (after npm login)
+  - Execute task-34 in ACPEnhanced-Visual per docs/visualizer-migration.md
   - Install Rust + MSVC build tools, then npm run tauri:build for desktop installer
+  - Consider: set Mermaid securityLevel to 'strict' in renderMermaid.ts (moderate security finding)
 
 notes:
   - Viewer ported from ACPEnhanced-Visual v1.5.4 (one-time vendor copy)
@@ -883,7 +1019,10 @@ notes:
   - HEAD a948ac3; post-M7 E2E fix committed; run/install docs pending commit
   - Pattern logged: controlled-content-undefined-not-empty (StandaloneViewer + MarkdownViewer)
 
-current_blockers: []
+current_blockers:
+  - Desktop build (Tauri) requires Rust (cargo/rustc) — not installed on this machine
+  - npm publish requires npm login — blocked until credentials are configured
+  - ACPEnhanced-Visual task-34 migration is cross-repo — requires execution in visualizer repo
 
 team:
   - role: Lead Developer

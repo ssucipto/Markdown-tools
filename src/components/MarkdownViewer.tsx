@@ -7,7 +7,7 @@ import { exportDocxDocument } from '@/markdown/exportDocx'
 import { openPdfPrintWindow, exportPdfDocument } from '@/markdown/exportPdf'
 import { exportWordDocument } from '@/markdown/exportWord'
 import { parseMarkdown } from '@/markdown/parse'
-import { renderMermaidDiagrams, resetMermaidForTheme } from '@/markdown/renderMermaid'
+import { renderMermaidDiagrams, resetMermaidForTheme, type MermaidError } from '@/markdown/renderMermaid'
 import type { MarkdownViewerProps } from '@/types/viewer'
 import { ErrorBoundary } from './ErrorBoundary'
 import { FileSidebar } from './FileSidebar'
@@ -57,6 +57,8 @@ export function MarkdownViewer({
   const [mermaidZoom, setMermaidZoom] = useState<{ svg: string; source: string } | null>(null)
   const [exporting, setExporting] = useState(false)
   const [viewSource, setViewSource] = useState(false)
+  const [mermaidErrors, setMermaidErrors] = useState<MermaidError[]>([])
+  const [showMermaidReport, setShowMermaidReport] = useState(false)
   const scrollPosRef = useRef(0)
   const { toast, showToast } = useToast()
   const [activeId, setActiveId] = useState('')
@@ -125,12 +127,19 @@ export function MarkdownViewer({
     setMermaidZoom({ svg: svgHtml, source })
   }, [])
 
+  const onMermaidErrors = useCallback((errors: MermaidError[]) => {
+    setMermaidErrors(errors)
+    if (errors.length > 0) {
+      setShowMermaidReport(true)
+    }
+  }, [])
+
   const runMermaid = useCallback(async () => {
     const el = contentRef.current
     if (!el || !html || viewSource) return
-    await renderMermaidDiagrams(el, dark, handleMermaidZoom, mermaidRetryRef)
+    await renderMermaidDiagrams(el, dark, handleMermaidZoom, mermaidRetryRef, onMermaidErrors)
     attachMermaidToolbars(el)
-  }, [html, dark, handleMermaidZoom, viewSource])
+  }, [html, dark, handleMermaidZoom, viewSource, onMermaidErrors])
 
   const runExportMermaid = useCallback(async () => {
     const el = exportRef.current
@@ -350,6 +359,10 @@ export function MarkdownViewer({
         <FileSidebar files={files} selectedPath={documentPath} dark={dark} onSelect={handleSelectFile} />
       )}
 
+      {showMermaidReport && mermaidErrors.length > 0 && (
+        <MermaidErrorReport errors={mermaidErrors} onDismiss={() => setShowMermaidReport(false)} />
+      )}
+
       <main className="flex-1 flex overflow-hidden">
         <div
           ref={contentRef}
@@ -361,7 +374,9 @@ export function MarkdownViewer({
           ) : viewSource ? (
             <pre
               className={`whitespace-pre-wrap font-mono text-sm p-4 rounded-lg border ${
-                dark ? 'bg-gray-800 border-gray-700 text-gray-200' : 'bg-gray-50 border-gray-200 text-gray-800'
+                dark
+                  ? 'bg-gray-800 border-gray-700 text-gray-200'
+                  : 'bg-gray-50 border-gray-200 text-gray-800'
               }`}
               aria-label="Markdown source"
             >
@@ -425,6 +440,77 @@ export function MarkdownViewer({
           {toast}
         </div>
       )}
+    </div>
+  )
+}
+
+/** Floating error report banner for Mermaid diagram failures */
+function MermaidErrorReport({ errors, onDismiss }: { errors: MermaidError[]; onDismiss: () => void }) {
+  const reportText = useMemo(() => {
+    const lines = [
+      `Mermaid Diagram Error Report (${errors.length} failure(s))`,
+      `Generated: ${new Date().toISOString()}`,
+      '',
+    ]
+    errors.forEach((err, i) => {
+      lines.push(`--- Error #${i + 1} ---`)
+      lines.push(`Type:    ${err.type}`)
+      lines.push(`Message: ${err.message}`)
+      lines.push(`Source:`)
+      err.source.split('\n').forEach((line) => lines.push(`  ${line}`))
+      lines.push('')
+    })
+    lines.push('--- End of Report ---')
+    return lines.join('\n')
+  }, [errors])
+
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(reportText)
+    } catch {
+      // fallback: select text manually
+    }
+  }, [reportText])
+
+  if (errors.length === 0) return null
+
+  const bg = 'bg-amber-50 border-amber-300 text-amber-900'
+  const darkBg = 'dark:bg-amber-900/20 dark:border-amber-700 dark:text-amber-200'
+
+  return (
+    <div
+      className={`fixed bottom-4 right-4 z-50 max-w-md ${bg} ${darkBg} border rounded-lg shadow-lg p-4`}
+      role="alert"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2 text-sm font-semibold">
+          <span>⚠️</span>
+          <span>
+            {errors.length} diagram{errors.length > 1 ? 's' : ''} failed to render
+          </span>
+        </div>
+        <button
+          onClick={onDismiss}
+          className="text-amber-500 hover:text-amber-700 text-lg leading-none"
+          aria-label="Dismiss error report"
+        >
+          &times;
+        </button>
+      </div>
+      <div className="mt-2 text-xs space-y-1">
+        {errors.slice(0, 3).map((err, i) => (
+          <div key={i} className="truncate">
+            <span className="font-medium">#{err.index}:</span> {err.type} — {err.message.slice(0, 60)}
+          </div>
+        ))}
+        {errors.length > 3 && <div className="text-amber-600">…and {errors.length - 3} more</div>}
+      </div>
+      <button
+        onClick={handleCopy}
+        className="mt-2 text-xs px-2 py-1 rounded bg-amber-200 hover:bg-amber-300 dark:bg-amber-700 dark:hover:bg-amber-600 transition-colors"
+      >
+        📋 Copy error report
+      </button>
     </div>
   )
 }

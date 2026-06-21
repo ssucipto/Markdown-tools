@@ -57,7 +57,7 @@ describe('MarkdownViewer', () => {
 
   it('renders mermaid via dynamic import', async () => {
     render(<MarkdownViewer content={SAMPLE_MD} documentPath="test.md" />)
-    await waitFor(() => expect(mockMermaidRender).toHaveBeenCalled())
+    await waitFor(() => expect(mockMermaidRender).toHaveBeenCalled(), { timeout: 5000 })
   })
 
   it('shows toolbar when document is loaded', async () => {

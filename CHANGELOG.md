@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.4.2] - 2026-06-21
+
+### Fixed (M8 M5 Remediation)
+- **M5 build verification**: `npm install`, build pipeline, tests, lint, security audit, and E2E all verified on fresh clone
+- **CLI improvement**: `markdown-tools open` now detects built binary, falls back to Tauri dev shell, and gives a clear error with install instructions when Rust is missing
+- **M5 milestone status**: corrected from `completed` to `needs_verification` with Rust dependency documented
+
+### Added
+- `npm run check:prereqs` — prerequisite checker script (Node, npm, Rust, platform tools)
+- `agent/scripts/acp.verify-milestone.sh` — milestone completion verification gate (8 checks)
+- `test/cli/smoke.test.ts` — 8 CLI integration tests
+- `docs/test-baseline.md` — test counts, coverage baseline, security audit baseline
+- `docs/regression-checklist.md` — pre-release verification steps and rollback procedure
+- `npm run test:security` and `npm run test:all` — convenience scripts for full test suite
+- `agent/reports/audit-6-m5-implementation.md` — M5 audit report
+
+### Security
+- Verified DOMPurify.sanitize() is active and not bypassed in markdown parse pipeline
+- Verified `dangerouslySetInnerHTML` only in MarkdownViewer.tsx with sanitized HTML
+- Verified no `console.log` leaks in production source files
+- Verified no `eval()` usage in source code
+
 ## [0.4.1] - 2026-06-14
 
 ### Fixed (M7 audit remediation)

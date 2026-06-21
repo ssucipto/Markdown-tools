@@ -48,14 +48,30 @@ Markdown-tools is a **desktop-first markdown viewer**. Open files locally, previ
 | **macOS**: Xcode CLI tools | `xcode-select --install` |
 | **Linux**: webkit2gtk, etc. | See [Tauri Linux deps](https://v2.tauri.app/start/prerequisites/) |
 
-After installing Rust, **restart your terminal** and verify:
+### Quick check — run this first
 
 ```bash
-cargo --version
-rustc --version
+npm run check:prereqs
 ```
 
-If you see `program not found` when running `npm run tauri:build`, Rust is missing or not on your `PATH`.
+This script checks for Node.js ≥20, npm, `node_modules/` (project dependencies), and Rust toolchain. It works on macOS, Linux, and Windows, and prints install URLs for anything missing.
+
+### Installing Rust
+
+If `npm run check:prereqs` shows Rust is missing:
+
+1. Visit [rustup.rs](https://rustup.rs/) and follow the instructions, or run:
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
+2. **Restart your terminal** (or run `source "$HOME/.cargo/env"`)
+3. Verify:
+   ```bash
+   cargo --version
+   rustc --version
+   ```
+
+If `npm run tauri:build` still reports `program not found`, Rust is not on your `PATH`.
 
 ---
 
@@ -83,6 +99,18 @@ npm install
 ```
 
 This installs dependencies once. You do not need to repeat `npm install` unless `package.json` changes.
+
+### Verify your install
+
+After setup, run these checks to confirm everything works:
+
+```bash
+npm run check:prereqs      # Verify Node, npm, deps, and Rust (if installed)
+npm test                    # Run unit tests (36+ tests)
+npm run test:all            # Full suite: typecheck → lint → unit → E2E → security
+npm run test:security       # Security audit only (must pass with no high/critical)
+bash agent/scripts/acp.verify-milestone.sh M8   # Milestone verification gate
+```
 
 ---
 
@@ -247,7 +275,11 @@ markdown-tools open C:\Project\Markdown-tools\README.md
 markdown-tools open /c/Users/you/notes/todo.md
 ```
 
-`open` requires Rust and runs `tauri dev` under the hood. Use `dev` alone if you only want the browser UI.
+`open` first looks for a production Tauri binary (built via `npm run tauri:build`). If found, it launches the binary directly — no dev server needed. If no binary is found but Rust and Tauri CLI are available, it falls back to `npx tauri dev`. If Rust is missing entirely, it prints a clear error with install instructions.
+
+Use `markdown-tools dev` alone if you only want the browser UI.
+
+Run `npm run check:prereqs` before attempting to use the desktop app to verify all prerequisites are installed.
 
 ---
 

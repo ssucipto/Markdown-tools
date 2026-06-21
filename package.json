@@ -1,6 +1,6 @@
 {
   "name": "@markdown-tools/react",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "React markdown viewer with Mermaid, KaTeX, export, and embed API",
   "type": "module",
   "license": "MIT",
@@ -48,6 +48,9 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"test/**/*.{ts,tsx}\" \"e2e/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"test/**/*.{ts,tsx}\" \"e2e/**/*.ts\"",
     "perf:check": "node scripts/lighthouse-check.mjs",
+    "check:prereqs": "bash scripts/check-prereqs.sh",
+    "test:security": "npm audit --audit-level=high --omit=dev",
+    "test:all": "npm run typecheck && npm run lint && npm test && npm run test:e2e && npm run test:security",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",

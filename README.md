@@ -6,7 +6,7 @@ Drop `.md` files, read richly rendered GitHub-flavored preview, **Mermaid** diag
 
 > Viewer ported from `acp-visualizer` v1.5.4 (`DocsViewer.tsx`). See [ADR-006](agent/memory/decisions.md).
 
-**Current release**: v0.4.1 (M1–M7 complete)
+**Current release**: v0.4.2 (M1–M8 complete)
 
 ---
 
@@ -34,6 +34,8 @@ Drop `.md` files, read richly rendered GitHub-flavored preview, **Mermaid** diag
 |------|----------|
 | **Web app** | [Node.js](https://nodejs.org/) 20+, `npm install` |
 | **Desktop (Tauri)** | Above + [Rust](https://rustup.rs/) + [platform build tools](https://v2.tauri.app/start/prerequisites/) |
+
+Run `npm run check:prereqs` to verify everything is installed before building.
 
 ### Quick start (browser) — recommended
 
@@ -98,6 +100,14 @@ npm run preview      # → http://localhost:4173
 | `markdown-tools dev` | Same as `npm run dev`, any cwd after `npm link` | No |
 | `npm run tauri:dev` | Native window + hot reload | Yes |
 | `npm run tauri:build` | OS installer + `.md` file associations | Yes |
+
+### Verify your install
+
+```bash
+npm run check:prereqs    # Check Node, npm, deps, Rust
+npm run test:all         # Full test suite (typecheck + lint + tests + security)
+bash agent/scripts/acp.verify-milestone.sh M8   # 8-check milestone gate
+```
 | `markdown-tools open file.md` | Open file in Tauri dev | Yes |
 
 ---

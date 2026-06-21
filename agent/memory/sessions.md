@@ -2,6 +2,41 @@
 # Format: YAML blocks, last 3 loaded per session, auto-compacted at 15 entries
 # DO NOT edit manually — updated by /acp-commit
 
+- date: 2026-06-21
+  executor: copilot
+  branch: main
+  tasks_completed:
+    - M8 task-61
+    - M8 task-62
+    - M8 task-63
+    - M8 task-64
+    - M8 task-65
+    - M8 task-66
+    - M8 task-67
+  done:
+    - m8-m5-remediation-complete
+    - mermaid-error-reporting-ux
+    - acp-sync-docs-updated
+    - acp-validate-cleared
+    - acp-update-progress-synced
+    - version-bump-0.4.2
+    - all-38-carryovers-addressed
+  deferred:
+    - npm-publish → requires npm login
+    - visualizer-migration-task-34 → cross-repo
+    - rust-install → requires rustup
+  key_fact: "M8 remediation fixed all 5 unbuildable M5 issues: node_modules installed, Rust docs added, CLI gives clear errors, verification gate created (8 checks), and testing/security baseline documented. Mermaid renderer now pre-validates syntax and shows a copyable error report."
+
+- date: 2026-06-21
+  executor: copilot
+  branch: main
+  tasks_completed: []
+  done:
+    - acp-init-full-context-load
+    - m5-audit-native-desktop-implementation
+  deferred: []
+  key_fact: "M5 native desktop is scaffolded but not runnable — node_modules missing, Rust toolchain absent, no npm install ever run. Milestone marked completed prematurely."
+
 - date: 2026-06-14
   executor: cursor
   branch: main

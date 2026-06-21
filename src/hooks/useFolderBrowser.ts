@@ -7,10 +7,7 @@ function isMarkdownName(name: string): boolean {
   return MD_EXT.test(name)
 }
 
-async function collectMarkdownFiles(
-  dirHandle: FileSystemDirectoryHandle,
-  prefix = '',
-): Promise<DocFile[]> {
+async function collectMarkdownFiles(dirHandle: FileSystemDirectoryHandle, prefix = ''): Promise<DocFile[]> {
   const files: DocFile[] = []
   const entries = (
     dirHandle as FileSystemDirectoryHandle & {
@@ -36,17 +33,20 @@ export function useFolderBrowser() {
   const [fileMap, setFileMap] = useState<Map<string, File>>(new Map())
   const [loading, setLoading] = useState(false)
 
-  const readFromHandle = useCallback(async (path: string): Promise<string | null> => {
-    if (!dirHandle) return null
-    const parts = path.split('/')
-    let current: FileSystemDirectoryHandle = dirHandle
-    for (let i = 0; i < parts.length - 1; i++) {
-      current = await current.getDirectoryHandle(parts[i])
-    }
-    const fileHandle = await current.getFileHandle(parts[parts.length - 1])
-    const file = await fileHandle.getFile()
-    return file.text()
-  }, [dirHandle])
+  const readFromHandle = useCallback(
+    async (path: string): Promise<string | null> => {
+      if (!dirHandle) return null
+      const parts = path.split('/')
+      let current: FileSystemDirectoryHandle = dirHandle
+      for (let i = 0; i < parts.length - 1; i++) {
+        current = await current.getDirectoryHandle(parts[i])
+      }
+      const fileHandle = await current.getFileHandle(parts[parts.length - 1])
+      const file = await fileHandle.getFile()
+      return file.text()
+    },
+    [dirHandle],
+  )
 
   const readFile = useCallback(
     async (path: string): Promise<string | null> => {

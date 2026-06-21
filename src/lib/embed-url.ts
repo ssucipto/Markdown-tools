@@ -1,7 +1,5 @@
 /** Parse visualizer-style docs URL search params for embed consumers. */
-export function parseDocsSearchParams(
-  search: string | URLSearchParams,
-): { file?: string; anchor?: string } {
+export function parseDocsSearchParams(search: string | URLSearchParams): { file?: string; anchor?: string } {
   const params = typeof search === 'string' ? new URLSearchParams(search) : search
   const file = params.get('file') ?? undefined
   const anchor = params.get('anchor') ?? undefined

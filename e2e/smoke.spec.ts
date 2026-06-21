@@ -67,10 +67,7 @@ test('export pdf opens print flow without error', async ({ page, context }) => {
   await page.goto('/')
   await filePicker(page).setInputFiles(basicDoc)
   await expect(page.getByRole('heading', { name: 'Sample Basic' })).toBeVisible()
-  const [popup] = await Promise.all([
-    context.waitForEvent('page'),
-    page.getByLabel('Export to PDF').click(),
-  ])
+  const [popup] = await Promise.all([context.waitForEvent('page'), page.getByLabel('Export to PDF').click()])
   await expect(popup.locator('body')).toBeAttached({ timeout: 5000 })
   await popup.close()
 })

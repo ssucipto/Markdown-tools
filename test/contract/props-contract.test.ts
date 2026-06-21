@@ -46,7 +46,11 @@ describe('MarkdownViewerProps contract', () => {
 
   it('DocFile shape matches visualizer listDocs', () => {
     const file = { name: 'readme.md', path: 'docs/readme.md', dir: 'docs' }
-    expect(file).toMatchObject({ name: expect.any(String), path: expect.any(String), dir: expect.any(String) })
+    expect(file).toMatchObject({
+      name: expect.any(String),
+      path: expect.any(String),
+      dir: expect.any(String),
+    })
   })
 
   it('public library entry exports viewer and URL helpers', () => {

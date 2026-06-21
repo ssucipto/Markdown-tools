@@ -1,6 +1,6 @@
 # ACPEnhanced-Visual Migration Guide
 
-**Package**: `@markdown-tools/react` **^0.4.1**  
+**Package**: `@markdown-tools/react` **^0.4.2**  
 **Status**: Migration executes in **ACPEnhanced-Visual** repo (not this repo)  
 **Strategy**: [ADR-006](../agent/memory/decisions.md) — visualizer keeps server `listDocs` / `readDoc`; markdown-tools is the **viewer plugin** (render, Mermaid, KaTeX, export).
 
