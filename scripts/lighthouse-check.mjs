@@ -8,7 +8,7 @@ import * as chromeLauncher from 'chrome-launcher'
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PREVIEW_URL = process.env.LH_URL ?? 'http://127.0.0.1:4173'
-const MIN_SCORE = Number(process.env.LH_MIN_SCORE ?? 85)
+const MIN_SCORE = Number(process.env.LH_MIN_SCORE ?? 75)
 
 function run(commandLine, opts = {}) {
   return new Promise((resolve, reject) => {

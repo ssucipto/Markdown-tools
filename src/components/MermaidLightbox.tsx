@@ -147,6 +147,7 @@ export function ImageLightbox({ src, onClose }: ImageLightboxProps) {
       <img
         src={src}
         alt=""
+        loading="lazy"
         className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       />

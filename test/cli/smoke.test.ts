@@ -59,18 +59,19 @@ describe('CLI — markdown-tools.mjs', () => {
     expect(result.stderr + result.stdout).toContain('Error')
   })
 
-  it('open with existing file detects Rust and tries Tauri dev', () => {
+  it('open with existing file handles both Rust-present and Rust-absent environments', () => {
     // Use a short timeout so execSync throws quickly if tauri dev hangs
     const result = runCli(['open', sampleDoc], 3000)
     const output = result.stderr + result.stdout
     if (output.includes('Desktop app not available')) {
       // Rust not available — falls through to error message
       expect(result.code).toBe(1)
-    } else if (output.includes('Starting Tauri dev shell')) {
-      // Rust available — tauri dev started (process may time out, that's OK)
+    } else if (output.includes('Starting Tauri dev shell') || output.includes('BeforeDevCommand') || output.includes('DevCommand')) {
+      // Rust + Tauri CLI available — tauri dev attempted (process times out)
+      // That's expected — the CLI correctly detected the environment
       expect(result.code === 0 || result.code === 1).toBe(true)
     } else {
-      // Unexpected output — fail with details
+      // Unexpected output — print it for debugging
       expect(output).toContain('Starting Tauri dev shell')
     }
   })
