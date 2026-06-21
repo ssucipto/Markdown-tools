@@ -3,7 +3,7 @@
 **Project Name**: Markdown-tools  
 **Created**: 2026-06-14  
 **Status**: Active  
-**Version**: 1.6.0  
+**Version**: 1.7.0  
 **Author**: Product / Engineering (ACP session)  
 **Last reviewed**: 2026-06-14 (post-M7 sync — E2E, run/install docs)  
 **Planning**: [agent/progress.yaml](../progress.yaml) · M1–M7 · 60 tasks · [architecture.md](architecture.md)
@@ -652,14 +652,14 @@ Five open questions were reviewed against project goals, source audit, and compe
 | FR-2.8 | KaTeX rendering for `$...$` and `$$...$$` in preview | P2 | Phase 2 |
 | FR-2.9 | Read-only “View source” toggle showing raw `.md` | P2 | Phase 2 |
 
-### Known limitations (v0.4.1 — communicate in README and [user guide](../../docs/user-guide.md))
+### Known limitations (v0.4.2 — communicate in README and [user guide](../../docs/user-guide.md))
 
 1. Word export offers both `.docx` (primary) and `.doc` (HTML fallback).
 2. PDF export uses the browser print dialog (popup must be allowed).
 3. No in-app markdown editing (view-only).
 4. DOCX math exports as `[math]` text placeholder — no OMML yet.
 5. Tauri installer requires local Rust toolchain to build (`cargo` on PATH).
-6. CLI `markdown-tools open` requires Rust (Tauri dev); use `markdown-tools dev` + 📂 for browser-only workflow.
+6. CLI `markdown-tools open` requires a built binary (`npm run tauri:build`) or Rust. Run `npm run check:prereqs` first. Use `markdown-tools dev` + 📂 for browser-only workflow.
 7. ACPEnhanced-Visual cutover pending — see [visualizer-migration.md](../../docs/visualizer-migration.md).
 
 ---
@@ -676,12 +676,13 @@ Five open questions were reviewed against project goals, source audit, and compe
 | Integration | [M6 Visualizer Integration](../milestones/milestone-6-visualizer-integration.md) | task-29 … task-35 | 2 ✅ |
 | Phase 3 | [M5 Native Desktop](../milestones/milestone-5-native-desktop.md) | task-26 … task-28 | 2 ✅ |
 | Phase 2b | [M7 Audit Remediation](../milestones/milestone-7-m4-m6-audit-remediation.md) | task-49 … task-60 | 2 ✅ |
+| Phase 3b | [M8 M5 Remediation](../milestones/milestone-8-m5-remediation.md) | task-61 … task-67 | 1 ✅ |
 
-**Total**: 60 tasks · M1–M7 complete · **v0.4.1 release-ready**.
+**Total**: 67 tasks · M1–M8 complete · **v0.4.2 release-ready**.
 
 **Remaining external work**: `npm publish @markdown-tools/react`; execute task-34 in ACPEnhanced-Visual repo.
 
-**Embed props status (v0.4.1)**: FR-7.1–7.7 implemented in package; FR-7.8 (visualizer repo cutover) pending external execution.
+**Embed props status (v0.4.2)**: FR-7.1–7.7 implemented in package; FR-7.8 (visualizer repo cutover) pending external execution.
 
 **User documentation**: [docs/user-guide.md](../../docs/user-guide.md) · [docs/embed-api.md](../../docs/embed-api.md)
 

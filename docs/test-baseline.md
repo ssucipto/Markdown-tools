@@ -10,9 +10,9 @@
 
 | Suite | Files | Tests | Status |
 |-------|-------|-------|--------|
-| Unit (Vitest) | 8 | 36 | ✅ All pass |
+| Unit (Vitest) | 9 (incl. 8 CLI smoke) | 44 | ✅ All pass |
 | E2E (Playwright) | 2 | 9 | ✅ All pass |
-| **Total** | **10** | **45** | ✅ |
+| **Total** | **11** | **53** | ✅ |
 
 ## Coverage (src/markdown/*)
 
@@ -34,6 +34,7 @@ Coverage is collected via `@vitest/coverage-v8`. Run `npm run test:coverage` to 
 | SVG | `test/lib/svg-to-png.test.ts` | 3 | Canvas rendering, error handling |
 | HTML Entities | `test/lib/html-entities.test.ts` | 2 | Encode/decode data attributes |
 | Contract | `test/contract/props-contract.test.ts` | 4 | MarkdownViewerProps, embed API |
+| CLI smoke | `test/cli/smoke.test.ts` | 8 | --help, open errors, usage, Rust detection |
 | E2E smoke | `e2e/smoke.spec.ts` | 8 | Empty state, file picker, mermaid, export, view source |
 | E2E math | `e2e/math.spec.ts` | 1 | KaTeX render |
 

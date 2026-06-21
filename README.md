@@ -101,13 +101,6 @@ npm run preview      # → http://localhost:4173
 | `npm run tauri:dev` | Native window + hot reload | Yes |
 | `npm run tauri:build` | OS installer + `.md` file associations | Yes |
 
-### Verify your install
-
-```bash
-npm run check:prereqs    # Check Node, npm, deps, Rust
-npm run test:all         # Full test suite (typecheck + lint + tests + security)
-bash agent/scripts/acp.verify-milestone.sh M8   # 8-check milestone gate
-```
 | `markdown-tools open file.md` | Open file in Tauri dev | Yes |
 
 ---

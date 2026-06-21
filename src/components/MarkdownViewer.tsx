@@ -214,7 +214,11 @@ export function MarkdownViewer({
       e.preventDefault()
       setDragOver(false)
       const file = e.dataTransfer.files[0]
-      if (!file) return
+      if (!file) {
+        // In Tauri WKWebView, dataTransfer.files is empty for native drops.
+        // The Rust-level DragDrop handler in lib.rs catches those instead.
+        return
+      }
       loadFile(file)
     },
     [loadFile],
@@ -370,7 +374,7 @@ export function MarkdownViewer({
           className={`flex-1 overflow-y-auto p-6 ${fontSizeClass}`}
         >
           {!hasContent ? (
-            <EmptyState dark={dark} dragOver={dragOver} />
+            <EmptyState dark={dark} dragOver={dragOver} onPickFile={handleFilePick} />
           ) : viewSource ? (
             <pre
               className={`whitespace-pre-wrap font-mono text-sm p-4 rounded-lg border ${
@@ -404,7 +408,7 @@ export function MarkdownViewer({
       </main>
 
       <Toolbar
-        visible={hasContent}
+        visible={true} // Always visible so 📂 file picker is accessible even when empty
         dark={dark}
         fontSize={fontSize}
         exporting={exporting}

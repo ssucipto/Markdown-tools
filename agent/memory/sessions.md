@@ -5,6 +5,24 @@
 - date: 2026-06-21
   executor: copilot
   branch: main
+  tasks_completed: []
+  done:
+    - tauri-drag-drop-rust-handler
+    - toolbar-always-visible-fix
+    - emptystate-clickable
+    - prd-v1-7-0-sync
+    - cli-test-rust-adapted
+    - acp-sync-docs-verified
+    - acp-validate-passed
+  deferred:
+    - git-commit → working tree has uncommitted changes
+    - npm-publish → requires npm login
+    - visualizer-migration-task-34 → cross-repo
+  key_fact: "Tauri drag-drop fixed via Rust-level FileDrop handler in lib.rs — reads dropped .md files directly and emits open-file-content event. Toolbar file picker now always visible. PRD refreshed to v1.7.0 with M8 phase table entry."
+
+- date: 2026-06-21
+  executor: copilot
+  branch: main
   tasks_completed:
     - M8 task-61
     - M8 task-62

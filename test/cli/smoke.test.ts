@@ -59,11 +59,20 @@ describe('CLI — markdown-tools.mjs', () => {
     expect(result.stderr + result.stdout).toContain('Error')
   })
 
-  it('open with existing file gives helpful error when Rust/binary missing', () => {
-    const result = runCli(['open', sampleDoc])
-    // Should give the "Desktop app not available" message (since no Rust and no built binary)
-    expect(result.stderr + result.stdout).toContain('Desktop app not available')
-    expect(result.code).toBe(1)
+  it('open with existing file detects Rust and tries Tauri dev', () => {
+    // Use a short timeout so execSync throws quickly if tauri dev hangs
+    const result = runCli(['open', sampleDoc], 3000)
+    const output = result.stderr + result.stdout
+    if (output.includes('Desktop app not available')) {
+      // Rust not available — falls through to error message
+      expect(result.code).toBe(1)
+    } else if (output.includes('Starting Tauri dev shell')) {
+      // Rust available — tauri dev started (process may time out, that's OK)
+      expect(result.code === 0 || result.code === 1).toBe(true)
+    } else {
+      // Unexpected output — fail with details
+      expect(output).toContain('Starting Tauri dev shell')
+    }
   })
 
   it('unknown command shows error', () => {

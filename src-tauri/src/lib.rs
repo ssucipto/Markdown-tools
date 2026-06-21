@@ -45,6 +45,20 @@ pub fn run() {
 
       Ok(())
     })
+    .on_window_event(|window, event| {
+      if let tauri::WindowEvent::DragDrop(drop_event) = event {
+        if let tauri::DragDropEvent::Drop { paths, position: _ } = drop_event {
+          for path in paths {
+            if path.extension().is_some_and(|ext| ext == "md" || ext == "markdown") {
+              if let Some(path_str) = path.to_str() {
+                emit_open_file(&window.app_handle(), path_str);
+              }
+              break;
+            }
+          }
+        }
+      }
+    })
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

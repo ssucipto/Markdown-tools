@@ -164,17 +164,35 @@ export function DragOverlay() {
   )
 }
 
-export function EmptyState({ dark, dragOver }: { dark: boolean; dragOver: boolean }) {
+export function EmptyState({
+  dark,
+  dragOver,
+  onPickFile,
+}: {
+  dark: boolean
+  dragOver: boolean
+  onPickFile?: () => void
+}) {
   return (
     <div className="flex items-center justify-center h-full">
       <div
-        className={`text-center max-w-sm p-8 border-2 border-dashed rounded-xl transition-colors ${
+        className={`text-center max-w-sm p-8 border-2 border-dashed rounded-xl transition-colors cursor-pointer ${
           dragOver
             ? 'border-blue-400 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/20'
             : dark
               ? 'border-gray-600 hover:border-gray-500'
               : 'border-gray-300 hover:border-gray-400'
         }`}
+        onClick={onPickFile}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onPickFile?.()
+          }
+        }}
+        aria-label="Open markdown file"
       >
         <div className="text-4xl mb-3" aria-hidden="true">
           📄
@@ -182,9 +200,7 @@ export function EmptyState({ dark, dragOver }: { dark: boolean; dragOver: boolea
         <p className={`text-sm font-medium mb-1 ${dark ? 'text-gray-300' : 'text-gray-700'}`}>
           Drop a <code className="px-1 rounded bg-gray-100 dark:bg-gray-700 text-xs">.md</code> file here
         </p>
-        <p className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-400'}`}>
-          or use the 📂 button to open a file
-        </p>
+        <p className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-400'}`}>or click here to open a file</p>
       </div>
     </div>
   )
