@@ -66,7 +66,11 @@ describe('CLI — markdown-tools.mjs', () => {
     if (output.includes('Desktop app not available')) {
       // Rust not available — falls through to error message
       expect(result.code).toBe(1)
-    } else if (output.includes('Starting Tauri dev shell') || output.includes('BeforeDevCommand') || output.includes('DevCommand')) {
+    } else if (
+      output.includes('Starting Tauri dev shell') ||
+      output.includes('BeforeDevCommand') ||
+      output.includes('DevCommand')
+    ) {
       // Rust + Tauri CLI available — tauri dev attempted (process times out)
       // That's expected — the CLI correctly detected the environment
       expect(result.code === 0 || result.code === 1).toBe(true)
