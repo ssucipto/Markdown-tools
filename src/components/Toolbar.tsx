@@ -18,6 +18,8 @@ interface ToolbarProps {
   onPickFile: () => void
   onOpenFolder?: () => void
   onToggleViewSource: () => void
+  showExplorerToggle?: boolean
+  onToggleExplorer?: () => void
 }
 
 export function Toolbar({
@@ -40,11 +42,13 @@ export function Toolbar({
   onPickFile,
   onOpenFolder,
   onToggleViewSource,
+  showExplorerToggle = false,
+  onToggleExplorer,
 }: ToolbarProps) {
   if (!visible) return null
 
   const btn =
-    'w-9 h-9 rounded-full bg-white dark:bg-gray-700 shadow-md border border-gray-200 dark:border-gray-600 flex items-center justify-center text-sm hover:shadow-lg transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-500'
+    'w-8 h-8 rounded-full bg-white dark:bg-zinc-800 shadow-sm border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-sm hover:shadow transition-shadow focus:outline-none focus:ring-2 focus:ring-zinc-400'
 
   return (
     <div className="fixed bottom-4 right-4 flex gap-2 z-40" role="toolbar" aria-label="Viewer controls">
@@ -68,12 +72,23 @@ export function Toolbar({
           📁
         </button>
       )}
+      {showExplorerToggle && onToggleExplorer && (
+        <button
+          type="button"
+          onClick={onToggleExplorer}
+          title="Toggle file explorer"
+          className={btn}
+          aria-label="Toggle file explorer panel"
+        >
+          ☰
+        </button>
+      )}
       {showViewSource && (
         <button
           type="button"
           onClick={onToggleViewSource}
           title={viewSource ? 'Show rendered view' : 'View source'}
-          className={`${btn} ${viewSource ? 'ring-2 ring-blue-400' : ''}`}
+          className={`${btn} ${viewSource ? 'ring-2 ring-zinc-400' : ''}`}
           aria-label={viewSource ? 'Show rendered view' : 'View markdown source'}
           aria-pressed={viewSource}
         >
@@ -152,13 +167,13 @@ export function Toolbar({
 
 export function DragOverlay() {
   return (
-    <div className="fixed inset-0 z-50 bg-blue-500/15 flex items-center justify-center pointer-events-none backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl px-10 py-8 shadow-2xl text-center border-2 border-blue-400 border-dashed">
+    <div className="fixed inset-0 z-50 bg-zinc-400/10 dark:bg-zinc-600/10 flex items-center justify-center pointer-events-none">
+      <div className="bg-white dark:bg-zinc-900 rounded-xl px-10 py-8 shadow-sm text-center border border-dashed border-zinc-300 dark:border-zinc-600">
         <div className="text-5xl mb-3" aria-hidden="true">
           📄
         </div>
-        <div className="text-lg font-semibold text-gray-800 dark:text-gray-200">Drop .md file to view</div>
-        <div className="text-sm text-gray-400 mt-1">Release to render markdown</div>
+        <div className="text-lg font-medium text-zinc-800 dark:text-zinc-200">Drop .md file to view</div>
+        <div className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Release to render markdown</div>
       </div>
     </div>
   )
@@ -176,12 +191,12 @@ export function EmptyState({
   return (
     <div className="flex items-center justify-center h-full">
       <div
-        className={`text-center max-w-sm p-8 border-2 border-dashed rounded-xl transition-colors cursor-pointer ${
+        className={`text-center max-w-sm p-8 border border-dashed rounded-xl transition-colors cursor-pointer ${
           dragOver
-            ? 'border-blue-400 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/20'
+            ? 'border-zinc-400 bg-zinc-50 dark:border-zinc-500 dark:bg-zinc-900/40'
             : dark
-              ? 'border-gray-600 hover:border-gray-500'
-              : 'border-gray-300 hover:border-gray-400'
+              ? 'border-zinc-600 hover:border-zinc-500'
+              : 'border-zinc-300 hover:border-zinc-400'
         }`}
         onClick={onPickFile}
         role="button"
@@ -197,10 +212,10 @@ export function EmptyState({
         <div className="text-4xl mb-3" aria-hidden="true">
           📄
         </div>
-        <p className={`text-sm font-medium mb-1 ${dark ? 'text-gray-300' : 'text-gray-700'}`}>
-          Drop a <code className="px-1 rounded bg-gray-100 dark:bg-gray-700 text-xs">.md</code> file here
+        <p className={`text-sm font-medium mb-1 ${dark ? 'text-zinc-300' : 'text-zinc-700'}`}>
+          Drop a <code className="px-1 rounded bg-zinc-100 dark:bg-zinc-800 text-xs">.md</code> file here
         </p>
-        <p className={`text-xs ${dark ? 'text-gray-500' : 'text-gray-400'}`}>or click here to open a file</p>
+        <p className={`text-xs ${dark ? 'text-zinc-500' : 'text-zinc-400'}`}>or click here to open a file</p>
       </div>
     </div>
   )

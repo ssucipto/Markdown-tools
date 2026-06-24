@@ -6,7 +6,7 @@ Drop `.md` files, read richly rendered GitHub-flavored preview, **Mermaid** diag
 
 > Viewer ported from `acp-visualizer` v1.5.4 (`DocsViewer.tsx`). See [ADR-006](agent/memory/decisions.md).
 
-**Current release**: v0.4.2 (M1–M8 complete)
+**Current release**: v0.5.0 (M1–M9 complete)
 
 ---
 
@@ -114,6 +114,7 @@ npm run preview      # → http://localhost:4173
 | M5 | ✅ Tauri 2 desktop + CLI |
 | M6 | ✅ `@markdown-tools/react` library build |
 | M7 | ✅ Audit #5 remediation — production readiness |
+| M9 | ✅ Multi-document tabs, collapsible explorer, lite zinc shell |
 
 Track progress: [agent/progress.yaml](agent/progress.yaml) · Release notes: [CHANGELOG.md](CHANGELOG.md)
 
@@ -122,6 +123,8 @@ Track progress: [agent/progress.yaml](agent/progress.yaml) · Release notes: [CH
 | Feature | Status |
 |---------|--------|
 | Drag-and-drop + file picker | ✅ |
+| Multi-document tabs (web + desktop) | ✅ |
+| Collapsible file explorer | ✅ |
 | Folder browser (FSA + webkitdirectory fallback) | ✅ |
 | GFM, syntax highlighting, TOC | ✅ |
 | Mermaid + zoom/pan lightbox | ✅ |
@@ -139,8 +142,8 @@ Full quality gate (matches CI):
 
 ```bash
 npm install          # first time only
-npm test             # 36 Vitest tests (unit + contract)
-npm run test:e2e     # 9 Playwright browser tests
+npm test             # 65+ Vitest tests (unit + contract)
+npm run test:e2e     # 13 Playwright browser tests
 npm run typecheck
 npm run lint
 npm run build        # SPA

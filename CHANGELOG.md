@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.5.0] - 2026-06-24
+
+### Added (M9 — Multi-document workspace)
+- **Tab bar** — open, switch, and close multiple markdown documents in web and Tauri standalone
+- **`useDocumentWorkspace` hook** — tab state, `openPathInTab`, dropped-file paths, explorer collapse persistence
+- **`FileExplorer`** — shell-level collapsible folder panel (lifted out of `MarkdownViewer` for standalone)
+- **`DocumentTabs`** — tab strip with drag-and-drop onto tabs
+- **Lite/airy shell** — zinc palette, merged app chrome in tab bar, lighter toolbar FABs
+- **Tauri** — `open-file-content` opens or focuses tabs by path
+- **Optional embed props** — `onFileDrop?`, `onFullscreenChange?` (non-breaking)
+
+### Changed
+- `StandaloneViewer` is always controlled via workspace state; `showSidebar={false}` on inner viewer
+- `App.tsx` — removed duplicate header; brand lives in tab bar
+- E2E: `e2e/tabs.spec.ts`; smoke tests updated for shell empty state and save-picker stub
+
+### Fixed (audit-12 remediation)
+- Shell dark-mode parity: controlled theme propagated to explorer and empty state
+- Zinc pass on `EmptyState`, `DragOverlay`, and `TableOfContents`
+- Keyboard `[` toggles file explorer; toolbar ☰ toggle when folder open
+- Dropped-file path dedup in `loadIntoActiveTab` / `loadIntoTab`
+- Tab-strip invalid file drop shows toast
+
 ## [0.4.2] - 2026-06-21
 
 ### Fixed (export — desktop)

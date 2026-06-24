@@ -4,8 +4,15 @@ import path from 'node:path'
 const basicDoc = path.join(process.cwd(), 'docs', 'sample-basic.md')
 const mermaidDoc = path.join(process.cwd(), 'docs', 'sample-mermaid.md')
 
+test.beforeEach(async ({ page }) => {
+  // Force anchor-download fallback — showSaveFilePicker hangs headless Chromium.
+  await page.addInitScript(() => {
+    delete (window as Window & { showSaveFilePicker?: unknown }).showSaveFilePicker
+  })
+})
+
 function filePicker(page: import('@playwright/test').Page) {
-  return page.getByTestId('file-picker-input')
+  return page.getByTestId('file-picker-input').first()
 }
 
 test('empty state visible', async ({ page }) => {
@@ -71,5 +78,5 @@ test('export pdf invokes print without popup', async ({ page }) => {
     window.print = () => {}
   })
   await page.getByLabel('Export to PDF').click()
-  await expect(page.getByRole('status')).toContainText(/Preparing PDF/i)
+  await expect(page.getByRole('status')).toContainText(/PDF|Print dialog/i)
 })

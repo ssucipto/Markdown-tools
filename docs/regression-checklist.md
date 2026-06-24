@@ -1,7 +1,7 @@
 # Regression Checklist — Markdown-tools
 
-**Date**: 2026-06-21  
-**Version**: 0.4.1  
+**Date**: 2026-06-24  
+**Version**: 0.5.0  
 
 Use this checklist before every release to verify no regressions were introduced.
 
@@ -21,8 +21,8 @@ Use this checklist before every release to verify no regressions were introduced
 - [ ] `npm run format:check` — all files use Prettier style
 
 ### 3. Testing
-- [ ] `npm test` — all 36+ unit tests pass
-- [ ] `npm run test:e2e` — all 9 E2E tests pass
+- [ ] `npm test` — all 61+ unit tests pass
+- [ ] `npm run test:e2e` — all 12 E2E tests pass
 - [ ] `npm run test:coverage` — coverage meets thresholds (≥60% on src/markdown/*)
 
 ### 4. Security
@@ -42,9 +42,14 @@ Use this checklist before every release to verify no regressions were introduced
 - [ ] `markdown-tools open docs/sample-basic.md` — file opens in desktop
 - [ ] `npm run tauri:build` — platform installer is produced
 
----
+### 7. M9 Multi-Document Workspace (v0.5.0+)
+- [ ] Tab bar: open 3+ files, switch tabs, close tabs
+- [ ] File explorer: collapse/expand persists after reload
+- [ ] Fullscreen hides explorer + TOC; tab bar remains
+- [ ] Tauri: `markdown-tools open` two files → two tabs (or focus existing)
+- [ ] Embed: `MarkdownViewer` single-document API unchanged (contract tests pass)
 
-## Test Matrix
+---
 
 | Dimension | Variants |
 |-----------|----------|

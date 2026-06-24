@@ -1,24 +1,88 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type DragEvent } from 'react'
+import { DocumentTabs } from '@/components/DocumentTabs'
+import { FileExplorer } from '@/components/FileExplorer'
 import { MarkdownViewerWithBoundary } from '@/components/MarkdownViewer'
+import { EmptyState } from '@/components/Toolbar'
+import { useDocumentWorkspace } from '@/hooks/useDocumentWorkspace'
 import { useFolderBrowser } from '@/hooks/useFolderBrowser'
-import { useMarkdownDocument } from '@/hooks/useMarkdownDocument'
 import { useTauriFileOpen } from '@/hooks/useTauriFileOpen'
 import { useToast } from '@/hooks/useToast'
 
+const MD_EXT = /\.(md|markdown)$/i
+const THEME_KEY = 'mdtools.theme'
+
+function readTheme(): 'light' | 'dark' {
+  try {
+    return localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light'
+  } catch {
+    return 'light'
+  }
+}
+
+function writeTheme(theme: 'light' | 'dark'): void {
+  try {
+    localStorage.setItem(THEME_KEY, theme)
+  } catch {
+    // ignore
+  }
+}
+
 export function StandaloneViewer() {
-  const doc = useMarkdownDocument()
+  const workspace = useDocumentWorkspace()
   const folder = useFolderBrowser()
   const folderInputRef = useRef<HTMLInputElement>(null)
-  const { showToast } = useToast()
+  const shellFileInputRef = useRef<HTMLInputElement>(null)
+  const { toast, showToast } = useToast()
   const [folderLoading, setFolderLoading] = useState(false)
+  const [fullscreen, setFullscreen] = useState(false)
+  const [shellDragOver, setShellDragOver] = useState(false)
+  const [theme, setTheme] = useState<'light' | 'dark'>(readTheme)
+
+  const {
+    tabs,
+    activeTabId,
+    activeTab,
+    explorerCollapsed,
+    openTab,
+    closeTab,
+    setActiveTab,
+    setExplorerCollapsed,
+    openPathInTab,
+    loadIntoTab,
+    loadFileIntoActiveTab,
+  } = workspace
+
+  const dark = theme === 'dark'
+
+  const handleThemeChange = useCallback((next: 'light' | 'dark') => {
+    setTheme(next)
+    writeTheme(next)
+  }, [])
+
+  const toggleExplorer = useCallback(() => {
+    setExplorerCollapsed(!explorerCollapsed)
+  }, [explorerCollapsed, setExplorerCollapsed])
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== '[' || e.metaKey || e.ctrlKey || e.altKey) return
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return
+      if (!folder.hasFolder || fullscreen) return
+      e.preventDefault()
+      toggleExplorer()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [folder.hasFolder, fullscreen, toggleExplorer])
 
   useTauriFileOpen(
     useCallback(
-      (path, text) => {
-        doc.selectPath(path, text)
+      (path, content) => {
+        openPathInTab(path, content)
         showToast(`📄 Opened ${path.split(/[/\\]/).pop()}`)
       },
-      [doc, showToast],
+      [openPathInTab, showToast],
     ),
   )
 
@@ -27,12 +91,12 @@ export function StandaloneViewer() {
       setFolderLoading(true)
       try {
         const text = await folder.readFile(path)
-        if (text !== null) doc.selectPath(path, text)
+        if (text !== null) openPathInTab(path, text)
       } finally {
         setFolderLoading(false)
       }
     },
-    [folder, doc],
+    [folder, openPathInTab],
   )
 
   const handleOpenFolder = useCallback(async () => {
@@ -59,10 +123,67 @@ export function StandaloneViewer() {
     [folder, showToast],
   )
 
-  const showSidebar = folder.hasFolder
+  const handleFileDrop = useCallback(
+    (file: File) => {
+      void loadFileIntoActiveTab(file)
+    },
+    [loadFileIntoActiveTab],
+  )
+
+  const handleDropOnTab = useCallback(
+    (tabId: string | null, file: File) => {
+      if (tabId) {
+        void file.text().then((content) => {
+          loadIntoTab(tabId, `[dropped] ${file.name}`, content)
+        })
+        return
+      }
+      void loadFileIntoActiveTab(file)
+    },
+    [loadIntoTab, loadFileIntoActiveTab],
+  )
+
+  const handleShellDrop = useCallback(
+    (e: DragEvent) => {
+      e.preventDefault()
+      setShellDragOver(false)
+      const file = e.dataTransfer.files[0]
+      if (!file) return
+      if (!MD_EXT.test(file.name)) {
+        showToast('⚠️ Only .md files are supported')
+        return
+      }
+      void loadFileIntoActiveTab(file)
+    },
+    [loadFileIntoActiveTab, showToast],
+  )
+
+  const handleShellFilePick = useCallback(() => {
+    shellFileInputRef.current?.click()
+  }, [])
+
+  const onShellFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+      if (!MD_EXT.test(file.name)) {
+        showToast('⚠️ Only .md files are supported')
+        e.target.value = ''
+        return
+      }
+      void loadFileIntoActiveTab(file)
+      e.target.value = ''
+    },
+    [loadFileIntoActiveTab, showToast],
+  )
+
+  const hasTabs = tabs.length > 0
+  const showExplorer = folder.hasFolder && !fullscreen
 
   return (
-    <>
+    <div
+      className={`flex flex-col h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 ${dark ? 'dark' : ''}`}
+    >
       <input
         ref={folderInputRef}
         type="file"
@@ -75,17 +196,82 @@ export function StandaloneViewer() {
         aria-hidden="true"
         onChange={onFolderInputChange}
       />
-      <MarkdownViewerWithBoundary
-        content={doc.documentPath != null ? doc.content : undefined}
-        documentPath={doc.documentPath}
-        files={folder.files}
-        onSelectFile={handleSelectFile}
-        loading={folder.loading || folderLoading}
-        showSidebar={showSidebar}
-        onOpenFolder={handleOpenFolder}
-        supportsFolderPicker={folder.supportsDirectoryPicker}
-        rawMarkdown={doc.documentPath != null ? doc.content : undefined}
+      {!hasTabs && (
+        <input
+          ref={shellFileInputRef}
+          type="file"
+          accept=".md,.markdown"
+          data-testid="file-picker-input"
+          className="hidden"
+          aria-hidden="true"
+          onChange={onShellFileInputChange}
+        />
+      )}
+
+      <DocumentTabs
+        tabs={tabs}
+        activeTabId={activeTabId}
+        onSelect={setActiveTab}
+        onClose={closeTab}
+        onNewTab={openTab}
+        onDropOnTab={handleDropOnTab}
+        onInvalidFileDrop={() => showToast('⚠️ Only .md files are supported')}
       />
-    </>
+
+      <div
+        className="flex flex-1 min-h-0"
+        onDragOver={(e) => {
+          e.preventDefault()
+          if (!hasTabs) setShellDragOver(true)
+        }}
+        onDragLeave={() => setShellDragOver(false)}
+        onDrop={handleShellDrop}
+      >
+        {showExplorer && (
+          <FileExplorer
+            files={folder.files}
+            selectedPath={activeTab?.documentPath ?? null}
+            collapsed={explorerCollapsed}
+            dark={dark}
+            onSelect={handleSelectFile}
+            onToggleCollapse={toggleExplorer}
+            onOpenFolder={handleOpenFolder}
+          />
+        )}
+
+        <div className="flex-1 min-w-0 flex flex-col">
+          {hasTabs && activeTab ? (
+            <MarkdownViewerWithBoundary
+              key={activeTab.id}
+              content={activeTab.documentPath != null ? activeTab.content : undefined}
+              documentPath={activeTab.documentPath}
+              files={folder.files}
+              onSelectFile={handleSelectFile}
+              loading={folder.loading || folderLoading}
+              showSidebar={false}
+              theme={theme}
+              onThemeChange={handleThemeChange}
+              onOpenFolder={handleOpenFolder}
+              supportsFolderPicker={folder.supportsDirectoryPicker}
+              rawMarkdown={activeTab.documentPath != null ? activeTab.content : undefined}
+              onFileDrop={handleFileDrop}
+              onFullscreenChange={setFullscreen}
+              onToggleExplorer={showExplorer ? toggleExplorer : undefined}
+            />
+          ) : (
+            <EmptyState dark={dark} dragOver={shellDragOver} onPickFile={handleShellFilePick} />
+          )}
+        </div>
+      </div>
+
+      {!hasTabs && toast && (
+        <div
+          className="fixed bottom-20 right-4 z-50 bg-zinc-900 text-white px-4 py-2 rounded-lg shadow-lg text-sm"
+          role="status"
+        >
+          {toast}
+        </div>
+      )}
+    </div>
   )
 }

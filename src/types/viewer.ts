@@ -28,4 +28,10 @@ export interface MarkdownViewerProps {
   supportsFolderPicker?: boolean
   /** Raw markdown for view-source toggle (standalone) */
   rawMarkdown?: string
+  /** When set, DnD/file picker delegate to parent (workspace shell) */
+  onFileDrop?: (file: File) => void
+  /** Notifies parent when fullscreen toggles (shell hides explorer) */
+  onFullscreenChange?: (fullscreen: boolean) => void
+  /** Standalone: toggle shell file explorer collapse from toolbar */
+  onToggleExplorer?: () => void
 }

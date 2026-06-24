@@ -41,7 +41,10 @@ Markdown-tools is a **client-only Vite SPA** that also ships as an **embeddable 
 | Module | Responsibility |
 |--------|----------------|
 | `src/components/MarkdownViewer.tsx` | Layout, state, DnD, export, view-source, embed props |
-| `src/components/StandaloneViewer.tsx` | SPA shell — folder browser, Tauri file open |
+| `src/components/StandaloneViewer.tsx` | SPA workspace shell — tabs, FileExplorer, folder browser, Tauri file open |
+| `src/components/DocumentTabs.tsx` | Tab bar UI (standalone/Tauri) |
+| `src/components/FileExplorer.tsx` | Collapsible shell-level file list |
+| `src/hooks/useDocumentWorkspace.ts` | Multi-tab state (`tabs`, `activeTabId`, `openPathInTab`) |
 | `src/components/TableOfContents.tsx` | TOC UI + scroll spy |
 | `src/components/MermaidLightbox.tsx` | Diagram zoom/pan overlay |
 | `src/components/Toolbar.tsx` | Theme, font, export, folder, view-source |
@@ -93,29 +96,41 @@ Hidden **export article** (`exportRef`) mirrors rendered HTML for Word/DOCX/PDF 
 ## State management
 
 - **No global store** — hooks wired in `MarkdownViewer`
-- **Controlled vs uncontrolled** — embed passes `content`/`files`; standalone uses `useMarkdownDocument` until a path is set
+- **Controlled vs uncontrolled** — embed passes `content`/`files`; standalone workspace passes controlled content per active tab
 - **Theme** — controlled (`theme` + `onThemeChange`) or internal state (ADR-007)
 - **Mermaid SVG** — must not re-apply innerHTML on unrelated re-renders
 
-### StandaloneViewer controlled-mode contract (v0.4.1+)
+### StandaloneViewer workspace contract (v0.5.0+)
 
-`MarkdownViewer` treats `content !== undefined` as **controlled**. An empty string `""` is controlled, not “empty uncontrolled”.
+`StandaloneViewer` owns tab state via `useDocumentWorkspace()` and renders:
 
-`StandaloneViewer` must pass `content` and `rawMarkdown` only when `doc.documentPath != null`:
+1. `DocumentTabs` — tab bar (always visible; survives fullscreen)
+2. `FileExplorer` — when a folder is open and not fullscreen
+3. Single keyed `MarkdownViewer` for the active tab (`key={activeTabId}`, `showSidebar={false}`)
+
+`MarkdownViewer` treats `content !== undefined` as **controlled**. Pass `content` and `rawMarkdown` only when `activeTab.documentPath != null`:
 
 ```tsx
-content={doc.documentPath != null ? doc.content : undefined}
-rawMarkdown={doc.documentPath != null ? doc.content : undefined}
+content={activeTab.documentPath != null ? activeTab.content : undefined}
+rawMarkdown={activeTab.documentPath != null ? activeTab.content : undefined}
 ```
 
-Until a folder/Tauri path is set, the viewer stays **uncontrolled** so the 📂 file picker and drag-and-drop call `loadDroppedFile` on the internal hook. Passing `content=""` previously blocked file loads (post-M7 fix, commit `a948ac3`).
+When `tabs.length === 0`, the shell shows `EmptyState` with its own file picker (`data-testid="file-picker-input"`). After the first tab opens, the viewer's picker takes over.
+
+Optional `onFileDrop` and `onFullscreenChange` on `MarkdownViewer` let the shell load files into tabs and hide the explorer in fullscreen (FR-9.9).
 
 Pattern: [agent/patterns/local.controlled-content-undefined-not-empty.md](../patterns/local.controlled-content-undefined-not-empty.md)
 
+### StandaloneViewer controlled-mode contract (v0.4.1–v0.4.2, superseded)
+
+`StandaloneViewer` previously used `useMarkdownDocument` directly. M9 replaces that with workspace-controlled tabs.
+
 ### E2E test hooks
 
-- `data-testid="file-picker-input"` — single-file input on `MarkdownViewer`
+- `data-testid="file-picker-input"` — single-file input (shell when no tabs; `MarkdownViewer` when tab active)
 - `data-testid="folder-picker-input"` — folder input on `StandaloneViewer`
+- `data-testid="tab-bar"` / `document-tab` / `new-tab-button` — tab workspace (M9)
+- `data-testid="file-explorer"` / `explorer-collapse-toggle` — collapsible explorer (M9)
 
 Playwright tests scope KaTeX/Mermaid to `main article` to avoid matching the hidden export clone.
 

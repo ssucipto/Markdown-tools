@@ -1,6 +1,6 @@
 # Markdown-tools User Guide
 
-**Version**: 0.4.1  
+**Version**: 0.5.0  
 **Audience**: End users, contributors, and anyone running the viewer locally
 
 Markdown-tools is a **desktop-first markdown viewer**. Open files locally, preview rich formatting (Mermaid diagrams, KaTeX math), and export to Word, DOCX, or PDF. Nothing is uploaded to a server.
@@ -17,15 +17,16 @@ Markdown-tools is a **desktop-first markdown viewer**. Open files locally, previ
 6. [Desktop app (Tauri)](#desktop-app-tauri)
 7. [CLI reference](#cli-reference)
 8. [Opening documents](#opening-documents)
-9. [Reading and navigation](#reading-and-navigation)
-10. [Mermaid diagrams](#mermaid-diagrams)
-11. [Math (KaTeX)](#math-katex)
-12. [Exporting documents](#exporting-documents)
-13. [View source mode](#view-source-mode)
-14. [Sample documents](#sample-documents)
-15. [Verifying your install (developers)](#verifying-your-install-developers)
-16. [Troubleshooting](#troubleshooting)
-17. [Privacy and security](#privacy-and-security)
+9. [Multi-document tabs](#multi-document-tabs)
+10. [Reading and navigation](#reading-and-navigation)
+11. [Mermaid diagrams](#mermaid-diagrams)
+12. [Math (KaTeX)](#math-katex)
+13. [Exporting documents](#exporting-documents)
+14. [View source mode](#view-source-mode)
+15. [Sample documents](#sample-documents)
+16. [Verifying your install (developers)](#verifying-your-install-developers)
+17. [Troubleshooting](#troubleshooting)
+18. [Privacy and security](#privacy-and-security)
 
 ---
 
@@ -302,11 +303,37 @@ Click **📁** to open a folder of markdown files:
 - **Chrome / Edge**: Native folder picker (File System Access API).
 - **Firefox / Safari**: Folder selection via fallback picker (`webkitdirectory`).
 
-When a folder is loaded, a **sidebar** lists all `.md` files. Click a file to preview it.
+When a folder is loaded, a **file explorer** on the left lists all `.md` files. Click a file to open it in a tab. Use the **‹** chevron on the explorer edge to collapse or expand the panel (preference is saved).
 
 ### Desktop file association
 
-With the Tauri installer, open `.md` files from Explorer/Finder or pass a path on the command line (`markdown-tools open`).
+With the Tauri installer, open `.md` files from Explorer/Finder or pass a path on the command line (`markdown-tools open`). Each file opens in a **new tab** (or focuses an existing tab if that path is already open).
+
+---
+
+## Multi-document tabs
+
+The standalone web and desktop apps support **multiple open documents** via a tab bar at the top.
+
+| Action | How |
+|--------|-----|
+| Open a file | Drop on the page, use **📂**, or pick from the file explorer |
+| New empty tab | Click **+** on the tab bar |
+| Switch tabs | Click a tab label |
+| Close a tab | Hover the tab and click **×** |
+| Drop on a tab | Drag a `.md` file onto a tab to load it in that tab |
+
+**Keyboard shortcuts** (where supported):
+
+| Shortcut | Action |
+|----------|--------|
+| `[` | Toggle file explorer collapse |
+| `Ctrl+T` / `Cmd+T` | New tab (browser default may vary) |
+| `Ctrl+W` / `Cmd+W` | Close active tab (browser default may vary) |
+
+In **fullscreen** mode (⛶ toolbar button), the file explorer and table of contents hide; the tab bar stays visible so you can switch documents.
+
+The embed API (`@markdown-tools/react`) remains **single-document** — tabs are standalone/desktop only.
 
 ---
 

@@ -37,6 +37,9 @@ export function MarkdownViewer({
   onOpenFolder,
   supportsFolderPicker: _supportsFolderPicker = false,
   rawMarkdown,
+  onFileDrop,
+  onFullscreenChange,
+  onToggleExplorer,
 }: MarkdownViewerProps) {
   void _supportsFolderPicker
   const isControlled = controlledContent !== undefined
@@ -204,10 +207,14 @@ export function MarkdownViewer({
         showToast('⚠️ Only .md files are supported')
         return
       }
+      if (onFileDrop) {
+        onFileDrop(file)
+        return
+      }
       if (isControlled) return
       doc.loadDroppedFile(file)
     },
-    [doc, isControlled, showToast],
+    [doc, isControlled, onFileDrop, showToast],
   )
 
   const handleDrop = useCallback(
@@ -345,7 +352,7 @@ export function MarkdownViewer({
 
   return (
     <div
-      className={`flex h-full min-h-[calc(100vh-2rem)] ${dark ? 'bg-gray-900 text-gray-200' : 'bg-white'} ${className}`}
+      className={`flex h-full min-h-0 ${dark ? 'bg-zinc-950 text-zinc-200' : 'bg-white'} ${className}`}
       onDragOver={(e) => {
         e.preventDefault()
         setDragOver(true)
@@ -437,10 +444,18 @@ export function MarkdownViewer({
         onExportPdf={() => void exportPdf()}
         exportDisabled={viewSource}
         onScrollTop={() => contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
-        onToggleFullscreen={() => setFullscreen((f) => !f)}
+        onToggleFullscreen={() =>
+          setFullscreen((f) => {
+            const next = !f
+            onFullscreenChange?.(next)
+            return next
+          })
+        }
         onPickFile={handleFilePick}
         onOpenFolder={onOpenFolder}
         onToggleViewSource={toggleViewSource}
+        showExplorerToggle={Boolean(onToggleExplorer)}
+        onToggleExplorer={onToggleExplorer}
       />
 
       <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />

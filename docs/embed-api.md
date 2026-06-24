@@ -63,7 +63,16 @@ content={documentPath != null ? content : undefined}
 rawMarkdown={documentPath != null ? content : undefined}
 ```
 
-See [architecture — StandaloneViewer contract](../agent/design/architecture.md#standaloneviewer-controlled-mode-contract-v041) and pattern `local.controlled-content-undefined-not-empty`.
+See [architecture — StandaloneViewer workspace contract](../agent/design/architecture.md#standaloneviewer-workspace-contract-v050).
+
+### Optional props (v0.5.0+, non-breaking)
+
+| Prop | Purpose |
+|------|---------|
+| `onFileDrop?: (file: File) => void` | Delegate DnD/file-picker to parent (workspace shell) |
+| `onFullscreenChange?: (fullscreen: boolean) => void` | Notify parent when fullscreen toggles |
+
+Embed consumers can ignore these; standalone uses them internally.
 
 ## User guide
 

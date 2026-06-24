@@ -19,6 +19,8 @@ const REQUIRED_PROPS: (keyof import('@/types/viewer').MarkdownViewerProps)[] = [
   'onOpenFolder',
   'supportsFolderPicker',
   'rawMarkdown',
+  'onFileDrop',
+  'onFullscreenChange',
 ]
 
 describe('MarkdownViewerProps contract', () => {
@@ -38,6 +40,8 @@ describe('MarkdownViewerProps contract', () => {
       onOpenFolder: () => {},
       supportsFolderPicker: true,
       rawMarkdown: '',
+      onFileDrop: () => {},
+      onFullscreenChange: () => {},
     }
     for (const key of REQUIRED_PROPS) {
       expect(key in sample).toBe(true)

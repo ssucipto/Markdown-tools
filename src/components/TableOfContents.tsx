@@ -13,15 +13,17 @@ export function TableOfContents({ toc, activeId, dark, showToc, onToggle }: Tabl
 
   return (
     <aside
-      className={`w-48 shrink-0 border-l overflow-y-auto p-3 ${dark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}
+      className={`w-48 shrink-0 border-l overflow-y-auto p-3 ${
+        dark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'
+      }`}
       aria-label="Table of contents"
     >
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold text-gray-500 uppercase">On this page</span>
+        <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">On this page</span>
         <button
           type="button"
           onClick={onToggle}
-          className="text-gray-400 text-xs hover:text-gray-600"
+          className="text-zinc-400 text-xs hover:text-zinc-600 dark:hover:text-zinc-300"
           aria-expanded={showToc}
           aria-label={showToc ? 'Collapse table of contents' : 'Expand table of contents'}
         >
@@ -34,9 +36,15 @@ export function TableOfContents({ toc, activeId, dark, showToc, onToggle }: Tabl
             <a
               key={id}
               href={`#${id}`}
-              className={`block text-xs truncate transition-colors hover:text-blue-500 ${
+              className={`block text-xs truncate transition-colors hover:text-zinc-800 dark:hover:text-zinc-200 ${
                 level === 1 ? 'pl-0 font-medium' : level === 2 ? 'pl-3' : 'pl-6'
-              } ${activeId === id ? 'text-blue-600 font-semibold' : dark ? 'text-gray-400' : 'text-gray-600'}`}
+              } ${
+                activeId === id
+                  ? 'text-zinc-900 dark:text-zinc-100 font-semibold'
+                  : dark
+                    ? 'text-zinc-400'
+                    : 'text-zinc-600'
+              }`}
             >
               {text}
             </a>

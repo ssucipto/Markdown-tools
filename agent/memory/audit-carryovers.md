@@ -554,3 +554,63 @@ carryovers:
     verified_in_audit: audit-11
     planned_in: M9 task-75
     notes: e2e/tabs.spec.ts planned
+
+  - finding_id: AUDIT-012-F1
+    audit_ref: agent/reports/audit-12-m9-implementation.md
+    severity: high
+    finding: Shell dark-mode parity missing — FileExplorer and shell EmptyState hardcoded dark={false}; viewer theme not propagated to workspace chrome
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-12-remediation
+    planned_in: M9 hotfix / task-76 completion
+    notes: Controlled theme in StandaloneViewer; dark class on shell root
+
+  - finding_id: AUDIT-012-F2
+    audit_ref: agent/reports/audit-12-m9-implementation.md
+    severity: medium
+    finding: Lite/airy incomplete — EmptyState and DragOverlay still gray/blue; breaks zinc shell aesthetic (FR-9.7)
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-12-remediation
+    planned_in: M9 hotfix / task-76 completion
+    notes: Toolbar EmptyState + DragOverlay + TOC zinc pass
+
+  - finding_id: AUDIT-012-F3
+    audit_ref: agent/reports/audit-12-m9-implementation.md
+    severity: medium
+    finding: Keyboard [ explorer toggle documented in user-guide but not implemented in StandaloneViewer
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-12-remediation
+    planned_in: M9 hotfix
+    notes: keydown listener in StandaloneViewer
+
+  - finding_id: AUDIT-012-F4
+    audit_ref: agent/reports/audit-12-m9-implementation.md
+    severity: medium
+    finding: E2E missing explorer collapse scenario — task-75 and design success criteria require it
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-12-remediation
+    planned_in: M9 hotfix / e2e/tabs.spec.ts
+    notes: explorer collapse E2E added
+
+  - finding_id: AUDIT-012-F5
+    audit_ref: agent/reports/audit-12-m9-implementation.md
+    severity: medium
+    finding: No FileExplorer unit test for collapse toggle and localStorage persistence (task-71 verification)
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-12-remediation
+    planned_in: M9 hotfix
+    notes: test/components/file-explorer.test.tsx
+
+  - finding_id: AUDIT-012-F6
+    audit_ref: agent/reports/audit-12-m9-implementation.md
+    severity: medium
+    finding: README still v0.4.2; M9 implementation uncommitted in working tree
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-12-remediation
+    planned_in: v0.5.0 release
+    notes: README v0.5.0 + M9 features

@@ -3,10 +3,10 @@
 
 project:
   name: markdown-tools
-  version: 0.4.2
+  version: 0.5.0
   started: 2026-06-14
   status: release_ready
-  current_milestone: M8 (completed)
+  current_milestone: M9 (completed)
   description: |
     Desktop-first web app for viewing Markdown with drag-and-drop, sophisticated
     Mermaid diagrams, and export to Word (.doc) and PDF. Ports viewer from
@@ -17,12 +17,12 @@ milestones:
     name: Multi-Document Workspace — Tabs & Collapsible Explorer
     priority: 1
     file: agent/milestones/milestone-9-multi-document-workspace.md
-    status: planned
-    progress: 0
-    started: null
-    completed: null
+    status: completed
+    progress: 100
+    started: 2026-06-24
+    completed: 2026-06-24
     estimated_weeks: 3
-    tasks_completed: 0
+    tasks_completed: 9
     tasks_total: 9
     notes: |
       Planned 2026-06-24 via /acp-plan; revised after audit-10 (2026-06-24).
@@ -853,18 +853,18 @@ tasks:
     - id: task-68
       name: Workspace State Model & Hook
       priority: 1
-      status: planned
-      started: null
-      completed_date: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-9-multi-document-workspace/task-68-workspace-state-model.md
       estimated_hours: 4
       notes: useDocumentWorkspace, TabDocument types, unit tests
     - id: task-69
       name: Tab Bar UI Component
       priority: 1
-      status: planned
-      started: null
-      completed_date: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-9-multi-document-workspace/task-69-tab-bar-ui.md
       estimated_hours: 4
       depends: task-68
@@ -872,9 +872,9 @@ tasks:
     - id: task-70
       name: Per-Tab File Open (DnD & Picker)
       priority: 1
-      status: planned
-      started: null
-      completed_date: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-9-multi-document-workspace/task-70-per-tab-file-open.md
       estimated_hours: 5
       depends: task-68, task-69
@@ -882,9 +882,9 @@ tasks:
     - id: task-71
       name: Collapsible File Explorer Panel
       priority: 1
-      status: planned
-      started: null
-      completed_date: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-9-multi-document-workspace/task-71-collapsible-file-explorer.md
       estimated_hours: 4
       depends: task-68
@@ -892,9 +892,9 @@ tasks:
     - id: task-72
       name: StandaloneViewer Layout Integration
       priority: 1
-      status: planned
-      started: null
-      completed_date: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-9-multi-document-workspace/task-72-standalone-viewer-layout.md
       estimated_hours: 6
       depends: task-68, task-69, task-70, task-71
@@ -902,9 +902,9 @@ tasks:
     - id: task-73
       name: Tauri Multi-File Tab Behaviour
       priority: 1
-      status: planned
-      started: null
-      completed_date: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-9-multi-document-workspace/task-73-tauri-multi-tab-open.md
       estimated_hours: 3
       depends: task-72
@@ -912,9 +912,9 @@ tasks:
     - id: task-74
       name: Embed API Backward Compatibility
       priority: 1
-      status: planned
-      started: null
-      completed_date: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-9-multi-document-workspace/task-74-embed-backward-compat.md
       estimated_hours: 2
       depends: task-72
@@ -922,9 +922,9 @@ tasks:
     - id: task-76
       name: M9 Shell Visual System — Lite/Airy Pass
       priority: 1
-      status: planned
-      started: null
-      completed_date: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-9-multi-document-workspace/task-76-shell-visual-lite-airy.md
       estimated_hours: 4
       depends: task-69, task-71, task-72
@@ -932,9 +932,9 @@ tasks:
     - id: task-75
       name: Tests, E2E & M9 Documentation Sync
       priority: 1
-      status: planned
-      started: null
-      completed_date: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-9-multi-document-workspace/task-75-tests-docs-fr9.md
       estimated_hours: 5
       depends: task-72, task-73, task-74, task-76
@@ -963,12 +963,19 @@ progress:
   overall: 100
 
 current_task:
-  id: task-68
-  name: "M9 — Workspace state model & hook (first task)"
-  file: agent/tasks/milestone-9-multi-document-workspace/task-68-workspace-state-model.md
-  status: planned
+  id: null
+  name: "M9 complete — ready for release"
+  file: null
+  status: completed
 
 recent_work:
+  - date: 2026-06-24
+    description: |
+      M9 multi-document workspace — tabs, collapsible explorer, lite shell (v0.5.0).
+    items:
+      - "✅ task-68–76: useDocumentWorkspace, DocumentTabs, FileExplorer, StandaloneViewer shell"
+      - "✅ Tauri open-file-content → openPathInTab; embed API backward compatible"
+      - "✅ 61 unit + 12 E2E tests pass; docs and architecture updated"
   - date: 2026-06-24
     description: |
       Export audit remediation + /acp-validate + /acp-sync — desktop Word/PDF export pipeline.
