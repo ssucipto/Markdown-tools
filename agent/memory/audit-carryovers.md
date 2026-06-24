@@ -614,3 +614,134 @@ carryovers:
     verified_in_audit: audit-12-remediation
     planned_in: v0.5.0 release
     notes: README v0.5.0 + M9 features
+
+  # ── review-001 (M9 post-impl code review) → M10 ─────────────────────────
+
+  - finding_id: REVIEW-001-CR-001
+    audit_ref: agent/reports/review-001.md
+    severity: high
+    finding: file.text().then() without .catch in StandaloneViewer
+    status: pending
+    planned_in: M10 task-77
+    notes: FR-10.1
+
+  - finding_id: REVIEW-001-CR-002
+    audit_ref: agent/reports/review-001.md
+    severity: high
+    finding: void loadFileIntoActiveTab — unhandled rejections (4 call sites)
+    status: pending
+    planned_in: M10 task-77
+    notes: FR-10.1
+
+  - finding_id: REVIEW-001-CR-003
+    audit_ref: agent/reports/review-001.md
+    severity: high
+    finding: handleSelectFile try/finally without catch
+    status: pending
+    planned_in: M10 task-77
+    notes: FR-10.1
+
+  - finding_id: REVIEW-001-CR-004
+    audit_ref: agent/reports/review-001.md
+    severity: high
+    finding: tauri.conf.json version 0.4.2 vs package.json 0.5.0
+    status: pending
+    planned_in: M10 task-78
+    notes: FR-10.2
+
+  - finding_id: REVIEW-001-CR-005
+    audit_ref: agent/reports/review-001.md
+    severity: medium
+    finding: setActiveTabId inside setTabs updater in useDocumentWorkspace
+    status: pending
+    planned_in: M10 task-79
+    notes: FR-10.3
+
+  - finding_id: REVIEW-001-CR-006
+    audit_ref: agent/reports/review-001.md
+    severity: medium
+    finding: DocumentTabs role=tab without keyboard navigation pattern
+    status: pending
+    planned_in: M10 task-80
+    notes: FR-10.4
+
+  - finding_id: REVIEW-001-CR-007
+    audit_ref: agent/reports/review-001.md
+    severity: medium
+    finding: MarkdownViewer.tsx large (557 lines); partial zinc leftovers
+    status: pending
+    planned_in: M10 task-82
+    notes: FR-10.6 — decomposition optional future
+
+  - finding_id: REVIEW-001-CR-008
+    audit_ref: agent/reports/review-001.md
+    severity: medium
+    finding: StandaloneViewer.tsx large (277 lines) — extract subcomponents
+    status: pending
+    planned_in: M10 task-83
+    notes: FR-10.7
+
+  - finding_id: REVIEW-001-CR-009
+    audit_ref: agent/reports/review-001.md
+    severity: medium
+    finding: tsconfig noUncheckedIndexedAccess not enabled
+    status: deferred
+    planned_in: future milestone
+    notes: Out of M10 scope per design doc
+
+  - finding_id: REVIEW-001-CR-010
+    audit_ref: agent/reports/review-001.md
+    severity: low
+    finding: package-lock version metadata drift
+    status: pending
+    planned_in: M10 task-78
+    notes: FR-10.2
+
+  - finding_id: REVIEW-001-CR-011
+    audit_ref: agent/reports/review-001.md
+    severity: low
+    finding: Cargo.toml version may drift from npm
+    status: pending
+    planned_in: M10 task-78
+    notes: FR-10.2
+
+  - finding_id: REVIEW-001-CR-012
+    audit_ref: agent/reports/review-001.md
+    severity: medium
+    finding: dompurify moderate CVE in dependency chain
+    status: pending
+    planned_in: M10 task-85
+    notes: FR-10.9
+
+  - finding_id: M9-SHORTCUT-005
+    audit_ref: M9 shortcut retrospective
+    severity: medium
+    finding: file-explorer.test.tsx UI-only; localStorage round-trip untested at hook level
+    status: pending
+    planned_in: M10 task-81
+    notes: Deepens AUDIT-012-F5
+
+  - finding_id: M9-SHORTCUT-009
+    audit_ref: M9 shortcut retrospective
+    severity: low
+    finding: user-guide documents Ctrl+T/W not wired in code
+    status: pending
+    planned_in: M10 task-80 or task-84
+    notes: Implement or remove claims
+
+  - finding_id: M9-SHORTCUT-010
+    audit_ref: M9 shortcut retrospective
+    severity: low
+    finding: design doc status draft; M9 success criteria unchecked until plan
+    status: addressed
+    fix_applied_date: 2026-06-24
+    planned_in: M10 task-84
+    notes: Amended in /acp-plan 2026-06-24
+
+  - finding_id: M9-SHORTCUT-011
+    audit_ref: M9 shortcut retrospective
+    severity: low
+    finding: E2E explorer collapse uses toolbar ☰ not chevron for expand
+    status: pending
+    planned_in: M10 task-81
+    notes: FR-10.5

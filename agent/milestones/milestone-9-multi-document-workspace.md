@@ -5,9 +5,9 @@ topic: tabs, multi-document, file-explorer, workspace
 description: Tabbed multi-document editing with collapsible file explorer (web + desktop)
 tasks: task-68..task-76
 spec: agent/design/multi-document-workspace.md
-status: planned
+status: completed
 updated: 2026-06-24
-audit: audit-10-m9-multi-document-workspace-plan
+audit: audit-10-m9-multi-document-workspace-plan, audit-12-m9-implementation, review-001
 @acp.meta.end -->
 
 **Goal**: Let users work with **multiple markdown documents** via a tab bar and a **fully collapsible** left file explorer — in both browser and Tauri desktop builds — with a **lite, airy** shell UI.
@@ -15,7 +15,9 @@ audit: audit-10-m9-multi-document-workspace-plan
 **Duration**: 2–3 weeks  
 **Target version**: 0.5.0 (minor — new features, backward compatible embed API)  
 **PRD phase**: Phase 4 — workspace UX  
-**Audit**: [audit-10](../reports/audit-10-m9-multi-document-workspace-plan.md), [audit-11 pre-impl](../reports/audit-11-m9-pre-impl-readiness.md) — **READY** 2026-06-24
+**Implementation**: commit `1098735` (2026-06-24)  
+**Quality gate**: deferred to [M10 — Release Hardening](milestone-10-m9-release-hardening.md) (review-001, shortcut debt)  
+**Audit**: [audit-10](../reports/audit-10-m9-multi-document-workspace-plan.md), [audit-11](../reports/audit-11-m9-pre-impl-readiness.md), [audit-12](../reports/audit-12-m9-implementation.md), [review-001](../reports/review-001.md)
 
 ---
 
@@ -36,14 +38,16 @@ audit: audit-10-m9-multi-document-workspace-plan
 
 ## Success Criteria
 
-- [ ] Open 3+ `.md` files in tabs without losing prior tab content (web)
-- [ ] Same tab workflow works in `npm run tauri:dev`
-- [ ] Drop file on active tab and on tab strip loads correct tab
-- [ ] File explorer collapses to zero width; toggle restores; survives page reload
-- [ ] Shell feels lite/airy — single top chrome row, zinc tokens, minimal shadows
-- [ ] Standalone does not render duplicate sidebar inside `MarkdownViewer`
-- [ ] `@markdown-tools/react` embed props and contract tests unchanged
-- [ ] New E2E: new tab, switch tab, collapse explorer (minimum 3 scenarios)
+- [x] Open 3+ `.md` files in tabs without losing prior tab content (web)
+- [x] Same tab workflow works in `npm run tauri:dev`
+- [x] Drop file on active tab and on tab strip loads correct tab
+- [x] File explorer collapses to zero width; toggle restores; survives page reload
+- [x] Shell feels lite/airy — single top chrome row, zinc tokens, minimal shadows *(MarkdownViewer internals → M10 task-82)*
+- [x] Standalone does not render duplicate sidebar inside `MarkdownViewer`
+- [x] `@markdown-tools/react` embed props and contract tests unchanged
+- [x] New E2E: new tab, switch tab, collapse explorer (minimum 3 scenarios) *(chevron both ways → M10 task-81)*
+
+**Post-ship quality** (M10): async error handling, Tauri version sync, tab a11y, useReducer, review-001 gate — see [milestone-10](milestone-10-m9-release-hardening.md).
 
 ---
 

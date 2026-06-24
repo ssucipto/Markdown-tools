@@ -1,11 +1,11 @@
 # Multi-Document Workspace — Design
 
-**Status**: draft (audit-10 revisions applied)  
+**Status**: implemented (quality hardening → M10)  
 **Created**: 2026-06-24  
 **Revised**: 2026-06-24  
-**Milestone**: M9  
-**PRD**: agent/design/requirements.md (FR-9)  
-**Audit**: audit-11-m9-pre-impl-readiness (2026-06-24)  
+**Milestone**: M9 (shipped v0.5.0); M10 remediation  
+**PRD**: agent/design/requirements.md (FR-9, FR-10)  
+**Audit**: audit-11, audit-12, review-001  
 **Supersedes**: single-document `useMarkdownDocument` in standalone mode
 
 ---

@@ -309,6 +309,23 @@ Standalone and Tauri desktop only — embed API unchanged (FR-9.8).
 
 **Note**: FR-9 does not include multi-project switching (that is ACP Visualizer scope). Tabs are multiple `.md` documents within one workspace session.
 
+### FR-10 — M9 release hardening (M10, v0.5.1)
+
+Post-implementation quality — no new product features. Sources: review-001, audit-12, M9 shortcut retrospective.
+
+| ID | Requirement | Priority | Source |
+|----|-------------|----------|--------|
+| FR-10.1 | All file-read paths catch errors and show user-visible toast (no unhandled rejections) | P0 | M10 task-77, CR-001–003 |
+| FR-10.2 | `package.json`, `tauri.conf.json`, and Cargo versions aligned | P0 | M10 task-78, CR-004 |
+| FR-10.3 | Workspace state via `useReducer` — no nested setState updaters | P1 | M10 task-79, CR-005 |
+| FR-10.4 | Tab bar WAI-ARIA keyboard pattern (arrow keys, focus) | P1 | M10 task-80, CR-006 |
+| FR-10.5 | `localStorage` explorer collapse tested at hook level; E2E chevron collapse+expand | P1 | M10 task-81 |
+| FR-10.6 | MarkdownViewer zinc styling consistent with shell (FR-9.7) | P2 | M10 task-82 |
+| FR-10.7 | `StandaloneViewer` decomposed below ~350 lines | P2 | M10 task-83, CR-008 |
+| FR-10.8 | Docs/design truth sync — no unimplemented shortcut claims | P1 | M10 task-84 |
+| FR-10.9 | dompurify moderate CVE remediated or risk accepted with ADR | P2 | M10 task-85, CR-012 |
+| FR-10.10 | `/acp-review --ci` passes; all carryovers verified closed | P0 | M10 task-86 |
+
 ---
 
 ## Non-Functional Requirements
