@@ -328,8 +328,9 @@ The standalone web and desktop apps support **multiple open documents** via a ta
 | Shortcut | Action |
 |----------|--------|
 | `[` | Toggle file explorer collapse |
-| `Ctrl+T` / `Cmd+T` | New tab (browser default may vary) |
-| `Ctrl+W` / `Cmd+W` | Close active tab (browser default may vary) |
+| `Ctrl+T` / `Cmd+T` | New tab |
+| `Ctrl+W` / `Cmd+W` | Close active tab |
+| `Arrow Left` / `Arrow Right` | Move focus between tabs (when tab bar focused) |
 
 In **fullscreen** mode (⛶ toolbar button), the file explorer and table of contents hide; the tab bar stays visible so you can switch documents.
 

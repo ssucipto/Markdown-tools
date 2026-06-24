@@ -47,6 +47,6 @@ test('explorer collapse toggles panel', async ({ page }) => {
   await page.getByTestId('explorer-collapse-toggle').click()
   await expect(page.getByTestId('file-explorer')).toHaveAttribute('aria-hidden', 'true')
 
-  await page.getByLabel('Toggle file explorer panel').click()
+  await page.getByTestId('explorer-collapse-toggle').click()
   await expect(page.getByTestId('file-explorer')).toHaveAttribute('aria-hidden', 'false')
 })

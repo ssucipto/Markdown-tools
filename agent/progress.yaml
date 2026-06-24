@@ -3,10 +3,10 @@
 
 project:
   name: markdown-tools
-  version: 0.5.0
+  version: 0.5.1
   started: 2026-06-14
-  status: release_pending
-  current_milestone: M10 (planned)
+  status: release_ready
+  current_milestone: M10 (completed)
   description: |
     Desktop-first web app for viewing Markdown with drag-and-drop, sophisticated
     Mermaid diagrams, and export to Word (.doc) and PDF. Ports viewer from
@@ -17,19 +17,17 @@ milestones:
     name: M9 Release Hardening
     priority: 0
     file: agent/milestones/milestone-10-m9-release-hardening.md
-    status: planned
-    progress: 0
-    started: null
-    completed: null
+    status: completed
+    progress: 100
+    started: 2026-06-24
+    completed: 2026-06-24
     estimated_weeks: 1
-    tasks_completed: 0
+    tasks_completed: 10
     tasks_total: 10
     notes: |
-      Planned 2026-06-24 via /acp-plan — remediation for review-001, audit-12, M9 shortcuts.
-      Closes 4 HIGH + 6 MEDIUM code-review findings; verifies carryovers.
-      No new product features. Target: 0.5.1 patch after gate pass.
-      Design: agent/design/m10-m9-release-hardening.md
-      Task order: 77→78→80→79→81→82→83→84→85→86
+      M10 complete 2026-06-24 — review-001 remediation, v0.5.1.
+      Async errors, useReducer, tab a11y, version sync, dompurify patch.
+      68 unit + 13 E2E tests pass.
 
   - id: M9
     name: Multi-Document Workspace — Tabs & Collapsible Explorer
@@ -962,9 +960,9 @@ tasks:
     - id: task-77
       name: Async File-Read Error Handling
       priority: 0
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-77-async-file-read-errors.md
       estimated_hours: 2
       audit: REVIEW-001-CR-001,CR-002,CR-003
@@ -972,9 +970,9 @@ tasks:
     - id: task-78
       name: Desktop & Lockfile Version Sync
       priority: 0
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-78-desktop-version-sync.md
       estimated_hours: 1
       depends: null
@@ -983,9 +981,9 @@ tasks:
     - id: task-80
       name: Tab Accessibility (WAI-ARIA)
       priority: 1
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-80-tab-accessibility.md
       estimated_hours: 3
       depends: null
@@ -994,9 +992,9 @@ tasks:
     - id: task-79
       name: Workspace useReducer Refactor
       priority: 1
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-79-workspace-use-reducer.md
       estimated_hours: 4
       depends: task-77
@@ -1005,9 +1003,9 @@ tasks:
     - id: task-81
       name: Test Gaps — localStorage & E2E Chevron
       priority: 1
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-81-test-gaps-explorer.md
       estimated_hours: 3
       depends: task-78, task-80
@@ -1016,9 +1014,9 @@ tasks:
     - id: task-82
       name: MarkdownViewer Zinc Pass
       priority: 2
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-82-viewer-zinc-pass.md
       estimated_hours: 2
       audit: REVIEW-001-CR-007, M9-SHORTCUT-008
@@ -1026,9 +1024,9 @@ tasks:
     - id: task-83
       name: StandaloneViewer Decomposition
       priority: 2
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-83-standalone-decomposition.md
       estimated_hours: 4
       depends: task-77
@@ -1037,9 +1035,9 @@ tasks:
     - id: task-84
       name: Docs & Design Truth Sync
       priority: 1
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-84-docs-design-sync.md
       estimated_hours: 2
       depends: task-81, task-82, task-83
@@ -1048,9 +1046,9 @@ tasks:
     - id: task-85
       name: dompurify CVE Remediation
       priority: 2
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-85-dompurify-cve.md
       estimated_hours: 1
       audit: REVIEW-001-CR-012
@@ -1058,9 +1056,9 @@ tasks:
     - id: task-86
       name: Release Gate & Carryover Verification
       priority: 0
-      status: planned
-      started: null
-      actual_hours: null
+      status: completed
+      started: 2026-06-24
+      completed_date: 2026-06-24
       file: agent/tasks/milestone-10-m9-release-hardening/task-86-release-gate-carryovers.md
       estimated_hours: 3
       depends: task-77, task-78, task-79, task-80, task-81, task-82, task-83, task-84, task-85
@@ -1073,7 +1071,7 @@ documentation:
   task_documents: 86
   audit_reports: 4
   prd_version: "1.7.0"
-  readme_version: "0.4.2"
+  readme_version: "0.5.1"
   user_guide: docs/user-guide.md
   regression_checklist: docs/regression-checklist.md
   test_baseline: docs/test-baseline.md
@@ -1085,26 +1083,25 @@ documentation:
 progress:
   planning: 100
   implementation: 100
-  testing: 95
-  documentation: 98
-  overall: 98
+  testing: 100
+  documentation: 100
+  overall: 100
 
 current_task:
-  id: task-77
-  name: "M10 — Async file-read error handling"
-  file: agent/tasks/milestone-10-m9-release-hardening/task-77-async-file-read-errors.md
-  status: planned
+  id: null
+  name: "M10 complete — release ready v0.5.1"
+  file: null
+  status: completed
 
 recent_work:
   - date: 2026-06-24
     description: |
-      /acp-plan M10 — release hardening for review-001, audit carryovers, M9 shortcuts.
+      /acp-proceed M10 — release hardening v0.5.1 (tasks 77–86).
     items:
-      - "📋 M10 milestone + design doc + tasks 77–86 created"
-      - "📋 FR-10 added to requirements.md"
-      - "📋 M9 milestone amended (success criteria checked; M10 link)"
-      - "📋 14 pending carryovers logged (CR-001–012, shortcuts 5/9/11)"
-      - "📋 Next: /acp-proceed → task-77 (order 77→78→80→79→81→82→83→84→85→86)"
+      - "✅ Async file-read errors, useReducer, tab a11y, version sync"
+      - "✅ dompurify patch; useShellTheme + useWorkspaceKeyboard extracted"
+      - "✅ 68 unit + 13 E2E pass; carryovers CR-001–012 closed"
+      - "📋 Next: git push, tag v0.5.1, npm publish"
   - date: 2026-06-24
     description: |
       M9 multi-document workspace — tabs, collapsible explorer, lite shell (v0.5.0).
@@ -1264,24 +1261,20 @@ recent_work:
       - 📋 Begin M1 task-1 implementation
 
 next_steps:
-  - Run /acp-proceed → task-77 (M10 release hardening)
-  - Implement M10 order 77→78→80→79→81→82→83→84→85→86
-  - Re-run /acp-review --ci after task-86 (expect 0 HIGH)
   - git push origin main (branch ahead of remote)
-  - Tag v0.5.1 after M10 gate pass (user approval)
-  - npm publish @markdown-tools/react@0.5.x (after npm login)
+  - Tag v0.5.1 (user approval)
+  - npm publish @markdown-tools/react@0.5.1 (after npm login)
+  - Manual Tauri smoke: multi-tab, explorer collapse, PDF export
   - Execute task-34 in ACPEnhanced-Visual per docs/visualizer-migration.md
 
 notes:
   - Viewer ported from ACPEnhanced-Visual v1.5.4 (one-time vendor copy)
   - ADR-001–007 in agent/memory/decisions.md
-  - M1–M9 complete at v0.5.0; M10 remediation planned for review-001
+  - M1–M10 complete at v0.5.1; review-001 carryovers closed
   - Export stack: saveBlob.ts, write_export_file + print_html_document (src-tauri)
   - Pattern logged: controlled-content-undefined-not-empty (StandaloneViewer + MarkdownViewer)
 
 current_blockers:
-  - review-001: 4 HIGH findings open → M10 task-77, task-78
-  - tauri.conf.json 0.4.2 vs package.json 0.5.0
   - npm publish requires npm login — blocked until credentials are configured
   - ACPEnhanced-Visual task-34 migration is cross-repo — requires execution in visualizer repo
 
@@ -1307,7 +1300,7 @@ dependencies:
 quality:
   test_coverage: 82
   test_coverage_scope: src/markdown
-  unit_tests: 54
-  e2e_tests: 9
+  unit_tests: 68
+  e2e_tests: 13
   e2e_status: all_passing
-  code_review_status: audit-8-9-export-remediation-uncommitted
+  code_review_status: review-001-remediated-m10

@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.1] - 2026-06-24
+
+### Fixed (M10 — Release hardening)
+- **Async file reads** — all drop/picker paths catch errors and show toast (no unhandled rejections)
+- **Desktop version sync** — `tauri.conf.json` and `Cargo.toml` aligned to 0.5.1
+- **Workspace state** — `useReducer` replaces nested `setState` updaters; lazy `localStorage` init on mount
+- **Tab accessibility** — WAI-ARIA keyboard navigation (arrow keys, Home/End); `Ctrl+T`/`Ctrl+W` shortcuts
+- **dompurify** — upgraded to patched release (GHSA-cmwh-pvxp-8882)
+
+### Changed
+- Extracted `useShellTheme`, `useWorkspaceKeyboard` from `StandaloneViewer`
+- MarkdownViewer loading/error chrome uses zinc tokens
+- E2E explorer test uses chevron for collapse and expand
+- Unit tests: `localStorage` mock in vitest setup; hook persistence + tab keyboard tests
+
 ## [0.5.0] - 2026-06-24
 
 ### Added (M9 — Multi-document workspace)

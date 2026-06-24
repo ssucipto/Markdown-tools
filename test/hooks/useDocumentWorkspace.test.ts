@@ -73,4 +73,35 @@ describe('useDocumentWorkspace', () => {
     expect(result.current.activeTabId).toBe(firstId)
     expect(result.current.tabs.find((t) => t.id === firstId)?.content).toBe('# A updated')
   })
+
+  it('setExplorerCollapsed persists to localStorage', () => {
+    localStorage.clear()
+    const { result } = renderHook(() => useDocumentWorkspace())
+    expect(result.current.explorerCollapsed).toBe(false)
+    act(() => {
+      result.current.setExplorerCollapsed(true)
+    })
+    expect(result.current.explorerCollapsed).toBe(true)
+    expect(localStorage.getItem('mdtools.explorer.collapsed')).toBe('true')
+
+    const { result: result2 } = renderHook(() => useDocumentWorkspace())
+    expect(result2.current.explorerCollapsed).toBe(true)
+    localStorage.clear()
+  })
+
+  it('closeTab activates neighbour when closing active tab', () => {
+    const { result } = renderHook(() => useDocumentWorkspace())
+    act(() => {
+      result.current.openPathInTab('a.md', '# A')
+      result.current.openPathInTab('b.md', '# B')
+      result.current.openPathInTab('c.md', '# C')
+    })
+    const [, second, third] = result.current.tabs
+    act(() => {
+      result.current.setActiveTab(second.id)
+      result.current.closeTab(second.id)
+    })
+    expect(result.current.tabs).toHaveLength(2)
+    expect(result.current.activeTabId).toBe(third.id)
+  })
 })

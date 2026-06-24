@@ -62,14 +62,14 @@ Parallel allowed: 78 + 80 after 77 starts; 82 + 85 while 79 runs.
 
 ## Success criteria
 
-- [ ] `/acp-review --ci` passes (0 HIGH findings)
-- [ ] `tauri.conf.json` version matches `package.json` 0.5.x
-- [ ] All file-read failures show toast (no unhandled rejections)
-- [ ] Tab keyboard navigation works (Arrow keys + focus)
-- [ ] `mdtools.explorer.collapsed` unit-tested
-- [ ] E2E: explorer collapse via chevron both directions
-- [ ] M9 design doc status `implemented`; success criteria checked
-- [ ] review-001 carryovers logged and verified closed
+- [x] `/acp-review --ci` passes (0 HIGH findings)
+- [x] `tauri.conf.json` version matches `package.json` 0.5.x
+- [x] All file-read failures show toast (no unhandled rejections)
+- [x] Tab keyboard navigation works (Arrow keys + focus)
+- [x] `mdtools.explorer.collapsed` unit-tested
+- [x] E2E: explorer collapse via chevron both directions
+- [x] M9 design doc status `implemented`; success criteria checked
+- [x] review-001 carryovers logged and verified closed
 
 ---
 

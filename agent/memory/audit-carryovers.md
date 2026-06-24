@@ -621,65 +621,81 @@ carryovers:
     audit_ref: agent/reports/review-001.md
     severity: high
     finding: file.text().then() without .catch in StandaloneViewer
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-77
     planned_in: M10 task-77
-    notes: FR-10.1
+    notes: FR-10.1 — async/await + toast on all file paths
 
   - finding_id: REVIEW-001-CR-002
     audit_ref: agent/reports/review-001.md
     severity: high
     finding: void loadFileIntoActiveTab — unhandled rejections (4 call sites)
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-77
     planned_in: M10 task-77
-    notes: FR-10.1
+    notes: loadDroppedFile wrapper with catch
 
   - finding_id: REVIEW-001-CR-003
     audit_ref: agent/reports/review-001.md
     severity: high
     finding: handleSelectFile try/finally without catch
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-77
     planned_in: M10 task-77
-    notes: FR-10.1
+    notes: catch + showToast(READ_ERROR)
 
   - finding_id: REVIEW-001-CR-004
     audit_ref: agent/reports/review-001.md
     severity: high
     finding: tauri.conf.json version 0.4.2 vs package.json 0.5.0
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-78
     planned_in: M10 task-78
-    notes: FR-10.2
+    notes: aligned to 0.5.1
 
   - finding_id: REVIEW-001-CR-005
     audit_ref: agent/reports/review-001.md
     severity: medium
     finding: setActiveTabId inside setTabs updater in useDocumentWorkspace
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-79
     planned_in: M10 task-79
-    notes: FR-10.3
+    notes: useReducer workspaceReducer
 
   - finding_id: REVIEW-001-CR-006
     audit_ref: agent/reports/review-001.md
     severity: medium
     finding: DocumentTabs role=tab without keyboard navigation pattern
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-80
     planned_in: M10 task-80
-    notes: FR-10.4
+    notes: arrow keys, roving tabindex, Ctrl+T/W
 
   - finding_id: REVIEW-001-CR-007
     audit_ref: agent/reports/review-001.md
     severity: medium
     finding: MarkdownViewer.tsx large (557 lines); partial zinc leftovers
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-82
     planned_in: M10 task-82
-    notes: FR-10.6 — decomposition optional future
+    notes: zinc pass on loading/error/toast; full split deferred
 
   - finding_id: REVIEW-001-CR-008
     audit_ref: agent/reports/review-001.md
     severity: medium
     finding: StandaloneViewer.tsx large (277 lines) — extract subcomponents
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-83
     planned_in: M10 task-83
-    notes: FR-10.7
+    notes: useShellTheme + useWorkspaceKeyboard extracted
 
   - finding_id: REVIEW-001-CR-009
     audit_ref: agent/reports/review-001.md
@@ -693,41 +709,51 @@ carryovers:
     audit_ref: agent/reports/review-001.md
     severity: low
     finding: package-lock version metadata drift
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-78
     planned_in: M10 task-78
-    notes: FR-10.2
+    notes: npm install dompurify sync
 
   - finding_id: REVIEW-001-CR-011
     audit_ref: agent/reports/review-001.md
     severity: low
     finding: Cargo.toml version may drift from npm
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-78
     planned_in: M10 task-78
-    notes: FR-10.2
+    notes: 0.5.1 aligned
 
   - finding_id: REVIEW-001-CR-012
     audit_ref: agent/reports/review-001.md
     severity: medium
     finding: dompurify moderate CVE in dependency chain
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-85
     planned_in: M10 task-85
-    notes: FR-10.9
+    notes: dompurify@^3.4.11
 
   - finding_id: M9-SHORTCUT-005
     audit_ref: M9 shortcut retrospective
     severity: medium
     finding: file-explorer.test.tsx UI-only; localStorage round-trip untested at hook level
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-81
     planned_in: M10 task-81
-    notes: Deepens AUDIT-012-F5
+    notes: useDocumentWorkspace localStorage test + lazy init
 
   - finding_id: M9-SHORTCUT-009
     audit_ref: M9 shortcut retrospective
     severity: low
     finding: user-guide documents Ctrl+T/W not wired in code
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-80
     planned_in: M10 task-80 or task-84
-    notes: Implement or remove claims
+    notes: useWorkspaceKeyboard implements Ctrl+T/W
 
   - finding_id: M9-SHORTCUT-010
     audit_ref: M9 shortcut retrospective
@@ -742,6 +768,8 @@ carryovers:
     audit_ref: M9 shortcut retrospective
     severity: low
     finding: E2E explorer collapse uses toolbar ☰ not chevron for expand
-    status: pending
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: M10-task-81
     planned_in: M10 task-81
-    notes: FR-10.5
+    notes: e2e/tabs.spec.ts chevron both ways

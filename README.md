@@ -6,7 +6,7 @@ Drop `.md` files, read richly rendered GitHub-flavored preview, **Mermaid** diag
 
 > Viewer ported from `acp-visualizer` v1.5.4 (`DocsViewer.tsx`). See [ADR-006](agent/memory/decisions.md).
 
-**Current release**: v0.5.0 (M1–M9 complete)
+**Current release**: v0.5.1 (M1–M10 complete)
 
 ---
 

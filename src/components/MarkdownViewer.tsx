@@ -347,7 +347,7 @@ export function MarkdownViewer({
   const showFileSidebar = showSidebar && files.length > 0 && !fullscreen
 
   if (loading) {
-    return <div className="p-6 text-gray-400 animate-pulse">Loading documents…</div>
+    return <div className="p-6 text-zinc-400 animate-pulse">Loading documents…</div>
   }
 
   return (
@@ -400,15 +400,15 @@ export function MarkdownViewer({
             <pre
               className={`whitespace-pre-wrap font-mono text-sm p-4 rounded-lg border ${
                 dark
-                  ? 'bg-gray-800 border-gray-700 text-gray-200'
-                  : 'bg-gray-50 border-gray-200 text-gray-800'
+                  ? 'bg-zinc-800 border-zinc-700 text-zinc-200'
+                  : 'bg-zinc-50 border-zinc-200 text-zinc-800'
               }`}
               aria-label="Markdown source"
             >
               {sourceText}
             </pre>
           ) : !html ? (
-            <div className="animate-pulse text-gray-400">Rendering…</div>
+            <div className="animate-pulse text-zinc-400">Rendering…</div>
           ) : (
             <article
               className={`prose-doc max-w-4xl ${dark ? 'prose-invert' : ''}`}
@@ -467,7 +467,7 @@ export function MarkdownViewer({
 
       {toast && (
         <div
-          className="fixed bottom-20 right-4 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg text-sm"
+          className="fixed bottom-20 right-4 z-50 bg-zinc-900 text-white px-4 py-2 rounded-lg shadow-lg text-sm"
           role="status"
         >
           {toast}

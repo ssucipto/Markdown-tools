@@ -44,4 +44,22 @@ describe('DocumentTabs', () => {
     await user.click(closeBtn)
     expect(onClose).toHaveBeenCalledWith('a')
   })
+
+  it('arrow keys move selection', async () => {
+    const user = userEvent.setup()
+    const onSelect = vi.fn()
+    render(
+      <DocumentTabs
+        tabs={tabs}
+        activeTabId="a"
+        onSelect={onSelect}
+        onClose={() => {}}
+        onNewTab={() => {}}
+      />,
+    )
+    const tabA = screen.getByRole('tab', { name: 'a' })
+    tabA.focus()
+    await user.keyboard('{ArrowRight}')
+    expect(onSelect).toHaveBeenCalledWith('b')
+  })
 })

@@ -1,31 +1,17 @@
-import { useCallback, useEffect, useRef, useState, type DragEvent } from 'react'
+import { useCallback, useRef, useState, type DragEvent } from 'react'
 import { DocumentTabs } from '@/components/DocumentTabs'
 import { FileExplorer } from '@/components/FileExplorer'
 import { MarkdownViewerWithBoundary } from '@/components/MarkdownViewer'
 import { EmptyState } from '@/components/Toolbar'
 import { useDocumentWorkspace } from '@/hooks/useDocumentWorkspace'
 import { useFolderBrowser } from '@/hooks/useFolderBrowser'
+import { useShellTheme } from '@/hooks/useShellTheme'
 import { useTauriFileOpen } from '@/hooks/useTauriFileOpen'
 import { useToast } from '@/hooks/useToast'
+import { useWorkspaceKeyboard } from '@/hooks/useWorkspaceKeyboard'
 
 const MD_EXT = /\.(md|markdown)$/i
-const THEME_KEY = 'mdtools.theme'
-
-function readTheme(): 'light' | 'dark' {
-  try {
-    return localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light'
-  } catch {
-    return 'light'
-  }
-}
-
-function writeTheme(theme: 'light' | 'dark'): void {
-  try {
-    localStorage.setItem(THEME_KEY, theme)
-  } catch {
-    // ignore
-  }
-}
+const READ_ERROR = '⚠️ Could not read file'
 
 export function StandaloneViewer() {
   const workspace = useDocumentWorkspace()
@@ -36,7 +22,7 @@ export function StandaloneViewer() {
   const [folderLoading, setFolderLoading] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
   const [shellDragOver, setShellDragOver] = useState(false)
-  const [theme, setTheme] = useState<'light' | 'dark'>(readTheme)
+  const { theme, dark, handleThemeChange } = useShellTheme()
 
   const {
     tabs,
@@ -52,29 +38,23 @@ export function StandaloneViewer() {
     loadFileIntoActiveTab,
   } = workspace
 
-  const dark = theme === 'dark'
-
-  const handleThemeChange = useCallback((next: 'light' | 'dark') => {
-    setTheme(next)
-    writeTheme(next)
-  }, [])
-
   const toggleExplorer = useCallback(() => {
     setExplorerCollapsed(!explorerCollapsed)
   }, [explorerCollapsed, setExplorerCollapsed])
 
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== '[' || e.metaKey || e.ctrlKey || e.altKey) return
-      const target = e.target as HTMLElement
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return
-      if (!folder.hasFolder || fullscreen) return
-      e.preventDefault()
-      toggleExplorer()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [folder.hasFolder, fullscreen, toggleExplorer])
+  const handleCloseActiveTab = useCallback(() => {
+    if (activeTabId) closeTab(activeTabId)
+  }, [activeTabId, closeTab])
+
+  useWorkspaceKeyboard({
+    hasFolder: folder.hasFolder,
+    fullscreen,
+    explorerCollapsed,
+    activeTabId,
+    onToggleExplorer: toggleExplorer,
+    onNewTab: openTab,
+    onCloseActiveTab: handleCloseActiveTab,
+  })
 
   useTauriFileOpen(
     useCallback(
@@ -91,12 +71,18 @@ export function StandaloneViewer() {
       setFolderLoading(true)
       try {
         const text = await folder.readFile(path)
-        if (text !== null) openPathInTab(path, text)
+        if (text !== null) {
+          openPathInTab(path, text)
+        } else {
+          showToast(READ_ERROR)
+        }
+      } catch {
+        showToast(READ_ERROR)
       } finally {
         setFolderLoading(false)
       }
     },
-    [folder, openPathInTab],
+    [folder, openPathInTab, showToast],
   )
 
   const handleOpenFolder = useCallback(async () => {
@@ -123,24 +109,39 @@ export function StandaloneViewer() {
     [folder, showToast],
   )
 
+  const loadDroppedFile = useCallback(
+    async (file: File) => {
+      try {
+        await loadFileIntoActiveTab(file)
+      } catch {
+        showToast(READ_ERROR)
+      }
+    },
+    [loadFileIntoActiveTab, showToast],
+  )
+
   const handleFileDrop = useCallback(
     (file: File) => {
-      void loadFileIntoActiveTab(file)
+      void loadDroppedFile(file)
     },
-    [loadFileIntoActiveTab],
+    [loadDroppedFile],
   )
 
   const handleDropOnTab = useCallback(
-    (tabId: string | null, file: File) => {
-      if (tabId) {
-        void file.text().then((content) => {
-          loadIntoTab(tabId, `[dropped] ${file.name}`, content)
-        })
-        return
+    async (tabId: string | null, file: File) => {
+      try {
+        const content = await file.text()
+        const path = `[dropped] ${file.name}`
+        if (tabId) {
+          loadIntoTab(tabId, path, content)
+        } else {
+          await loadFileIntoActiveTab(file)
+        }
+      } catch {
+        showToast(READ_ERROR)
       }
-      void loadFileIntoActiveTab(file)
     },
-    [loadIntoTab, loadFileIntoActiveTab],
+    [loadIntoTab, loadFileIntoActiveTab, showToast],
   )
 
   const handleShellDrop = useCallback(
@@ -153,9 +154,9 @@ export function StandaloneViewer() {
         showToast('⚠️ Only .md files are supported')
         return
       }
-      void loadFileIntoActiveTab(file)
+      void loadDroppedFile(file)
     },
-    [loadFileIntoActiveTab, showToast],
+    [loadDroppedFile, showToast],
   )
 
   const handleShellFilePick = useCallback(() => {
@@ -171,10 +172,10 @@ export function StandaloneViewer() {
         e.target.value = ''
         return
       }
-      void loadFileIntoActiveTab(file)
+      void loadDroppedFile(file)
       e.target.value = ''
     },
-    [loadFileIntoActiveTab, showToast],
+    [loadDroppedFile, showToast],
   )
 
   const hasTabs = tabs.length > 0

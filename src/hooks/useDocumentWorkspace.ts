@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import type { TabDocument } from '@/types/workspace'
+import { useCallback, useReducer } from 'react'
+import type { DocumentWorkspaceState, TabDocument } from '@/types/workspace'
 
 const EXPLORER_COLLAPSED_KEY = 'mdtools.explorer.collapsed'
 
@@ -36,121 +36,151 @@ function neighbourTabId(tabs: TabDocument[], closedId: string): string | null {
   return next?.id ?? null
 }
 
-export function useDocumentWorkspace() {
-  const [tabs, setTabs] = useState<TabDocument[]>([])
-  const [activeTabId, setActiveTabId] = useState<string | null>(null)
-  const [explorerCollapsed, setExplorerCollapsedState] = useState(readExplorerCollapsed)
+type WorkspaceAction =
+  | { type: 'OPEN_TAB'; id: string }
+  | { type: 'CLOSE_TAB'; id: string }
+  | { type: 'SET_ACTIVE_TAB'; id: string }
+  | { type: 'SET_EXPLORER_COLLAPSED'; collapsed: boolean }
+  | { type: 'OPEN_PATH_IN_TAB'; path: string; content: string }
+  | { type: 'LOAD_INTO_ACTIVE_TAB'; path: string; content: string }
+  | { type: 'LOAD_INTO_TAB'; tabId: string; path: string; content: string }
 
+function workspaceReducer(state: DocumentWorkspaceState, action: WorkspaceAction): DocumentWorkspaceState {
+  switch (action.type) {
+    case 'OPEN_TAB': {
+      const id = action.id
+      const tab: TabDocument = { id, documentPath: null, content: '', title: 'Untitled' }
+      return { ...state, tabs: [...state.tabs, tab], activeTabId: id }
+    }
+    case 'CLOSE_TAB': {
+      const nextTabs = state.tabs.filter((t) => t.id !== action.id)
+      const activeTabId =
+        state.activeTabId !== action.id ? state.activeTabId : neighbourTabId(state.tabs, action.id)
+      return { ...state, tabs: nextTabs, activeTabId }
+    }
+    case 'SET_ACTIVE_TAB':
+      return { ...state, activeTabId: action.id }
+    case 'SET_EXPLORER_COLLAPSED':
+      return { ...state, explorerCollapsed: action.collapsed }
+    case 'OPEN_PATH_IN_TAB': {
+      const { path, content } = action
+      const existing = state.tabs.find((t) => t.documentPath === path)
+      if (existing) {
+        return {
+          ...state,
+          activeTabId: existing.id,
+          tabs: state.tabs.map((t) =>
+            t.id === existing.id ? { ...t, content, title: titleFromPath(path) } : t,
+          ),
+        }
+      }
+      const id = newTabId()
+      const tab: TabDocument = { id, documentPath: path, content, title: titleFromPath(path) }
+      return { ...state, tabs: [...state.tabs, tab], activeTabId: id }
+    }
+    case 'LOAD_INTO_ACTIVE_TAB': {
+      const { path, content } = action
+      const existing = state.tabs.find((t) => t.documentPath === path)
+      if (existing) {
+        return {
+          ...state,
+          activeTabId: existing.id,
+          tabs: state.tabs.map((t) =>
+            t.id === existing.id ? { ...t, content, title: titleFromPath(path) } : t,
+          ),
+        }
+      }
+      if (state.activeTabId) {
+        return {
+          ...state,
+          tabs: state.tabs.map((t) =>
+            t.id === state.activeTabId
+              ? { ...t, documentPath: path, content, title: titleFromPath(path) }
+              : t,
+          ),
+        }
+      }
+      const id = newTabId()
+      const tab: TabDocument = { id, documentPath: path, content, title: titleFromPath(path) }
+      return { ...state, tabs: [...state.tabs, tab], activeTabId: id }
+    }
+    case 'LOAD_INTO_TAB': {
+      const { tabId, path, content } = action
+      const existing = state.tabs.find((t) => t.documentPath === path)
+      if (existing) {
+        return {
+          ...state,
+          activeTabId: existing.id,
+          tabs: state.tabs.map((t) =>
+            t.id === existing.id ? { ...t, content, title: titleFromPath(path) } : t,
+          ),
+        }
+      }
+      return {
+        ...state,
+        activeTabId: tabId,
+        tabs: state.tabs.map((t) =>
+          t.id === tabId ? { ...t, documentPath: path, content, title: titleFromPath(path) } : t,
+        ),
+      }
+    }
+    default:
+      return state
+  }
+}
+
+const initialWorkspaceState = (): DocumentWorkspaceState => ({
+  tabs: [],
+  activeTabId: null,
+  explorerCollapsed: readExplorerCollapsed(),
+})
+
+export function useDocumentWorkspace() {
+  const [state, dispatch] = useReducer(workspaceReducer, undefined, initialWorkspaceState)
+  const { tabs, activeTabId, explorerCollapsed } = state
   const activeTab = tabs.find((t) => t.id === activeTabId) ?? null
 
   const openTab = useCallback((): string => {
     const id = newTabId()
-    const tab: TabDocument = { id, documentPath: null, content: '', title: 'Untitled' }
-    setTabs((prev) => [...prev, tab])
-    setActiveTabId(id)
+    dispatch({ type: 'OPEN_TAB', id })
     return id
   }, [])
 
   const closeTab = useCallback((id: string) => {
-    setTabs((prev) => {
-      const next = prev.filter((t) => t.id !== id)
-      setActiveTabId((current) => {
-        if (current !== id) return current
-        return neighbourTabId(prev, id)
-      })
-      return next
-    })
+    dispatch({ type: 'CLOSE_TAB', id })
   }, [])
 
   const setActiveTab = useCallback((id: string) => {
-    setActiveTabId(id)
+    dispatch({ type: 'SET_ACTIVE_TAB', id })
   }, [])
 
   const setExplorerCollapsed = useCallback((collapsed: boolean) => {
-    setExplorerCollapsedState(collapsed)
+    dispatch({ type: 'SET_EXPLORER_COLLAPSED', collapsed })
     writeExplorerCollapsed(collapsed)
   }, [])
 
   const openPathInTab = useCallback((path: string, content: string) => {
-    setTabs((prev) => {
-      const existing = prev.find((t) => t.documentPath === path)
-      if (existing) {
-        setActiveTabId(existing.id)
-        return prev.map((t) => (t.id === existing.id ? { ...t, content, title: titleFromPath(path) } : t))
-      }
-      const id = newTabId()
-      const tab: TabDocument = {
-        id,
-        documentPath: path,
-        content,
-        title: titleFromPath(path),
-      }
-      setActiveTabId(id)
-      return [...prev, tab]
-    })
+    dispatch({ type: 'OPEN_PATH_IN_TAB', path, content })
   }, [])
 
-  const loadIntoActiveTab = useCallback(
-    (path: string, content: string) => {
-      setTabs((prev) => {
-        const existing = prev.find((t) => t.documentPath === path)
-        if (existing) {
-          setActiveTabId(existing.id)
-          return prev.map((t) =>
-            t.id === existing.id ? { ...t, content, title: titleFromPath(path) } : t,
-          )
-        }
-        if (activeTabId) {
-          return prev.map((t) =>
-            t.id === activeTabId
-              ? { ...t, documentPath: path, content, title: titleFromPath(path) }
-              : t,
-          )
-        }
-        const id = newTabId()
-        const tab: TabDocument = {
-          id,
-          documentPath: path,
-          content,
-          title: titleFromPath(path),
-        }
-        setActiveTabId(id)
-        return [...prev, tab]
-      })
-    },
-    [activeTabId],
-  )
+  const loadIntoActiveTab = useCallback((path: string, content: string) => {
+    dispatch({ type: 'LOAD_INTO_ACTIVE_TAB', path, content })
+  }, [])
 
   const loadIntoTab = useCallback((tabId: string, path: string, content: string) => {
-    setTabs((prev) => {
-      const existing = prev.find((t) => t.documentPath === path)
-      if (existing) {
-        setActiveTabId(existing.id)
-        return prev.map((t) =>
-          t.id === existing.id ? { ...t, content, title: titleFromPath(path) } : t,
-        )
-      }
-      setActiveTabId(tabId)
-      return prev.map((t) =>
-        t.id === tabId ? { ...t, documentPath: path, content, title: titleFromPath(path) } : t,
-      )
-    })
+    dispatch({ type: 'LOAD_INTO_TAB', tabId, path, content })
   }, [])
 
   const loadFileIntoActiveTab = useCallback(
-    (file: File): Promise<void> => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => {
-          const path = `[dropped] ${file.name}`
-          loadIntoActiveTab(path, reader.result as string)
-          resolve()
-        }
-        reader.onerror = () => reject(reader.error)
-        reader.readAsText(file)
+    async (file: File): Promise<void> => {
+      const content = await file.text()
+      dispatch({
+        type: 'LOAD_INTO_ACTIVE_TAB',
+        path: `[dropped] ${file.name}`,
+        content,
       })
     },
-    [loadIntoActiveTab],
+    [],
   )
 
   return {

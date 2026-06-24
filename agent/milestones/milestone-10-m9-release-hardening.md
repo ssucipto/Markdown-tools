@@ -5,7 +5,7 @@ topic: remediation, review-001, quality-gate, m9-carryovers
 description: Close review-001 HIGH/MEDIUM findings, shortcut debt, and verify all M9 carryovers
 tasks: task-77..task-86
 spec: agent/design/m10-m9-release-hardening.md
-status: planned
+status: completed
 updated: 2026-06-24
 audit: review-001, audit-12
 @acp.meta.end -->
@@ -54,11 +54,11 @@ Update [milestone-9](../milestones/milestone-9-multi-document-workspace.md):
 
 ## Success Criteria
 
-- [ ] `npm test` + `npm run test:e2e` + `typecheck` + `lint` pass
-- [ ] `/acp-review --ci` → PASS (0 HIGH)
-- [ ] Manual: Tauri dev opens multi-tab; explorer collapse persists
-- [ ] All `AUDIT-012-*` and `CR-*` carryovers verified or closed
-- [ ] CHANGELOG 0.5.1 entry
+- [x] `npm test` + `npm run test:e2e` + `typecheck` + `lint` pass
+- [x] `/acp-review --ci` → PASS (0 HIGH)
+- [x] Manual: Tauri dev opens multi-tab; explorer collapse persists
+- [x] All `AUDIT-012-*` and `CR-*` carryovers verified or closed
+- [x] CHANGELOG 0.5.1 entry
 
 ---
 
