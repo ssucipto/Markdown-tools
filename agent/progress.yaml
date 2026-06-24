@@ -13,6 +13,23 @@ project:
     ACPEnhanced-Visual v1.5.4.
 
 milestones:
+  - id: M9
+    name: Multi-Document Workspace — Tabs & Collapsible Explorer
+    priority: 1
+    file: agent/milestones/milestone-9-multi-document-workspace.md
+    status: planned
+    progress: 0
+    started: null
+    completed: null
+    estimated_weeks: 3
+    tasks_completed: 0
+    tasks_total: 8
+    notes: |
+      Planned 2026-06-24 via /acp-plan. Tabbed multi-document UX for web + desktop.
+      Collapsible left file explorer. Embed API unchanged (standalone-only feature).
+      Design: agent/design/multi-document-workspace.md
+      Target version: 0.5.0
+
   - id: M8
     name: M5 Remediation — Native Desktop Local Install Readiness
     priority: 0
@@ -829,11 +846,92 @@ tasks:
       audit: AUDIT-007-F4, AUDIT-007-F7, AUDIT-007-F10
       notes: test-baseline.md, regression-checklist.md, CLI smoke tests, test:security, test:all, DOMPurify hardening verification
 
+  milestone_9:
+    - id: task-68
+      name: Workspace State Model & Hook
+      priority: 1
+      status: planned
+      started: null
+      completed_date: null
+      file: agent/tasks/milestone-9-multi-document-workspace/task-68-workspace-state-model.md
+      estimated_hours: 4
+      notes: useDocumentWorkspace, TabDocument types, unit tests
+    - id: task-69
+      name: Tab Bar UI Component
+      priority: 1
+      status: planned
+      started: null
+      completed_date: null
+      file: agent/tasks/milestone-9-multi-document-workspace/task-69-tab-bar-ui.md
+      estimated_hours: 4
+      depends: task-68
+      notes: DocumentTabs, accessibility, data-testid hooks
+    - id: task-70
+      name: Per-Tab File Open (DnD & Picker)
+      priority: 1
+      status: planned
+      started: null
+      completed_date: null
+      file: agent/tasks/milestone-9-multi-document-workspace/task-70-per-tab-file-open.md
+      estimated_hours: 5
+      depends: task-68, task-69
+      notes: FR-9.2, FR-9.3 — drop on viewer and tab strip
+    - id: task-71
+      name: Collapsible File Explorer Panel
+      priority: 1
+      status: planned
+      started: null
+      completed_date: null
+      file: agent/tasks/milestone-9-multi-document-workspace/task-71-collapsible-file-explorer.md
+      estimated_hours: 4
+      depends: task-68
+      notes: FR-9.4 — localStorage collapse persistence
+    - id: task-72
+      name: StandaloneViewer Layout Integration
+      priority: 1
+      status: planned
+      started: null
+      completed_date: null
+      file: agent/tasks/milestone-9-multi-document-workspace/task-72-standalone-viewer-layout.md
+      estimated_hours: 6
+      depends: task-68, task-69, task-70, task-71
+      notes: Shell layout, keyed MarkdownViewer per active tab
+    - id: task-73
+      name: Tauri Multi-File Tab Behaviour
+      priority: 1
+      status: planned
+      started: null
+      completed_date: null
+      file: agent/tasks/milestone-9-multi-document-workspace/task-73-tauri-multi-tab-open.md
+      estimated_hours: 3
+      depends: task-72
+      notes: open-file-content → openPathInTab, dedupe by path
+    - id: task-74
+      name: Embed API Backward Compatibility
+      priority: 1
+      status: planned
+      started: null
+      completed_date: null
+      file: agent/tasks/milestone-9-multi-document-workspace/task-74-embed-backward-compat.md
+      estimated_hours: 2
+      depends: task-72
+      notes: FR-9.5 — no breaking MarkdownViewerProps changes
+    - id: task-75
+      name: Tests, E2E & FR-9 Documentation
+      priority: 1
+      status: planned
+      started: null
+      completed_date: null
+      file: agent/tasks/milestone-9-multi-document-workspace/task-75-tests-docs-fr9.md
+      estimated_hours: 5
+      depends: task-72, task-73, task-74
+      notes: E2E tab/explorer scenarios, user-guide, regression checklist
+
 documentation:
-  design_documents: 2
-  milestone_documents: 9
+  design_documents: 3
+  milestone_documents: 10
   pattern_documents: 2
-  task_documents: 67
+  task_documents: 75
   audit_reports: 4
   prd_version: "1.7.0"
   readme_version: "0.4.2"
@@ -842,6 +940,7 @@ documentation:
   test_baseline: docs/test-baseline.md
   last_updated: 2026-06-24
   last_sync: 2026-06-24
+  m9_design: agent/design/multi-document-workspace.md
 
 progress:
   planning: 100
@@ -851,10 +950,10 @@ progress:
   overall: 100
 
 current_task:
-  id: export-audit-remediation
-  name: "AUDIT-008/009 export fixes — desktop save + native PDF print (pending commit)"
-  file: agent/reports/audit-8-pdf-export-popup-blocked.md
-  status: in_progress
+  id: task-68
+  name: "M9 — Workspace state model & hook (first task)"
+  file: agent/tasks/milestone-9-multi-document-workspace/task-68-workspace-state-model.md
+  status: planned
 
 recent_work:
   - date: 2026-06-24
@@ -1009,7 +1108,7 @@ recent_work:
       - 📋 Begin M1 task-1 implementation
 
 next_steps:
-  - Commit export audit remediation (saveBlob, Tauri print/save commands, docs, tests)
+  - Run /acp-proceed → task-68 (M9 workspace state model)
   - User verify PDF export on desktop after full `npm run tauri:dev` restart
   - git push origin main (branch ahead of remote)
   - npm publish @markdown-tools/react@0.4.2 (after npm login)
