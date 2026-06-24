@@ -23,10 +23,12 @@ milestones:
     completed: null
     estimated_weeks: 3
     tasks_completed: 0
-    tasks_total: 8
+    tasks_total: 9
     notes: |
-      Planned 2026-06-24 via /acp-plan. Tabbed multi-document UX for web + desktop.
-      Collapsible left file explorer. Embed API unchanged (standalone-only feature).
+      Planned 2026-06-24 via /acp-plan; revised after audit-10 (2026-06-24).
+      Tabbed multi-document UX for web + desktop; lite/airy zinc shell (task-76).
+      Shell-level FileExplorer — sidebar lifted out of MarkdownViewer (task-72).
+      FR-9 in requirements.md; embed API unchanged.
       Design: agent/design/multi-document-workspace.md
       Target version: 0.5.0
 
@@ -895,7 +897,7 @@ tasks:
       file: agent/tasks/milestone-9-multi-document-workspace/task-72-standalone-viewer-layout.md
       estimated_hours: 6
       depends: task-68, task-69, task-70, task-71
-      notes: Shell layout, keyed MarkdownViewer per active tab
+      notes: Shell layout, sidebar lift, showSidebar false standalone, FR-9.9 fullscreen
     - id: task-73
       name: Tauri Multi-File Tab Behaviour
       priority: 1
@@ -916,22 +918,32 @@ tasks:
       estimated_hours: 2
       depends: task-72
       notes: FR-9.5 — no breaking MarkdownViewerProps changes
+    - id: task-76
+      name: M9 Shell Visual System — Lite/Airy Pass
+      priority: 1
+      status: planned
+      started: null
+      completed_date: null
+      file: agent/tasks/milestone-9-multi-document-workspace/task-76-shell-visual-lite-airy.md
+      estimated_hours: 4
+      depends: task-69, task-71, task-72
+      notes: FR-9.7 — zinc tokens, merged chrome, toolbar weight; audit-10 F3-F5
     - id: task-75
-      name: Tests, E2E & FR-9 Documentation
+      name: Tests, E2E & M9 Documentation Sync
       priority: 1
       status: planned
       started: null
       completed_date: null
       file: agent/tasks/milestone-9-multi-document-workspace/task-75-tests-docs-fr9.md
       estimated_hours: 5
-      depends: task-72, task-73, task-74
-      notes: E2E tab/explorer scenarios, user-guide, regression checklist
+      depends: task-72, task-73, task-74, task-76
+      notes: E2E tab/explorer, user-guide, regression checklist; FR-9 traceability verify
 
 documentation:
   design_documents: 3
   milestone_documents: 10
   pattern_documents: 2
-  task_documents: 75
+  task_documents: 76
   audit_reports: 4
   prd_version: "1.7.0"
   readme_version: "0.4.2"
@@ -1108,7 +1120,8 @@ recent_work:
       - 📋 Begin M1 task-1 implementation
 
 next_steps:
-  - Run /acp-proceed → task-68 (M9 workspace state model)
+  - Run /acp-proceed → task-68 (M9 workspace state model; FR-9 in PRD)
+  - Implement M9 task order 68→69→70→71→72→73→74→76→75
   - User verify PDF export on desktop after full `npm run tauri:dev` restart
   - git push origin main (branch ahead of remote)
   - npm publish @markdown-tools/react@0.4.2 (after npm login)

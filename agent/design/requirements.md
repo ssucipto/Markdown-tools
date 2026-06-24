@@ -86,7 +86,7 @@ Teams need a single, fast viewer that matches modern documentation UX (GitHub, D
 ### What NOT to port (ACP-specific)
 
 - Progress dashboard (`MilestoneTable`, `useProgressData`, aggregate home)
-- Multi-project tab bar, `bin/acp-visualizer.mjs`, `PROGRESS_YAML_PATH` coupling
+- ACP **multi-project** tab bar (progress dashboard), `bin/acp-visualizer.mjs`, `PROGRESS_YAML_PATH` coupling — **not** the same as M9 multi-**document** tabs in markdown-tools
 - GitHub fetch, memory-files, and other ACP server routes
 
 ### Known gaps in source (address in Markdown-tools)
@@ -290,6 +290,24 @@ PDF export must preserve:
 | FR-8.6 | E2E: Mermaid render + export button smoke | P2 | M3b |
 | FR-8.7 | Invalid file drop shows user-visible error | P1 | M3b |
 | FR-8.8 | Unique heading anchor IDs for TOC/deep-link | P1 | M3b |
+
+### FR-9 — Multi-document workspace (M9, v0.5.0)
+
+Standalone and Tauri desktop only — embed API unchanged (FR-9.8).
+
+| ID | Requirement | Priority | Source |
+|----|-------------|----------|--------|
+| FR-9.1 | Tab bar: open new tab, close tab, switch active tab; labels from filename | P1 | M9 task-69 |
+| FR-9.2 | Per-tab file open via file picker and drag-and-drop on active viewer | P1 | M9 task-70 |
+| FR-9.3 | Drag-and-drop on tab strip loads into hovered tab (or active tab) | P1 | M9 task-70 |
+| FR-9.4 | Collapsible file explorer at shell left; collapse to zero width; persist state in `localStorage` | P1 | M9 task-71 |
+| FR-9.5 | Duplicate filesystem path focuses existing tab instead of opening duplicate | P1 | M9 task-68 |
+| FR-9.6 | Tauri / CLI file open creates or focuses tab by path | P1 | M9 task-73 |
+| FR-9.7 | Lite/airy shell UI — zinc palette, minimal chrome, single top row (brand + tabs) | P1 | M9 task-76 |
+| FR-9.8 | `@markdown-tools/react` embed: no breaking `MarkdownViewerProps` changes | P0 | M9 task-74 |
+| FR-9.9 | Fullscreen: hide explorer and TOC; keep thin tab bar | P2 | M9 design §Fullscreen |
+
+**Note**: FR-9 does not include multi-project switching (that is ACP Visualizer scope). Tabs are multiple `.md` documents within one workspace session.
 
 ---
 
@@ -677,8 +695,9 @@ Five open questions were reviewed against project goals, source audit, and compe
 | Phase 3 | [M5 Native Desktop](../milestones/milestone-5-native-desktop.md) | task-26 … task-28 | 2 ✅ |
 | Phase 2b | [M7 Audit Remediation](../milestones/milestone-7-m4-m6-audit-remediation.md) | task-49 … task-60 | 2 ✅ |
 | Phase 3b | [M8 M5 Remediation](../milestones/milestone-8-m5-remediation.md) | task-61 … task-67 | 1 ✅ |
+| Phase 4 | [M9 Multi-Document Workspace](../milestones/milestone-9-multi-document-workspace.md) | task-68 … task-76 | 3 📋 |
 
-**Total**: 67 tasks · M1–M8 complete · **v0.4.2 release-ready**.
+**Total**: 76 tasks · M1–M8 complete · M9 planned · **v0.4.2 release-ready** → **v0.5.0** after M9.
 
 **Remaining external work**: `npm publish @markdown-tools/react`; execute task-34 in ACPEnhanced-Visual repo.
 

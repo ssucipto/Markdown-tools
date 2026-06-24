@@ -4,27 +4,29 @@
 
 ## Objective
 
-FR-9.4 — Evolve `FileSidebar` into a **fully collapsible** left file explorer with persisted collapse state.
+FR-9.4 — Shell-level `FileExplorer` (evolved from `FileSidebar`) — fully collapsible, lite/airy styling.
 
 ## Steps
 
-1. Create `src/components/FileExplorer.tsx` (or extend `FileSidebar`) with:
+1. Create `src/components/FileExplorer.tsx` (standalone shell only — **not** rendered inside `MarkdownViewer`):
    - Collapse toggle on right edge (chevron)
-   - Width transition: expanded (~240px) → collapsed (0, hidden)
+   - Width: `w-60` expanded → `w-0` collapsed (zero width, not icon sliver)
    - `data-testid="file-explorer"`, `data-testid="explorer-collapse-toggle"`
 2. Persist `explorerCollapsed` in `localStorage` key `mdtools.explorer.collapsed`
-3. Hook `useExplorerCollapse()` or state in workspace shell
-4. File click → `openPathInTab` (task-68) instead of single-doc `selectPath`
-5. Open Folder button: visible in toolbar or explorer header (existing `useFolderBrowser`)
+3. **Lite styling**: zinc palette, sentence-case "Files" header (no uppercase), subtle row selection
+4. File click → `openPathInTab` via props (wired in task-72)
+5. Open Folder button in explorer header; keep toolbar 📁 as secondary until task-76
+6. Hide entirely when viewer fullscreen (shell passes `hidden` — FR-9.9)
 
 ## Verification
 
 - [ ] Collapse hides explorer completely; viewer expands
 - [ ] Reload preserves collapsed state
-- [ ] Folder file list still works when expanded
+- [ ] Folder file list works when expanded (FSA + webkitdirectory)
 - [ ] Unit test: toggle + localStorage round-trip
+- [ ] Does not render when used from embed `MarkdownViewer` path
 
 ## Acceptance
 
 - [ ] No horizontal scroll on main layout at 1280px width
-- [ ] Explorer works with FSA and webkitdirectory fallback (unchanged)
+- [ ] `FileSidebar.tsx` retained for embed; `FileExplorer` is standalone shell component

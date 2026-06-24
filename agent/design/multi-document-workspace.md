@@ -1,9 +1,11 @@
 # Multi-Document Workspace — Design
 
-**Status**: draft  
+**Status**: draft (audit-10 revisions applied)  
 **Created**: 2026-06-24  
+**Revised**: 2026-06-24  
 **Milestone**: M9  
-**PRD**: agent/design/requirements.md (FR-9.x to be added)  
+**PRD**: agent/design/requirements.md (FR-9)  
+**Audit**: agent/reports/audit-10-m9-multi-document-workspace-plan.md  
 **Supersedes**: single-document `useMarkdownDocument` in standalone mode
 
 ---
@@ -17,24 +19,35 @@ Today markdown-tools opens **one document at a time** in standalone and desktop 
 Introduce a **document workspace** layer above `MarkdownViewer`:
 
 1. **Tab bar** — multiple open documents; user can add a tab, switch tabs, close tabs.
-2. **Per-tab context** — each tab owns `documentPath`, `content`, and optional dirty state; drag-and-drop and file picker target the **active** tab (or the tab under the cursor when dropping on tab strip).
-3. **Collapsible file explorer** — left panel (evolved from `FileSidebar`) lists folder files; fully collapsible via toggle; collapsed state persisted in `localStorage`.
+2. **Per-tab context** — each tab owns `documentPath`, `content`, and `title`; drag-and-drop and file picker target the **active** tab (or the tab under the cursor when dropping on tab strip).
+3. **Collapsible file explorer** — left panel at **shell level** (not inside `MarkdownViewer` for standalone); fully collapsible; state persisted in `localStorage`.
 4. **Platform parity** — same UX in browser SPA and Tauri desktop; Tauri `open-file-content` opens a new tab or focuses an existing tab for the same path.
+5. **Lite/airy shell** — minimal chrome, zinc palette, generous whitespace (see §Visual design).
 
-Embed mode (`@markdown-tools/react`) remains **single-document controlled** — no breaking change to `MarkdownViewerProps`.
+Embed mode (`@markdown-tools/react`) remains **single-document controlled** — no breaking change to `MarkdownViewerProps`. Optional `showSidebar` + `files` props remain for embed consumers only.
 
 ## Layout (target)
 
+Single horizontal chrome row — app brand merged into tab bar (no stacked header + tabs).
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ App header                                                   │
+│ Markdown-tools │ doc-a.md │ doc-b.md │ +                  │  ← ~40px tab row
 ├──────────┬──────────────────────────────────────────────────┤
-│ Explorer │ [Tab A] [Tab B] [+]                              │
-│ (toggle) ├──────────────────────────────────────────────────┤
-│          │ MarkdownViewer (active tab only)                 │
-│  📁 list │ Toolbar · TOC · content                          │
+│ explorer │                                                  │
+│ (light)  │     MarkdownViewer (active tab only)             │
+│ toggle ▸ │     Toolbar · TOC · prose content                │
 └──────────┴──────────────────────────────────────────────────┘
 ```
+
+## Shell architecture (standalone vs embed)
+
+| Surface | File explorer | Tab bar | MarkdownViewer |
+|---------|---------------|---------|----------------|
+| **Standalone** / Tauri | `FileExplorer` in `StandaloneViewer` | `DocumentTabs` in shell | Active tab only; **no** internal `FileSidebar` |
+| **Embed** | Optional via `showSidebar` + `files` props | None | Single controlled document |
+
+**AUDIT-010-F2 fix**: Task-72 must pass `showSidebar={false}` (or omit) to `MarkdownViewer` in standalone and render explorer only in `StandaloneViewer`.
 
 ## State model
 
@@ -43,19 +56,21 @@ interface TabDocument {
   id: string              // stable uuid per tab
   documentPath: string | null
   content: string
-  title: string           // derived from path or "[Untitled]"
+  title: string           // derived from path or "Untitled"
 }
 
 interface DocumentWorkspace {
   tabs: TabDocument[]
-  activeTabId: string
-  explorerCollapsed: boolean  // persisted localStorage key: mdtools.explorer.collapsed
+  activeTabId: string | null
+  explorerCollapsed: boolean  // localStorage: mdtools.explorer.collapsed
 }
 ```
 
+**v0.5.0 scope**: Read-only tabs — **no dirty state** or close-confirmation (viewer does not persist edits to disk). View-source is read-only display.
+
 **Hook**: `useDocumentWorkspace()` — actions: `openTab`, `closeTab`, `setActiveTab`, `loadIntoActiveTab`, `loadIntoTab(id)`, `openPathInTab(path, content)`.
 
-**Rendering**: Only the **active** tab mounts a full `MarkdownViewer` (or one viewer with keyed remount on `activeTabId`) to avoid N× Mermaid instances. Inactive tabs store markdown string only.
+**Rendering**: Only the **active** tab mounts a full `MarkdownViewer` with `key={activeTabId}` to avoid N× Mermaid instances. Inactive tabs store markdown string only. Per-tab export uses active tab's `exportRef` via keyed remount.
 
 ## Drag-and-drop rules
 
@@ -70,17 +85,59 @@ Tauri native drop: emit path → `openPathInTab` (new tab if path not open).
 
 ## File explorer collapse
 
-- Toggle button on explorer edge (chevron) + optional keyboard shortcut (`[` or toolbar icon).
-- When collapsed: explorer width 0; tab bar + viewer use full width.
+- Toggle on explorer right edge (chevron) + toolbar icon; keyboard `[` (document in user-guide).
+- Expanded width: `w-60` (240px); collapsed: `w-0` overflow hidden (not icon-only sliver).
 - Persist `explorerCollapsed` in `localStorage` (non-sensitive).
+- Open Folder control: explorer header primary; optional duplicate in toolbar until task-76 toolbar pass.
+
+## Fullscreen behaviour
+
+| Chrome | Normal | Fullscreen |
+|--------|--------|------------|
+| Tab bar | Visible | **Visible** (thin strip for multi-doc) |
+| File explorer | Visible / collapsed | **Hidden** |
+| TOC (right) | Visible / collapsible | **Hidden** |
+| Floating toolbar | Visible | Visible |
+| Content | Padded `p-6` | Full viewport |
+
+Today `showFileSidebar` is gated by `!fullscreen` in `MarkdownViewer.tsx:340` — standalone explorer follows same rule at shell level.
+
+## Visual design (lite & airy)
+
+Design intent: **calm reading focus** — light visual weight, generous whitespace, minimal shadows. Avoid IDE-dense chrome.
+
+### Tokens (use zinc consistently — match `App.tsx`)
+
+| Token | Light | Dark |
+|-------|-------|------|
+| App/tab background | `zinc-50` | `zinc-950` |
+| Border | `zinc-200` | `zinc-800` |
+| Muted text | `zinc-500` | `zinc-400` |
+| Active tab indicator | `border-b-2 border-zinc-900` / `border-zinc-100` | — |
+| Explorer selection | `bg-zinc-100` | `bg-zinc-800` |
+
+**Do not** use `gray-*` in new shell components. Retire uppercase section headers ("DOCUMENTS") in explorer — use sentence-case labels.
+
+### Component guidance
+
+| Component | Guidance |
+|-----------|----------|
+| **Tab bar** | `h-10`, text-first labels, truncate; close `×` on hover; `+` as text button not heavy pill |
+| **Explorer** | Sentence-case file list; `py-1.5 px-3` rows; no blue-900 selection blocks |
+| **App chrome** | Merge brand into tab row; remove duplicate `App.tsx` header bar in task-72/76 |
+| **Toolbar** | Reduce FAB weight: `w-8 h-8 shadow-sm` or slim top icon row inside viewer (task-76) |
+| **Motion** | Explorer `transition-[width] duration-200 ease-out` |
+
+Implemented primarily in **task-76** after structural tasks 69/71/72.
 
 ## Backward compatibility
 
 | Surface | Change |
 |---------|--------|
 | `MarkdownViewer` props | No breaking changes |
-| `StandaloneViewer` | Refactored to use workspace |
-| E2E | Update selectors for tabs; add `data-testid` on tab bar and explorer toggle |
+| `StandaloneViewer` | Refactored to workspace shell |
+| `FileSidebar` | Retained for embed path; standalone uses `FileExplorer` at shell |
+| E2E | `data-testid` on tab bar, explorer toggle |
 | Embed consumers | No action required |
 
 ## Technical decisions
@@ -89,15 +146,18 @@ Tauri native drop: emit path → `openPathInTab` (new tab if path not open).
 |----------|--------|-----------|
 | Tab content storage | In-memory only | Client-only app; no server sync |
 | Active viewer instance | Single keyed `MarkdownViewer` | Mermaid/memory cost |
-| Explorer vs sidebar | Rename/refactor `FileSidebar` → `FileExplorer` | Clearer product language |
-| Close last tab | Show empty state + allow new tab | Matches browser UX |
+| Explorer location | Shell-only (standalone) | AUDIT-010-F2; embed keeps props |
+| Close last tab | Empty state + new tab | Browser UX |
 | Duplicate path | Focus existing tab | Avoid duplicate buffers |
+| Dirty state | Omitted v0.5.0 | Read-only viewer |
+| PRD FR-9 | Added before implementation | AUDIT-010-F1 |
 
 ## Risks
 
-- **Mermaid lifecycle**: remount on tab switch must reset `renderMermaid` state — use `key={activeTabId}` on viewer.
-- **Controlled-mode regression**: workspace must not pass `content=""` to viewer (pattern `controlled-content-undefined-not-empty`).
-- **E2E flakiness**: tab animations — use `data-testid` and `getByRole('tab')`.
+- **Mermaid lifecycle**: remount on tab switch — `key={activeTabId}`.
+- **Controlled-mode regression**: pattern `controlled-content-undefined-not-empty`.
+- **Visual clutter**: mitigated by task-76 lite/airy pass.
+- **E2E flakiness**: `data-testid` + `getByRole('tab')`.
 
 ## Success criteria
 
@@ -106,9 +166,11 @@ Tauri native drop: emit path → `openPathInTab` (new tab if path not open).
 - [ ] Explorer collapses fully and state survives reload
 - [ ] Tauri file association opens/focuses correct tab
 - [ ] Embed `MarkdownViewer` API unchanged; contract tests pass
+- [ ] Shell feels lite/airy — zinc tokens, single chrome row, no triple header stack
 - [ ] E2E covers: new tab, switch tab, collapse explorer
 
 ## Related
 
 - agent/milestones/milestone-9-multi-document-workspace.md
 - agent/patterns/local.controlled-content-undefined-not-empty.md
+- agent/reports/audit-10-m9-multi-document-workspace-plan.md

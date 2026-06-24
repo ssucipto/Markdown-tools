@@ -414,3 +414,53 @@ carryovers:
     verified_in_audit: audit-9
     planned_in: M9 or hotfix
     notes: saveBlob appends anchor to body; revokes URL after 10s
+
+  - finding_id: AUDIT-010-F1
+    audit_ref: agent/reports/audit-10-m9-multi-document-workspace-plan.md
+    severity: high
+    finding: FR-9 multi-document workspace requirements not yet in agent/design/requirements.md — only planned for task-75 at end of M9
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-10
+    planned_in: M9 plan revision
+    notes: FR-9.1–9.9 added to requirements.md; roadmap Phase 4 M9 row
+
+  - finding_id: AUDIT-010-F2
+    audit_ref: agent/reports/audit-10-m9-multi-document-workspace-plan.md
+    severity: high
+    finding: M9 design places FileExplorer at StandaloneViewer shell level but FileSidebar still renders inside MarkdownViewer — task-72 lacks explicit lift/removal step for standalone path
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-10
+    planned_in: M9 task-72 amendment
+    notes: task-72 + design §Shell architecture; showSidebar false standalone
+
+  - finding_id: AUDIT-010-F3
+    audit_ref: agent/reports/audit-10-m9-multi-document-workspace-plan.md
+    severity: medium
+    finding: No M9 task covers lite/airy UI visual system — current gray panels, uppercase labels, and shadow-heavy FAB toolbar will clash with tab+explorer chrome
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-10
+    planned_in: M9 task-76
+    notes: task-76 + design §Visual design
+
+  - finding_id: AUDIT-010-F4
+    audit_ref: agent/reports/audit-10-m9-multi-document-workspace-plan.md
+    severity: medium
+    finding: Triple top chrome risk — App header plus planned tab bar plus floating toolbar with no merge/minimize strategy for airy layout
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-10
+    planned_in: M9 task-76 + task-72
+    notes: design layout single chrome row; merge header into tab bar
+
+  - finding_id: AUDIT-010-F5
+    audit_ref: agent/reports/audit-10-m9-multi-document-workspace-plan.md
+    severity: low
+    finding: Fullscreen mode behaviour for tab bar and explorer undefined in M9 plan (only FileSidebar gated today)
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-10
+    planned_in: M9 design doc
+    notes: design §Fullscreen behaviour table; FR-9.9; task-72 step 7
