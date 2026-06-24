@@ -2,6 +2,40 @@
 # Format: YAML blocks, last 3 loaded per session, auto-compacted at 15 entries
 # DO NOT edit manually — updated by /acp-commit
 
+- date: 2026-06-24
+  executor: cursor
+  branch: main
+  tasks_completed: []
+  done:
+    - acp-report-project-status-v042
+    - acp-stakeholder-report-rag-amber
+    - acp-design-spec-app-interfaces-v1
+  deferred:
+    - git-commit-export-fixes → uncommitted working tree
+    - pdf-desktop-user-verify → restart tauri:dev after capability changes
+    - npm-publish → requires npm login
+    - visualizer-migration-task-34 → cross-repo
+  key_fact: "ACP reporting trio delivered — full status report, executive stakeholder summary (RAG Amber), and v1.0 interface/data-flow design spec with export spine traceability and 17-flow QA matrix."
+
+- date: 2026-06-24
+  executor: cursor
+  branch: main
+  tasks_completed:
+    - export-audit-remediation
+  done:
+    - tauri-native-word-save-write-export-file
+    - tauri-native-pdf-print-html-document
+    - save-blob-acquire-before-async-prep
+    - audit-008-009-carryovers-addressed
+    - acp-validate-sync-update-docs
+    - saveblob-unit-tests-added
+  deferred:
+    - git-commit-export-fixes → uncommitted working tree
+    - pdf-desktop-user-verify → restart tauri:dev after capability changes
+    - npm-publish → requires npm login
+    - visualizer-migration-task-34 → cross-repo
+  key_fact: "Tauri WKWebView blocks window.open and iframe.contentWindow.print on macOS — desktop export must use Rust write_export_file (save dialog path) and print_html_document (hidden webview + native print). Browser export uses saveBlob with showSaveFilePicker or iframe print."
+
 - date: 2026-06-21
   executor: copilot
   branch: main

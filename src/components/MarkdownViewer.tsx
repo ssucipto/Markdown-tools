@@ -4,8 +4,9 @@ import { useToast } from '@/hooks/useToast'
 import { decodeDataAttribute } from '@/lib/html-entities'
 import { attachMermaidToolbars } from '@/lib/mermaid-actions'
 import { exportDocxDocument } from '@/markdown/exportDocx'
-import { openPdfPrintWindow, exportPdfDocument } from '@/markdown/exportPdf'
+import { printHtmlDocument, exportPdfDocument } from '@/markdown/exportPdf'
 import { exportWordDocument } from '@/markdown/exportWord'
+import { acquireSaveTarget, commitSaveTarget, deriveExportFilename, toastForSaveResult } from '@/lib/saveBlob'
 import { parseMarkdown } from '@/markdown/parse'
 import { renderMermaidDiagrams, resetMermaidForTheme, type MermaidError } from '@/markdown/renderMermaid'
 import type { MarkdownViewerProps } from '@/types/viewer'
@@ -251,18 +252,23 @@ export function MarkdownViewer({
   const exportWord = useCallback(async () => {
     const el = getExportRoot()
     if (!el) return
+    const filename = deriveExportFilename(exportPath, '.doc')
     setExporting(true)
     try {
-      const { blob, filename } = await exportWordDocument(el, exportPath)
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = filename
-      a.click()
-      setTimeout(() => URL.revokeObjectURL(url), 1000)
-      showToast(`✅ Exported as ${filename}`)
+      const target = await acquireSaveTarget({
+        filename,
+        mimeType: 'application/msword',
+        description: 'Word Document',
+      })
+      if (target === 'cancelled') {
+        showToast('Export cancelled')
+        return
+      }
+      showToast('📄 Preparing export…')
+      const { blob } = await exportWordDocument(el, exportPath)
+      toastForSaveResult(await commitSaveTarget(target, blob, filename), filename, showToast)
     } catch {
-      showToast('⚠️ Export failed')
+      showToast('⚠️ Export failed — could not save file')
     } finally {
       setExporting(false)
     }
@@ -271,16 +277,21 @@ export function MarkdownViewer({
   const exportDocx = useCallback(async () => {
     const el = getExportRoot()
     if (!el) return
+    const filename = deriveExportFilename(exportPath, '.docx')
     setExporting(true)
     try {
-      const { blob, filename } = await exportDocxDocument(el, exportPath)
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = filename
-      a.click()
-      setTimeout(() => URL.revokeObjectURL(url), 1000)
-      showToast(`✅ Exported as ${filename}`)
+      const target = await acquireSaveTarget({
+        filename,
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        description: 'Word Document (DOCX)',
+      })
+      if (target === 'cancelled') {
+        showToast('Export cancelled')
+        return
+      }
+      showToast('📄 Preparing export…')
+      const { blob } = await exportDocxDocument(el, exportPath)
+      toastForSaveResult(await commitSaveTarget(target, blob, filename), filename, showToast)
     } catch {
       showToast('⚠️ DOCX export failed')
     } finally {
@@ -311,12 +322,15 @@ export function MarkdownViewer({
   const exportPdf = useCallback(async () => {
     const el = getExportRoot()
     if (!el) return
+
     showToast('📄 Preparing PDF…')
     try {
-      const { html: pdfHtml, title } = await exportPdfDocument(el, exportPath)
-      if (!openPdfPrintWindow(pdfHtml, title)) {
-        showToast('⚠️ Popup blocked — allow popups for PDF export')
+      const { html: pdfHtml } = await exportPdfDocument(el, exportPath)
+      if (!(await printHtmlDocument(pdfHtml))) {
+        showToast('⚠️ PDF export failed — could not open print dialog')
+        return
       }
+      showToast('🖨️ Print dialog opened — choose Save as PDF')
     } catch {
       showToast('⚠️ PDF export failed')
     }

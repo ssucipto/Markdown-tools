@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-print-html-document"
+description = "Show the system print dialog for exported PDF HTML."
+commands.allow = ["print_html_document"]

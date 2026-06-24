@@ -10,7 +10,7 @@ description: Create root package.json, Vite config, React entry, Tailwind 4
 milestone: M1
 design: agent/design/requirements.md
 depends_on:
-status: draft
+status: complete
 updated: 2026-06-14
 @acp.meta.end -->
 

@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-write-export-file"
+description = "Write user-exported files to paths chosen in the save dialog."
+commands.allow = ["write_export_file"]

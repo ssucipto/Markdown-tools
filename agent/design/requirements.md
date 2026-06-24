@@ -245,12 +245,12 @@ PDF export must preserve:
 
 | ID | Requirement | Priority | Source |
 |----|-------------|----------|--------|
-| FR-5.1 | Export to Word (`.doc` HTML blob — labeled “Word (.doc)” in UI) | P0 | DocsViewer `exportWord` |
+| FR-5.1 | Export to Word (`.doc` HTML blob — labeled “Word (.doc)” in UI) | P0 | `exportWord` + native/browser save |
 | FR-5.2 | Mermaid → PNG in Word export via `svg-to-png.ts` | P0 | DocsViewer |
-| FR-5.3 | Export to PDF via print-optimized new window | P0 | DocsViewer `exportPdf` |
-| FR-5.4 | Toast feedback during export; popup-blocker message for PDF | P0 | DocsViewer |
+| FR-5.3 | Export to PDF via print-optimized HTML + system print dialog | P0 | Browser: hidden iframe `print()`; Tauri: `print_html_document` Rust command |
+| FR-5.4 | Toast feedback during export; clear errors when save/print fails | P0 | `toastForSaveResult` / save dialog before async prep |
 | FR-5.5 | Strip UI chrome (copy buttons, anchors) from export DOM | P0 | DocsViewer |
-| FR-5.6 | True `.docx` with Word styles | P2 | Research |
+| FR-5.6 | True `.docx` with Word styles | P2 | ✅ `exportDocx.ts` |
 | FR-5.7 | Programmatic PDF (no print dialog) | P3 | Research |
 
 ### FR-6 — Application shell

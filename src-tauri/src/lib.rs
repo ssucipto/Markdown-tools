@@ -1,3 +1,65 @@
+use std::path::PathBuf;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+use tauri::webview::PageLoadEvent;
+use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
+use url::Url;
+
+#[tauri::command]
+fn write_export_file(path: String, contents: Vec<u8>) -> Result<(), String> {
+  if path.is_empty() {
+    return Err("empty path".into());
+  }
+  std::fs::write(&path, contents).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn print_html_document(app: AppHandle, html: String) -> Result<(), String> {
+  let ts = SystemTime::now()
+    .duration_since(UNIX_EPOCH)
+    .map_err(|e| e.to_string())?
+    .as_millis();
+  let label = format!("print-{ts}");
+  let temp_path: PathBuf = std::env::temp_dir().join(format!("mdtools-print-{ts}.html"));
+  std::fs::write(&temp_path, &html).map_err(|e| e.to_string())?;
+
+  let file_url =
+    Url::from_file_path(&temp_path).map_err(|_| "invalid temp file path".to_string())?;
+
+  let app_for_close = app.clone();
+  let temp_path_cleanup = temp_path.clone();
+  let window_label = label.clone();
+
+  WebviewWindowBuilder::new(&app, &label, WebviewUrl::External(file_url))
+    .visible(false)
+    .decorations(false)
+    .inner_size(800.0, 600.0)
+    .on_page_load(move |window, payload| {
+      if payload.event() != PageLoadEvent::Finished {
+        return;
+      }
+
+      if let Err(e) = window.print() {
+        log::error!("print_html_document: native print failed: {e}");
+      }
+
+      let app = app_for_close.clone();
+      let cleanup_label = window_label.clone();
+      let cleanup_path = temp_path_cleanup.clone();
+      std::thread::spawn(move || {
+        std::thread::sleep(Duration::from_secs(120));
+        if let Some(w) = app.get_webview_window(&cleanup_label) {
+          let _ = w.close();
+        }
+        let _ = std::fs::remove_file(&cleanup_path);
+      });
+    })
+    .build()
+    .map_err(|e| e.to_string())?;
+
+  Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   use tauri::{Emitter, Manager};
@@ -24,6 +86,9 @@ pub fn run() {
   }
 
   tauri::Builder::default()
+    .invoke_handler(tauri::generate_handler![write_export_file, print_html_document])
+    .plugin(tauri_plugin_dialog::init())
+    .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
       if let Some(md_path) = find_md_arg(&argv) {
         emit_open_file(app, &md_path);

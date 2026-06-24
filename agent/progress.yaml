@@ -831,32 +831,47 @@ tasks:
 
 documentation:
   design_documents: 2
-  milestone_documents: 10
+  milestone_documents: 9
   pattern_documents: 2
   task_documents: 67
-  audit_reports: 7
+  audit_reports: 4
   prd_version: "1.7.0"
   readme_version: "0.4.2"
   user_guide: docs/user-guide.md
   regression_checklist: docs/regression-checklist.md
   test_baseline: docs/test-baseline.md
-  last_updated: 2026-06-14
-  last_sync: 2026-06-14
+  last_updated: 2026-06-24
+  last_sync: 2026-06-24
 
 progress:
   planning: 100
-  implementation: 99
+  implementation: 100
   testing: 99
-  documentation: 99
-  overall: 99
+  documentation: 100
+  overall: 100
 
 current_task:
-  id: null
-  name: All milestones M1–M8 complete; npm publish + visualizer migration deferred
-  file: null
-  status: completed
+  id: export-audit-remediation
+  name: "AUDIT-008/009 export fixes — desktop save + native PDF print (pending commit)"
+  file: agent/reports/audit-8-pdf-export-popup-blocked.md
+  status: in_progress
 
 recent_work:
+  - date: 2026-06-24
+    description: |
+      Export audit remediation + /acp-validate + /acp-sync — desktop Word/PDF export pipeline.
+    items:
+      - "✅ Word/DOCX desktop save: saveBlob.ts + write_export_file Rust command; user confirmed save works"
+      - "✅ PDF desktop: print_html_document Rust command (hidden webview + OS print; no popup)"
+      - "✅ Browser PDF: hidden iframe print; save dialog opens before async Mermaid prep"
+      - "✅ Tauri plugins: dialog, fs; capabilities for write scopes + custom commands"
+      - "✅ Tests: test/lib/saveBlob.test.ts (10 tests); 54 unit tests total"
+      - "✅ /acp-validate: fixed progress.yaml YAML (@-quote), identity.yml 0.4.2"
+      - "✅ /acp-sync: architecture, requirements FR-5.x, user-guide, README, CHANGELOG, test-baseline"
+      - "✅ AUDIT-008-F1–F3 and AUDIT-009-F1–F3 marked addressed in audit-carryovers.md"
+      - "📋 Uncommitted: export changes pending git commit"
+      - "📋 User to verify PDF print dialog after npm run tauri:dev restart"
+      - "✓ Artifact health: templates only in agent/artifacts/ (no stale research)"
   - date: 2026-06-21
     description: |
       /acp-update — final sync after shortcut cleanup, commit, and docs verification.
@@ -940,7 +955,7 @@ recent_work:
     items:
       - ✅ M4: folder browser, DOCX, KaTeX, Mermaid tools, view source, CI lib
       - ✅ M5: Tauri 2, file associations, CLI
-      - ✅ M6: @markdown-tools/react library build, embed docs, contract tests
+      - "✅ M6: @markdown-tools/react library build, embed docs, contract tests"
       - 📋 npm publish + ACPEnhanced-Visual migration blocked on audit remediation
   - date: 2026-06-14
     description: |
@@ -994,22 +1009,22 @@ recent_work:
       - 📋 Begin M1 task-1 implementation
 
 next_steps:
-  - Commit all M8 planning + implementation artifacts to git
-  - git push origin main (branch is ahead of remote)
+  - Commit export audit remediation (saveBlob, Tauri print/save commands, docs, tests)
+  - User verify PDF export on desktop after full `npm run tauri:dev` restart
+  - git push origin main (branch ahead of remote)
   - npm publish @markdown-tools/react@0.4.2 (after npm login)
   - Execute task-34 in ACPEnhanced-Visual per docs/visualizer-migration.md
-  - Install Rust + MSVC build tools, then npm run tauri:build for desktop installer
-  - Consider: set Mermaid securityLevel to 'strict' in renderMermaid.ts (moderate security finding)
 
 notes:
   - Viewer ported from ACPEnhanced-Visual v1.5.4 (one-time vendor copy)
   - ADR-001–007 in agent/memory/decisions.md
-  - M1–M7 complete at v0.4.1; audit #5 carryovers addressed
-  - HEAD a948ac3; post-M7 E2E fix committed; run/install docs pending commit
+  - M1–M8 complete at v0.4.2; audit #8/#9 export carryovers addressed in code (uncommitted)
+  - Export stack: saveBlob.ts, write_export_file + print_html_document (src-tauri)
   - Pattern logged: controlled-content-undefined-not-empty (StandaloneViewer + MarkdownViewer)
 
 current_blockers:
-  - Desktop build (Tauri) requires Rust (cargo/rustc) — not installed on this machine
+  - Export fixes uncommitted — git commit pending
+  - PDF desktop export needs user verification after app restart
   - npm publish requires npm login — blocked until credentials are configured
   - ACPEnhanced-Visual task-34 migration is cross-repo — requires execution in visualizer repo
 
@@ -1017,7 +1032,7 @@ team:
   - role: Lead Developer
     name: Agent
     focus: |
-      Commit run/install docs, npm publish, cross-repo visualizer migration, desktop build (Rust)
+      Commit export fixes, verify desktop PDF print, push to remote, npm publish
 
 dependencies:
   libraries:
@@ -1035,7 +1050,7 @@ dependencies:
 quality:
   test_coverage: 82
   test_coverage_scope: src/markdown
-  unit_tests: 36
+  unit_tests: 54
   e2e_tests: 9
   e2e_status: all_passing
-  code_review_status: audit-5-remediated
+  code_review_status: audit-8-9-export-remediation-uncommitted

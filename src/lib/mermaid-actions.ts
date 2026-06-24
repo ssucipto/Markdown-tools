@@ -1,11 +1,13 @@
-export function downloadSvg(svgHtml: string, filename = 'diagram.svg'): void {
+import { saveBlob } from '@/lib/saveBlob'
+
+export async function downloadSvg(svgHtml: string, filename = 'diagram.svg'): Promise<void> {
   const blob = new Blob([svgHtml], { type: 'image/svg+xml;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.click()
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
+  await saveBlob({
+    blob,
+    filename,
+    mimeType: 'image/svg+xml',
+    description: 'SVG Image',
+  })
 }
 
 export async function copyMermaidSource(source: string): Promise<boolean> {
@@ -50,7 +52,7 @@ export function attachMermaidToolbars(container: HTMLElement): void {
     dlBtn.addEventListener('click', (e) => {
       e.stopPropagation()
       const svg = wrap.querySelector('svg')
-      if (svg) downloadSvg(svg.outerHTML, 'diagram.svg')
+      if (svg) void downloadSvg(svg.outerHTML, 'diagram.svg')
     })
 
     toolbar.append(copyBtn, dlBtn)

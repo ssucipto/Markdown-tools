@@ -79,7 +79,7 @@ export function MermaidLightbox({ svgHtml, source, onClose }: MermaidLightboxPro
           type="button"
           onClick={(e) => {
             e.stopPropagation()
-            downloadSvg(svgHtml, 'diagram.svg')
+            void downloadSvg(svgHtml, 'diagram.svg')
           }}
           className="px-3 py-2 rounded-lg bg-white/20 text-white text-sm hover:bg-white/30 transition-colors"
         >

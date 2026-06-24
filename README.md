@@ -196,7 +196,8 @@ src/
 ├── markdown/math.ts                # KaTeX preprocess/restore
 ├── markdown/exportDocx.ts          # True .docx export
 ├── markdown/exportWord.ts          # .doc HTML export
-├── markdown/exportPdf.ts           # Print window helper
+├── lib/saveBlob.ts                 # Export save targets (Tauri dialog + browser picker)
+├── markdown/exportPdf.ts           # PDF print (iframe browser / Tauri native)
 ├── index.ts                        # Library entry (@markdown-tools/react)
 └── types/viewer.ts                 # MarkdownViewerProps
 ```
@@ -239,7 +240,7 @@ URL routing: `parseDocsSearchParams('?file=docs/a.md&anchor=intro')`
 
 ## Known limitations
 
-1. PDF: browser print dialog (allow popups)
+1. PDF: system print dialog — browser uses in-page iframe print; desktop app uses native Tauri print (no popup)
 2. View-only — no editor
 3. DOCX: KaTeX exports as `[math]` text placeholder (no OMML yet)
 4. Tauri build requires Rust + platform build tools (`cargo` on PATH)

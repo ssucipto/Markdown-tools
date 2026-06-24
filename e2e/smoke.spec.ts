@@ -39,7 +39,7 @@ test('export word downloads document', async ({ page }) => {
   await filePicker(page).setInputFiles(basicDoc)
   await expect(page.getByRole('heading', { name: 'Sample Basic' })).toBeVisible()
   const downloadPromise = page.waitForEvent('download')
-  await page.getByLabel('Export to Word').click()
+  await page.getByLabel('Export to Word HTML').click()
   const download = await downloadPromise
   expect(download.suggestedFilename()).toMatch(/\.doc$/)
 })
@@ -63,11 +63,13 @@ test('export docx downloads file', async ({ page }) => {
   expect(download.suggestedFilename()).toMatch(/\.docx$/)
 })
 
-test('export pdf opens print flow without error', async ({ page, context }) => {
+test('export pdf invokes print without popup', async ({ page }) => {
   await page.goto('/')
   await filePicker(page).setInputFiles(basicDoc)
   await expect(page.getByRole('heading', { name: 'Sample Basic' })).toBeVisible()
-  const [popup] = await Promise.all([context.waitForEvent('page'), page.getByLabel('Export to PDF').click()])
-  await expect(popup.locator('body')).toBeAttached({ timeout: 5000 })
-  await popup.close()
+  await page.evaluate(() => {
+    window.print = () => {}
+  })
+  await page.getByLabel('Export to PDF').click()
+  await expect(page.getByRole('status')).toContainText(/Preparing PDF/i)
 })

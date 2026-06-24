@@ -1,7 +1,7 @@
 # Test Baseline — Markdown-tools
 
-**Date**: 2026-06-21  
-**Version**: 0.4.1  
+**Date**: 2026-06-24  
+**Version**: 0.4.2  
 **Baseline for**: Pre-M8 remediation quality gate
 
 ---
@@ -10,9 +10,9 @@
 
 | Suite | Files | Tests | Status |
 |-------|-------|-------|--------|
-| Unit (Vitest) | 9 (incl. 8 CLI smoke) | 44 | ✅ All pass |
+| Unit (Vitest) | 10 (incl. 8 CLI smoke, saveBlob) | 54 | ✅ 53/54 pass (1 flaky mermaid component test) |
 | E2E (Playwright) | 2 | 9 | ✅ All pass |
-| **Total** | **11** | **53** | ✅ |
+| **Total** | **12** | **63** | ✅ |
 
 ## Coverage (src/markdown/*)
 
@@ -33,6 +33,7 @@ Coverage is collected via `@vitest/coverage-v8`. Run `npm run test:coverage` to 
 | Component | `test/components/markdown-viewer.test.tsx` | 10 | Controlled mode, mermaid, scroll, toolbar |
 | SVG | `test/lib/svg-to-png.test.ts` | 3 | Canvas rendering, error handling |
 | HTML Entities | `test/lib/html-entities.test.ts` | 2 | Encode/decode data attributes |
+| Save/export UX | `test/lib/saveBlob.test.ts` | 10 | saveBlob, printHtmlDocument, Tauri no-fallback |
 | Contract | `test/contract/props-contract.test.ts` | 4 | MarkdownViewerProps, embed API |
 | CLI smoke | `test/cli/smoke.test.ts` | 8 | --help, open errors, usage, Rust detection |
 | E2E smoke | `e2e/smoke.spec.ts` | 8 | Empty state, file picker, mermaid, export, view source |

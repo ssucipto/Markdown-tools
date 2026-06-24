@@ -1,8 +1,8 @@
 # Markdown-tools — System Architecture
 
 **Status**: Active  
-**Last updated**: 2026-06-14 (post-M7 sync — E2E fix, run/install docs)  
-**PRD**: [requirements.md](requirements.md) v1.6.0  
+**Last updated**: 2026-06-24 (export sync — Tauri native save/print, `saveBlob`)  
+**PRD**: [requirements.md](requirements.md) v1.7.0  
 **User guide**: [docs/user-guide.md](../../docs/user-guide.md)  
 **ADRs**: [agent/memory/decisions.md](../memory/decisions.md)
 
@@ -53,9 +53,11 @@ Markdown-tools is a **client-only Vite SPA** that also ships as an **embeddable 
 | `src/markdown/math.ts` | KaTeX preprocess/restore; code-fence protection |
 | `src/markdown/highlight.ts` | lowlight syntax highlighting |
 | `src/markdown/renderMermaid.ts` | Async mermaid lifecycle |
-| `src/markdown/exportWord.ts` | DOM clone + PNG diagrams → `.doc` blob |
+| `src/markdown/exportWord.ts` | DOM clone + PNG diagrams → `.doc` blob; `exportPdfDocument` HTML |
 | `src/markdown/exportDocx.ts` | `docx` library — tables, code, images, mermaid |
-| `src/markdown/exportPdf.ts` | Print-optimized HTML; `openPdfPrintWindow` |
+| `src/markdown/exportPdf.ts` | `printHtmlDocument` — browser iframe print; Tauri `print_html_document` invoke |
+| `src/lib/saveBlob.ts` | Save dialog before async prep; Tauri `write_export_file`; browser File System Access API |
+| `src/lib/tauri.ts` | `isTauriRuntime()` detection |
 | `src/lib/embed-url.ts` | `parseDocsSearchParams` / `buildDocsSearchParams` |
 | `src/lib/mermaid-actions.ts` | Copy source + download SVG |
 | `src/lib/html-entities.ts` | Safe `data-code` attributes |
@@ -139,7 +141,11 @@ Playwright tests scope KaTeX/Mermaid to `main article` to avoid matching the hid
 - WebView loads Vite `dist/` (prod) or dev URL
 - `.md` file associations (Windows bundle config)
 - `tauri-plugin-single-instance` — forward file opens to running window
+- `tauri-plugin-dialog` + `tauri-plugin-fs` — native Save dialog and scoped writes
+- Rust commands: `write_export_file` (user-selected path), `print_html_document` (hidden webview + OS print dialog)
 - Frontend: `useTauriFileOpen` listens for `open-file-content` event
+- Export: `acquireSaveTarget` opens Save dialog on click; `commitSaveTarget` writes via Rust (no anchor-download fallback in Tauri)
+- PDF: `invoke('print_html_document')` — avoids `window.open` / iframe print (blocked in WKWebView on macOS)
 - CSP tightened in `tauri.conf.json`
 
 ---

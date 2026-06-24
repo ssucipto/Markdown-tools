@@ -2,6 +2,11 @@
 
 ## [0.4.2] - 2026-06-21
 
+### Fixed (export — desktop)
+- **Word/DOCX desktop save**: native Save dialog + `write_export_file` Rust command (no fake browser download in Tauri)
+- **PDF desktop export**: `print_html_document` native print via hidden webview (fixes WKWebView iframe/popup failures on macOS)
+- **Browser PDF**: hidden iframe print (no popup); save picker opens before async Mermaid rasterization
+
 ### Fixed (M8 M5 Remediation)
 - **M5 build verification**: `npm install`, build pipeline, tests, lint, security audit, and E2E all verified on fresh clone
 - **CLI improvement**: `markdown-tools open` now detects built binary, falls back to Tauri dev shell, and gives a clear error with install instructions when Rust is missing

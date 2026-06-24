@@ -389,15 +389,16 @@ Use the toolbar buttons at the bottom-right. Exports use the **rendered** view (
 | Button | Format | Notes |
 |--------|--------|-------|
 | **W** | `.docx` | True Word document (headings, tables, code, diagrams as images) |
-| **.doc** | `.doc` | HTML-based Word format (legacy fallback) |
-| **📄** | PDF | Opens browser print dialog — allow popups |
+| **.doc** | `.doc` | HTML-based Word format (legacy fallback) — Save dialog when supported, otherwise Downloads folder |
+| **📄** | PDF | Opens the system print dialog — browser uses in-page print; desktop app uses native Tauri print (no popup) |
 
 ### Tips for reliable export
 
 1. Wait for Mermaid diagrams to finish rendering before exporting.
-2. Allow popups for PDF export.
-3. Switch back from **view source** mode before exporting (export buttons are disabled in source mode).
-4. Large documents may take a few seconds while diagrams are rasterized.
+2. PDF export: browser uses a hidden in-page print view; the **desktop app** uses a native print command (no popup permission needed).
+3. Word/DOCX: the **desktop app** writes to the path you choose in the native Save dialog (`Saved …` toast). In the browser, Chrome/Edge may show Save As; otherwise check **Downloads**.
+4. Switch back from **view source** mode before exporting (export buttons are disabled in source mode).
+5. Large documents may take a few seconds while diagrams are rasterized.
 
 Try [sample-export-torture.md](sample-export-torture.md) for a stress test.
 
@@ -468,7 +469,8 @@ Get-NetTCPConnection -LocalPort 4173 -ErrorAction SilentlyContinue |
 | File picker does nothing | Ensure you use **📂** (single file), not the hidden folder input. Update to v0.4.1+ if using standalone mode. |
 | Folder button missing | Use Chrome/Edge or Firefox/Safari; ensure standalone app (not embed-only). |
 | Mermaid diagram blank | Check syntax at [mermaid.live](https://mermaid.live). Wait up to 25s on slow machines. |
-| PDF export does nothing | Allow popups; check for blocked print window. |
+| PDF export does nothing | **Desktop**: restart the app after updates (`npm run tauri:dev`). Print dialog may open behind other windows — check the dock. **Browser**: hard-refresh; uses in-page print (no popup). |
+| Word/DOCX export — where is my file? | **Desktop**: pick a folder in the Save dialog — file is written there (`Saved …` toast). **Browser**: Save As when supported, else **Downloads** (`Download started` toast). |
 | Export shows raw markdown | Exit view-source mode (`</>` toggle). |
 | DOCX missing diagram | Wait for Mermaid to render; large SVGs may time out (5s limit). |
 | `markdown-tools` command not found | Run `npm link` from project root, or use `npx markdown-tools dev` from project dir. |

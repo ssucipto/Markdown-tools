@@ -354,3 +354,63 @@ carryovers:
     verified_in_audit: audit-7
     planned_in: M8 task-65
     notes: Updated to ^0.4.2
+
+  - finding_id: AUDIT-008-F1
+    audit_ref: agent/reports/audit-8-pdf-export-popup-blocked.md
+    severity: critical
+    finding: PDF export calls window.open() after await exportPdfDocument() — breaks browser user-gesture requirement; popup blocked even when popups are allowed (especially with Mermaid diagrams)
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-8
+    planned_in: M9 or hotfix
+    notes: openPdfPrintWindow() sync on click; populateAndPrintPdf after async prep
+
+  - finding_id: AUDIT-008-F2
+    audit_ref: agent/reports/audit-8-pdf-export-popup-blocked.md
+    severity: medium
+    finding: No unit or E2E test reproduces post-async popup blocking; E2E uses Mermaid-free basic.md
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-8
+    planned_in: M9 or hotfix
+    notes: test/lib/saveBlob.test.ts covers PDF window flow; E2E .doc label fixed
+
+  - finding_id: AUDIT-008-F3
+    audit_ref: agent/reports/audit-8-pdf-export-popup-blocked.md
+    severity: low
+    finding: Print window auto-closes after 500ms setTimeout — may interrupt print dialog; use afterprint event instead
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-8
+    planned_in: M9 or hotfix
+    notes: afterprint listener + 60s fallback in populateAndPrintPdf
+
+  - finding_id: AUDIT-009-F1
+    audit_ref: agent/reports/audit-9-doc-export-download-ux.md
+    severity: high
+    finding: .doc and .docx export show unconditional success toast after a.click() without verifying download/save succeeded — user cannot confirm file exists
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-9
+    planned_in: M9 or hotfix
+    notes: saveBlob + toastForSaveResult with saved/downloaded/cancelled/failed states
+
+  - finding_id: AUDIT-009-F2
+    audit_ref: agent/reports/audit-9-doc-export-download-ux.md
+    severity: high
+    finding: No Save As dialog for Word/DOCX export — silent blob download to browser Downloads only; no Tauri native save dialog
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-9
+    planned_in: M9 or hotfix
+    notes: showSaveFilePicker + Tauri plugin-dialog/fs for desktop
+
+  - finding_id: AUDIT-009-F3
+    audit_ref: agent/reports/audit-9-doc-export-download-ux.md
+    severity: medium
+    finding: Download anchor not appended to document.body; blob URL revoked after 1s — may cause silent download failures
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-9
+    planned_in: M9 or hotfix
+    notes: saveBlob appends anchor to body; revokes URL after 10s
