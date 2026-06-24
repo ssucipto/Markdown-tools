@@ -30,6 +30,7 @@ milestones:
       Shell-level FileExplorer — sidebar lifted out of MarkdownViewer (task-72).
       FR-9 in requirements.md; embed API unchanged.
       Design: agent/design/multi-document-workspace.md
+      Audit-11 pre-impl READY 2026-06-24
       Target version: 0.5.0
 
   - id: M8

@@ -16,15 +16,15 @@ Today `FileSidebar` renders inside `MarkdownViewer` when `showSidebar && files.l
    - Replace `useMarkdownDocument` with `useDocumentWorkspace`
    - Layout: `FileExplorer | (DocumentTabs + MarkdownViewer)`
 2. **Lift sidebar (critical)**:
-   - Pass `showSidebar={false}` to `MarkdownViewer` in standalone (do not pass `files` for sidebar render)
-   - Render `FileExplorer` only in `StandaloneViewer` with `folder.files` + `openPathInTab`
-   - Leave `FileSidebar` inside `MarkdownViewer` for embed path when `showSidebar` prop true
-3. Render `MarkdownViewer` with `key={activeTabId}` for Mermaid remount safety
-4. Pass active tab `content`/`documentPath` using controlled-mode contract (`undefined` when no path)
-5. Wire `useFolderBrowser` file selection → `openPathInTab` (not `selectPath`)
-6. Merge or slim `App.tsx` header into tab row (full polish in task-76; structural merge here if trivial)
-7. Fullscreen: hide shell `FileExplorer` when viewer fullscreen (`FR-9.9`)
-8. CSS: split pane utilities; explorer collapse `w-0` transition
+   - Pass `showSidebar={false}` and omit `files`/`onSelectFile` for sidebar in standalone
+   - Render `FileExplorer` in shell with `selectedPath={activeTab?.documentPath ?? null}`
+   - Wire `onFileDrop` on `MarkdownViewer` → workspace `loadIntoActiveTab`
+3. **Always controlled**: pass `content`/`documentPath`/`rawMarkdown` from active tab only (`undefined` when no active tab or empty tab)
+4. Render `MarkdownViewer` with `key={activeTabId}` when tab active; omit viewer when `tabs.length === 0` (shell `EmptyState` instead)
+5. Add `onFullscreenChange` handler on `MarkdownViewer` → shell state to hide `FileExplorer` (FR-9.9)
+6. Wire `useFolderBrowser` file selection → `openPathInTab`
+7. Remove `App.tsx` header bar; brand lives in `DocumentTabs` (structural); visual polish in task-76
+8. Layout: `flex flex-col min-h-screen` — workspace fills viewport (`h-screen` or `flex-1`), no `calc(100vh-2rem)` offset
 
 ## Verification
 

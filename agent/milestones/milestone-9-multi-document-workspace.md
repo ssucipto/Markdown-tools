@@ -15,7 +15,7 @@ audit: audit-10-m9-multi-document-workspace-plan
 **Duration**: 2–3 weeks  
 **Target version**: 0.5.0 (minor — new features, backward compatible embed API)  
 **PRD phase**: Phase 4 — workspace UX  
-**Audit**: [audit-10](../reports/audit-10-m9-multi-document-workspace-plan.md) — revisions applied 2026-06-24
+**Audit**: [audit-10](../reports/audit-10-m9-multi-document-workspace-plan.md), [audit-11 pre-impl](../reports/audit-11-m9-pre-impl-readiness.md) — **READY** 2026-06-24
 
 ---
 

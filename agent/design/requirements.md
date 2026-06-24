@@ -304,7 +304,7 @@ Standalone and Tauri desktop only — embed API unchanged (FR-9.8).
 | FR-9.5 | Duplicate filesystem path focuses existing tab instead of opening duplicate | P1 | M9 task-68 |
 | FR-9.6 | Tauri / CLI file open creates or focuses tab by path | P1 | M9 task-73 |
 | FR-9.7 | Lite/airy shell UI — zinc palette, minimal chrome, single top row (brand + tabs) | P1 | M9 task-76 |
-| FR-9.8 | `@markdown-tools/react` embed: no breaking `MarkdownViewerProps` changes | P0 | M9 task-74 |
+| FR-9.8 | `@markdown-tools/react` embed: no breaking `MarkdownViewerProps` changes; optional `onFileDrop?`, `onFullscreenChange?` only | P0 | M9 task-74 |
 | FR-9.9 | Fullscreen: hide explorer and TOC; keep thin tab bar | P2 | M9 design §Fullscreen |
 
 **Note**: FR-9 does not include multi-project switching (that is ACP Visualizer scope). Tabs are multiple `.md` documents within one workspace session.

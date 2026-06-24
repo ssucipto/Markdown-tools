@@ -12,11 +12,11 @@ FR-9.4 — Shell-level `FileExplorer` (evolved from `FileSidebar`) — fully col
    - Collapse toggle on right edge (chevron)
    - Width: `w-60` expanded → `w-0` collapsed (zero width, not icon sliver)
    - `data-testid="file-explorer"`, `data-testid="explorer-collapse-toggle"`
-2. Persist `explorerCollapsed` in `localStorage` key `mdtools.explorer.collapsed`
-3. **Lite styling**: zinc palette, sentence-case "Files" header (no uppercase), subtle row selection
-4. File click → `openPathInTab` via props (wired in task-72)
-5. Open Folder button in explorer header; keep toolbar 📁 as secondary until task-76
-6. Hide entirely when viewer fullscreen (shell passes `hidden` — FR-9.9)
+2. Collapse state from workspace hook (`collapsed`, `onToggleCollapse`) — persisted via `setExplorerCollapsed`
+3. Props: `files`, `selectedPath`, `onSelect`, `collapsed`, `onToggleCollapse`, `onOpenFolder`, `dark`, `hidden` (fullscreen)
+4. **Lite styling**: zinc palette, sentence-case "Files" header (no uppercase), subtle row selection
+5. File click → `onSelect(path)` (task-72 wires to `openPathInTab`)
+6. Open Folder button in explorer header; keep toolbar 📁 as secondary until task-76
 
 ## Verification
 

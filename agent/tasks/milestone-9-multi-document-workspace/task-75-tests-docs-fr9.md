@@ -9,7 +9,7 @@ Expand E2E for tabs/explorer, sync user-facing docs and regression checklist. FR
 ## Steps
 
 1. Verify `agent/design/requirements.md` FR-9 table matches implemented behaviour (audit-10 amendment)
-2. E2E (`e2e/`): new tab, switch tab, collapse explorer, optional fullscreen tab bar visible (Playwright `data-testid`)
+2. E2E (`e2e/`): add `e2e/tabs.spec.ts` — new tab, switch tab, collapse explorer; update `smoke.spec.ts` if EmptyState moves to shell
 3. Update `docs/user-guide.md` — tabs, explorer collapse, keyboard shortcuts (Ctrl+T/W, `[`)
 4. Update `docs/regression-checklist.md` — M9 verification rows including lite UI smoke
 5. Update `docs/test-baseline.md` test counts

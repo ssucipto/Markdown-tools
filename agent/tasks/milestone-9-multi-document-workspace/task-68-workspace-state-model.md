@@ -15,12 +15,14 @@ Replaces single-document `useMarkdownDocument` in standalone mode. See `agent/de
 1. Add `src/types/workspace.ts` — `TabDocument`, `DocumentWorkspace`, action types (no `dirty` field)
 2. Implement `src/hooks/useDocumentWorkspace.ts`:
    - `openTab()` — empty tab with generated id
-   - `closeTab(id)` — remove tab; activate neighbour if active closed
+   - `closeTab(id)` — remove tab; activate neighbour if active closed; allow `tabs: []`
    - `setActiveTab(id)`
-   - `loadIntoActiveTab(file | path, content)`
+   - `loadIntoActiveTab(file | path, content)` — create tab first if `tabs.length === 0`
    - `openPathInTab(path, content)` — focus existing tab if same `documentPath` (FR-9.5)
-3. Derive tab `title` from path basename or `"Untitled"`
-4. Unit tests: open/close/switch, duplicate path focus, close last tab → empty workspace
+   - `setExplorerCollapsed(boolean)` — persist to `mdtools.explorer.collapsed`
+3. Dropped files: `documentPath = \`[dropped] ${file.name}\``
+4. Derive tab `title` from path basename or `"Untitled"`
+5. Unit tests: open/close/switch, duplicate path focus, empty workspace, explorer collapse persistence
 
 ## Verification
 

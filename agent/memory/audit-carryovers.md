@@ -463,4 +463,94 @@ carryovers:
     fix_applied_date: 2026-06-24
     verified_in_audit: audit-10
     planned_in: M9 design doc
-    notes: design §Fullscreen behaviour table; FR-9.9; task-72 step 7
+    notes: design §Fullscreen table; optional onFullscreenChange prop (FR-9.9)
+
+  - finding_id: AUDIT-011-F1
+    audit_ref: agent/reports/audit-11-m9-pre-impl-readiness.md
+    severity: medium
+    finding: task-74 cited FR-9.5 instead of FR-9.8 for embed backward compatibility
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-11
+    planned_in: M9 task-74
+    notes: objective corrected to FR-9.8
+
+  - finding_id: AUDIT-011-F2
+    audit_ref: agent/reports/audit-11-m9-pre-impl-readiness.md
+    severity: high
+    finding: No mechanism for shell to hide FileExplorer on fullscreen — state internal to MarkdownViewer only
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-11
+    planned_in: M9 task-72
+    notes: optional onFullscreenChange prop; design + FR-9.9
+
+  - finding_id: AUDIT-011-F3
+    audit_ref: agent/reports/audit-11-m9-pre-impl-readiness.md
+    severity: medium
+    finding: Initial workspace state ambiguous — 0 tabs vs auto-created tab on mount
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-11
+    planned_in: M9 design + task-68
+    notes: tabs [] on load; shell EmptyState until first open
+
+  - finding_id: AUDIT-011-F4
+    audit_ref: agent/reports/audit-11-m9-pre-impl-readiness.md
+    severity: high
+    finding: Standalone could remain uncontrolled via internal useMarkdownDocument — breaks workspace model
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-11
+    planned_in: M9 task-72
+    notes: design standalone always controlled from shell
+
+  - finding_id: AUDIT-011-F5
+    audit_ref: agent/reports/audit-11-m9-pre-impl-readiness.md
+    severity: medium
+    finding: FileExplorer missing selectedPath for active tab row highlight
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-11
+    planned_in: M9 task-71/72
+    notes: selectedPath prop added to task-71
+
+  - finding_id: AUDIT-011-F6
+    audit_ref: agent/reports/audit-11-m9-pre-impl-readiness.md
+    severity: low
+    finding: Explorer collapse state split between separate hook and workspace model
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-11
+    planned_in: M9 task-68
+    notes: setExplorerCollapsed in useDocumentWorkspace
+
+  - finding_id: AUDIT-011-F7
+    audit_ref: agent/reports/audit-11-m9-pre-impl-readiness.md
+    severity: medium
+    finding: No implementation file manifest for one-shot M9 delivery
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-11
+    planned_in: M9 design doc
+    notes: Implementation manifest table added
+
+  - finding_id: AUDIT-011-F8
+    audit_ref: agent/reports/audit-11-m9-pre-impl-readiness.md
+    severity: medium
+    finding: onFileDrop callback required for controlled-mode DnD — task-70 assumed uncontrolled only
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-11
+    planned_in: M9 task-70/74
+    notes: optional onFileDrop prop; FR-9.8 updated
+
+  - finding_id: AUDIT-011-F9
+    audit_ref: agent/reports/audit-11-m9-pre-impl-readiness.md
+    severity: low
+    finding: E2E tab scenarios not isolated in dedicated spec file
+    status: addressed
+    fix_applied_date: 2026-06-24
+    verified_in_audit: audit-11
+    planned_in: M9 task-75
+    notes: e2e/tabs.spec.ts planned

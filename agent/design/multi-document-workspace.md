@@ -5,7 +5,7 @@
 **Revised**: 2026-06-24  
 **Milestone**: M9  
 **PRD**: agent/design/requirements.md (FR-9)  
-**Audit**: agent/reports/audit-10-m9-multi-document-workspace-plan.md  
+**Audit**: audit-11-m9-pre-impl-readiness (2026-06-24)  
 **Supersedes**: single-document `useMarkdownDocument` in standalone mode
 
 ---
@@ -68,9 +68,19 @@ interface DocumentWorkspace {
 
 **v0.5.0 scope**: Read-only tabs — **no dirty state** or close-confirmation (viewer does not persist edits to disk). View-source is read-only display.
 
-**Hook**: `useDocumentWorkspace()` — actions: `openTab`, `closeTab`, `setActiveTab`, `loadIntoActiveTab`, `loadIntoTab(id)`, `openPathInTab(path, content)`.
+**Hook**: `useDocumentWorkspace()` — actions: `openTab`, `closeTab`, `setActiveTab`, `loadIntoActiveTab`, `loadIntoTab(id)`, `openPathInTab(path, content)`, `setExplorerCollapsed(collapsed)`.
+
+**Initial state** (on app load): `tabs: []`, `activeTabId: null`. Shell shows `EmptyState` until first file open or "+" creates a tab. Do not auto-create a tab on mount.
+
+**Dropped files**: Use `documentPath: \`[dropped] ${file.name}\`` convention (matches existing `useMarkdownDocument`).
+
+**Explorer selection**: `FileExplorer` receives `selectedPath={activeTab?.documentPath ?? null}` for row highlight.
+
+**Standalone mode**: `StandaloneViewer` is always **controlled** — passes `content`/`documentPath` from workspace to `MarkdownViewer`; never relies on internal `useMarkdownDocument` in the viewer for standalone.
 
 **Rendering**: Only the **active** tab mounts a full `MarkdownViewer` with `key={activeTabId}` to avoid N× Mermaid instances. Inactive tabs store markdown string only. Per-tab export uses active tab's `exportRef` via keyed remount.
+
+**Fullscreen (FR-9.9)**: Add optional `onFullscreenChange?: (fullscreen: boolean) => void` to `MarkdownViewer` (non-breaking). Shell hides `FileExplorer` when `fullscreen === true`; tab bar stays visible.
 
 ## Drag-and-drop rules
 
@@ -174,3 +184,22 @@ Implemented primarily in **task-76** after structural tasks 69/71/72.
 - agent/milestones/milestone-9-multi-document-workspace.md
 - agent/patterns/local.controlled-content-undefined-not-empty.md
 - agent/reports/audit-10-m9-multi-document-workspace-plan.md
+- agent/reports/audit-11-m9-pre-impl-readiness.md
+
+## Implementation manifest (one-shot checklist)
+
+| Action | Path |
+|--------|------|
+| **Create** | `src/types/workspace.ts` |
+| **Create** | `src/hooks/useDocumentWorkspace.ts` |
+| **Create** | `src/components/DocumentTabs.tsx` |
+| **Create** | `src/components/FileExplorer.tsx` |
+| **Create** | `src/components/WorkspaceShell.tsx` (optional layout wrapper; may inline in StandaloneViewer) |
+| **Create** | `test/hooks/useDocumentWorkspace.test.ts` |
+| **Create** | `test/components/DocumentTabs.test.tsx` (minimal) |
+| **Modify** | `src/components/StandaloneViewer.tsx` — workspace shell |
+| **Modify** | `src/components/MarkdownViewer.tsx` — `onFileDrop?`, `onFullscreenChange?` |
+| **Modify** | `src/App.tsx` — remove duplicate header; flex `min-h-screen` shell |
+| **Modify** | `e2e/smoke.spec.ts` + new `e2e/tabs.spec.ts` |
+| **Modify** | `docs/user-guide.md`, `docs/embed-api.md`, `agent/design/architecture.md` |
+| **Keep** | `src/components/FileSidebar.tsx` — embed path only |
