@@ -18,9 +18,11 @@ export function useTauriFileOpen(onOpen: (path: string, content: string) => void
           if (path && content) onOpen(path, content)
         })
       } catch {
-        /* not in Tauri context */
+        // Tauri event API not available (browser context — expected)
       }
-    })()
+    })().catch(() => {
+      // static import of @tauri-apps/api/event failed (browser context)
+    })
 
     return () => {
       unlisten?.()

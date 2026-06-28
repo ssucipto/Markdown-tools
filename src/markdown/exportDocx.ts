@@ -200,7 +200,7 @@ async function mermaidImageParagraph(container: HTMLElement): Promise<Paragraph 
   const svg = container.querySelector('svg')
   if (!svg) return null
   const pngDataUri = await Promise.race([
-    svgToPngDataUri(svg as unknown as SVGSVGElement),
+    svgToPngDataUri(svg as unknown as SVGSVGElement), // querySelector returns Element; runtime guarantees SVGSVGElement here
     new Promise<null>((r) => setTimeout(() => r(null), 5000)),
   ])
   if (!pngDataUri) return null
@@ -279,101 +279,123 @@ function buildListParagraphs(listEl: Element, depth: number, startIndex = 1): Pa
 }
 
 // ---------------------------------------------------------------------------
-// Block → Paragraph(s) mapper
+// Per-tag handler functions (decomposed from blockToParagraphs)
 // ---------------------------------------------------------------------------
 
-async function blockToParagraphs(node: Element): Promise<(Paragraph | Table)[]> {
+/** Shared helper: create a monospace-code Paragraph (used by code blocks and <pre> elements). */
+function monospaceParagraph(text: string): Paragraph {
+  return new Paragraph({
+    children: [new TextRun({ text, font: 'Courier New', size: 20 })],
+  })
+}
+
+async function handleMermaidContainer(node: Element): Promise<(Paragraph | Table)[]> {
+  const imgPara = await mermaidImageParagraph(node as HTMLElement)
+  if (imgPara) return [imgPara]
+  return [new Paragraph({
+    children: [new TextRun({ text: '[Diagram: rendering unavailable]', italics: true, color: '999999' })],
+  })]
+}
+
+function handleCodeBlockWrapper(node: Element): (Paragraph | Table)[] {
+  const code = node.querySelector('code')
+  const text = code?.textContent ?? textFrom(node)
+  if (!text) return []
+  return [monospaceParagraph(text)]
+}
+
+function handleTable(node: Element): (Paragraph | Table)[] {
+  return [tableFromElement(node as HTMLTableElement)]
+}
+
+async function handleImage(node: Element): Promise<(Paragraph | Table)[]> {
+  const para = await imageParagraph(node as HTMLImageElement)
+  return para ? [para] : []
+}
+
+function handleHeading(node: Element): (Paragraph | Table)[] {
   const tag = node.tagName
+  const runs = childTextRuns(node)
+  if (!runs.length) return []
+  const heading = headingForTag(tag)
+  return [new Paragraph({ children: runs, heading })]
+}
 
-  if (node.classList.contains('mermaid-container')) {
-    const imgPara = await mermaidImageParagraph(node as HTMLElement)
-    if (imgPara) return [imgPara]
-    return [new Paragraph({
-      children: [new TextRun({ text: '[Diagram: rendering unavailable]', italics: true, color: '999999' })],
-    })]
+function handlePreMermaid(): (Paragraph | Table)[] {
+  return []
+}
+
+function handlePre(node: Element): (Paragraph | Table)[] {
+  const text = node.textContent ?? ''
+  if (!text.trim()) return []
+  return [monospaceParagraph(text.trim())]
+}
+
+function handleBlockquote(node: Element): (Paragraph | Table)[] {
+  const runs = childTextRuns(node)
+  if (!runs.length) return []
+  return [
+    new Paragraph({
+      children: runs,
+      indent: { left: 720 },
+      border: { left: { style: BorderStyle.SINGLE, size: 6, color: '3b82f6', space: 8 } },
+    }),
+  ]
+}
+
+function handleList(node: Element): (Paragraph | Table)[] {
+  return buildListParagraphs(node, 0)
+}
+
+function handleParagraph(node: Element): (Paragraph | Table)[] {
+  const runs = childTextRuns(node)
+  if (!runs.length) return []
+  return [new Paragraph({ children: runs })]
+}
+
+function handleHr(): (Paragraph | Table)[] {
+  return [
+    new Paragraph({
+      border: { bottom: { style: BorderStyle.SINGLE, size: 1, color: 'd1d5db', space: 8 } },
+      children: [],
+    }),
+  ]
+}
+
+function handleKatex(node: Element): (Paragraph | Table)[] {
+  const text = textFrom(node)
+  return text ? [new Paragraph({ children: [new TextRun(`[math] ${text}`)] })] : []
+}
+
+// ---------------------------------------------------------------------------
+// Block → Paragraph(s) — dispatch via handler map
+// ---------------------------------------------------------------------------
+
+const BLOCK_HANDLERS: Array<{
+  match: (node: Element) => boolean
+  handler: (node: Element) => (Paragraph | Table)[] | Promise<(Paragraph | Table)[]>
+}> = [
+  { match: (n) => n.classList.contains('mermaid-container'), handler: handleMermaidContainer },
+  { match: (n) => n.classList.contains('code-block-wrapper'), handler: handleCodeBlockWrapper },
+  { match: (n) => n.tagName === 'TABLE', handler: handleTable },
+  { match: (n) => n.tagName === 'IMG', handler: handleImage },
+  { match: (n) => /^H[1-6]$/.test(n.tagName), handler: handleHeading },
+  { match: (n) => n.tagName === 'PRE' && n.classList.contains('mermaid'), handler: handlePreMermaid },
+  { match: (n) => n.tagName === 'PRE', handler: handlePre },
+  { match: (n) => n.tagName === 'BLOCKQUOTE', handler: handleBlockquote },
+  { match: (n) => n.tagName === 'UL', handler: handleList },
+  { match: (n) => n.tagName === 'OL', handler: handleList },
+  { match: (n) => n.tagName === 'P' || n.tagName === 'LI', handler: handleParagraph },
+  { match: (n) => n.tagName === 'HR', handler: handleHr },
+  { match: (n) => n.classList.contains('katex-block') || n.classList.contains('katex-inline'), handler: handleKatex },
+]
+
+async function blockToParagraphs(node: Element): Promise<(Paragraph | Table)[]> {
+  for (const entry of BLOCK_HANDLERS) {
+    if (entry.match(node)) {
+      return entry.handler(node)
+    }
   }
-
-  if (node.classList.contains('code-block-wrapper')) {
-    const code = node.querySelector('code')
-    const text = code?.textContent ?? textFrom(node)
-    if (!text) return []
-    return [
-      new Paragraph({
-        children: [new TextRun({ text, font: 'Courier New', size: 20 })],
-      }),
-    ]
-  }
-
-  if (tag === 'TABLE') {
-    return [tableFromElement(node as HTMLTableElement)]
-  }
-
-  if (tag === 'IMG') {
-    const para = await imageParagraph(node as HTMLImageElement)
-    return para ? [para] : []
-  }
-
-  if (/^H[1-6]$/.test(tag)) {
-    const runs = childTextRuns(node)
-    if (!runs.length) return []
-    const heading = headingForTag(tag)
-    return [new Paragraph({ children: runs, heading })]
-  }
-
-  if (tag === 'PRE' && node.classList.contains('mermaid')) {
-    return []
-  }
-
-  if (tag === 'PRE') {
-    const text = node.textContent ?? ''
-    if (!text.trim()) return []
-    return [
-      new Paragraph({
-        children: [new TextRun({ text: text.trim(), font: 'Courier New', size: 20 })],
-      }),
-    ]
-  }
-
-  if (tag === 'BLOCKQUOTE') {
-    const runs = childTextRuns(node)
-    if (!runs.length) return []
-    return [
-      new Paragraph({
-        children: runs,
-        indent: { left: 720 },
-        border: { left: { style: BorderStyle.SINGLE, size: 6, color: '3b82f6', space: 8 } },
-      }),
-    ]
-  }
-
-  if (tag === 'UL') {
-    return buildListParagraphs(node, 0)
-  }
-
-  if (tag === 'OL') {
-    return buildListParagraphs(node, 0)
-  }
-
-  if (tag === 'P' || tag === 'LI') {
-    const runs = childTextRuns(node)
-    if (!runs.length) return []
-    return [new Paragraph({ children: runs })]
-  }
-
-  if (tag === 'HR') {
-    return [
-      new Paragraph({
-        border: { bottom: { style: BorderStyle.SINGLE, size: 1, color: 'd1d5db', space: 8 } },
-        children: [],
-      }),
-    ]
-  }
-
-  if (node.classList.contains('katex-block') || node.classList.contains('katex-inline')) {
-    const text = textFrom(node)
-    return text ? [new Paragraph({ children: [new TextRun(`[math] ${text}`)] })] : []
-  }
-
   return []
 }
 

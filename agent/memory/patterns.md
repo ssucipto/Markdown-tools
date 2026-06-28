@@ -33,3 +33,20 @@
     // PDF: invoke native print (not window.open / iframe)
     const { html } = await exportPdfDocument(el, path)
     await invoke('print_html_document', { html })
+
+- date: 2026-06-28
+  name: sync-marker-status-alignment-first
+  task_type: documentation-sync
+  description: >
+    During /acp-sync, run the meta-scan (acp.meta-scan.sh) first and align all
+    milestone marker status fields before comparing docs to code. Stale marker
+    statuses (e.g., draft/active when the milestone is actually completed) create
+    noise during the comparison phase. Fixing them early gives a cleaner drift diff
+    and prevents duplicate findings.
+  code_ref: agent/scripts/acp.meta-scan.sh, agent/milestones/*.md
+  template: |
+    # In /acp-sync, always run Step 1.3 (meta-scan) before Step 5 (compare):
+    1. acp.meta-scan.sh agent/ → parse status fields
+    2. Cross-check milestone marker status vs progress.yaml milestone status
+    3. Fix stale markers BEFORE comparing docs to code
+    4. Re-run meta-scan so downstream steps see corrected status

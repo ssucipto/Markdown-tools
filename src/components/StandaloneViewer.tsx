@@ -122,7 +122,7 @@ export function StandaloneViewer() {
 
   const handleFileDrop = useCallback(
     (file: File) => {
-      void loadDroppedFile(file)
+      loadDroppedFile(file).catch(console.warn)
     },
     [loadDroppedFile],
   )
@@ -154,7 +154,7 @@ export function StandaloneViewer() {
         showToast('⚠️ Only .md files are supported')
         return
       }
-      void loadDroppedFile(file)
+      loadDroppedFile(file).catch(console.warn)
     },
     [loadDroppedFile, showToast],
   )
@@ -172,7 +172,7 @@ export function StandaloneViewer() {
         e.target.value = ''
         return
       }
-      void loadDroppedFile(file)
+      loadDroppedFile(file).catch(console.warn)
       e.target.value = ''
     },
     [loadDroppedFile, showToast],

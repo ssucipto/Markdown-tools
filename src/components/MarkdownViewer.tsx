@@ -158,8 +158,8 @@ export function MarkdownViewer({
     let t: ReturnType<typeof setTimeout>
     const raf = requestAnimationFrame(() => {
       t = setTimeout(() => {
-        void runMermaid()
-        void runExportMermaid()
+        runMermaid().catch(console.warn)
+        runExportMermaid().catch(console.warn)
       }, 0)
     })
     return () => {
@@ -176,7 +176,7 @@ export function MarkdownViewer({
     mermaidRetryRef.current = 0
     resetMermaidForTheme(el)
     const raf = requestAnimationFrame(() => {
-      setTimeout(() => void runMermaid(), 0)
+      setTimeout(() => runMermaid().catch(console.warn), 0)
     })
     return () => cancelAnimationFrame(raf)
   }, [dark]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -187,11 +187,14 @@ export function MarkdownViewer({
       const raw = copyBtn.getAttribute('data-code')
       const code = raw ? decodeDataAttribute(raw) : null
       if (code) {
-        void navigator.clipboard.writeText(code).then(() => {
+        navigator.clipboard.writeText(code).then(() => {
           copyBtn.textContent = 'Copied!'
           setTimeout(() => {
             copyBtn.textContent = 'Copy'
           }, 2000)
+        }).catch(() => {
+          copyBtn.textContent = 'Failed'
+          setTimeout(() => { copyBtn.textContent = 'Copy' }, 2000)
         })
       }
       return
@@ -413,8 +416,8 @@ export function MarkdownViewer({
         showOpenFolder={Boolean(onOpenFolder)}
         onToggleDark={handleToggleDark}
         onToggleFont={() => setFontSize((f) => (f === 'sm' ? 'md' : f === 'md' ? 'lg' : 'sm'))}
-        onExportDocx={() => void exportDocx()}
-        onExportPdf={() => void exportPdf()}
+        onExportDocx={() => exportDocx().catch(console.warn)}
+        onExportPdf={() => exportPdf().catch(console.warn)}
         exportDisabled={viewSource}
         onScrollTop={() => contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
         onToggleFullscreen={() =>

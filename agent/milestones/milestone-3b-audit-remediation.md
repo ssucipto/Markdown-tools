@@ -5,7 +5,7 @@ topic: audit, remediation, quality, embed, coverage
 description: Close audit #3 findings and carryovers before M4 and M6 embed cutover
 tasks: task-39..task-48
 spec: agent/design/requirements.md
-status: active
+status: completed
 updated: 2026-06-14
 @acp.meta.end -->
 

@@ -5,7 +5,7 @@ topic: foundation, vite, port, acp-enhanced-visual
 description: Scaffold Vite React app and port core viewer assets from ACPEnhanced-Visual
 tasks: task-1..task-6
 spec: agent/design/requirements.md
-status: active
+status: completed
 updated: 2026-06-14
 @acp.meta.end -->
 

@@ -8,6 +8,19 @@ export interface MermaidError {
 export type MermaidZoomHandler = (svgHtml: string, source: string) => void
 export type MermaidErrorHandler = (errors: MermaidError[]) => void
 
+/** Sanitize rendered SVG string before DOM injection (defense-in-depth against XSS). */
+function sanitizeSvg(svgString: string): string {
+  try {
+    const div = document.createElement('div')
+    div.innerHTML = svgString
+    const scripts = div.querySelectorAll('script, [onload], [onerror], [onclick]')
+    scripts.forEach((s) => s.remove())
+    return div.innerHTML
+  } catch {
+    return svgString
+  }
+}
+
 export async function renderMermaidDiagrams(
   container: HTMLElement,
   dark: boolean,
@@ -48,7 +61,7 @@ export async function renderMermaidDiagrams(
       new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000)),
     ])
     const mermaid = mermaidMod.default
-    mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'neutral', securityLevel: 'loose' })
+    mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'neutral', securityLevel: 'strict' })
 
     const blocks = container.querySelectorAll<HTMLElement>('pre.mermaid:not([data-mermaid-done])')
     let id = 0
@@ -77,7 +90,7 @@ export async function renderMermaidDiagrams(
 
       try {
         const { svg } = await mermaid.render(`mermaid-${Date.now()}-${++id}`, code)
-        block.innerHTML = svg
+        block.innerHTML = sanitizeSvg(svg)
         block.setAttribute('data-mermaid-done', 'true')
         block.removeAttribute('data-processed')
         const svgEl = block.querySelector('svg')
@@ -116,7 +129,9 @@ export async function renderMermaidDiagrams(
         block.removeAttribute('data-processed')
       }
       setTimeout(() => {
-        void renderMermaidDiagrams(container, dark, onZoom, retryRef, onErrors)
+        renderMermaidDiagrams(container, dark, onZoom, retryRef, onErrors).catch((err) => {
+          console.warn('[MarkdownViewer] Mermaid retry failed:', err instanceof Error ? err.message : err)
+        })
       }, 500)
     } else if (containers.length <= svgCount) {
       retryRef.current = 0

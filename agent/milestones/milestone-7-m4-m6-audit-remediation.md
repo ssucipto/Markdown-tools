@@ -5,7 +5,7 @@ topic: audit-5, remediation, production-readiness, npm-publish, tauri
 description: Close audit #5 findings and pending carryovers from M4–M6 implementation
 tasks: task-49..task-60
 spec: agent/reports/audit-5-m4-m5-m6-implementation.md
-status: active
+status: completed
 updated: 2026-06-14
 @acp.meta.end -->
 

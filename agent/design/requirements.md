@@ -1,12 +1,12 @@
-﻿# Product Requirements Document — Markdown-tools
+# Product Requirements Document — Markdown-tools
 
 **Project Name**: Markdown-tools  
 **Created**: 2026-06-14  
 **Status**: Active  
 **Version**: 1.7.0  
 **Author**: Product / Engineering (ACP session)  
-**Last reviewed**: 2026-06-14 (post-M7 sync — E2E, run/install docs)  
-**Planning**: [agent/progress.yaml](../progress.yaml) · M1–M7 · 60 tasks · [architecture.md](architecture.md)
+**Last reviewed**: 2026-06-28 (post-review-002 sync — integrity scan, CI pinning, M1–M10)  
+**Planning**: [agent/progress.yaml](../progress.yaml) · M1–M10 · 86 tasks · [architecture.md](architecture.md)
 
 ---
 

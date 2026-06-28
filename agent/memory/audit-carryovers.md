@@ -726,6 +726,48 @@ carryovers:
     planned_in: M10 task-78
     notes: 0.5.1 aligned
 
+  # ── review-002 (code review fixes from /acp-proceed) ─────────────────────
+
+  - finding_id: REVIEW-002-SH-01
+    audit_ref: agent/reports/review-001.md
+    severity: high
+    finding: SH-01 — 17 shell scripts used set -e instead of set -euo pipefail
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: review-001
+    planned_in: null
+    notes: All 17 scripts updated from set -e to set -euo pipefail. acp.meta-scan.sh updated from set -eu to set -euo pipefail. Lint/typecheck/test/build all pass.
+
+  - finding_id: REVIEW-002-SH-02
+    audit_ref: agent/reports/review-001.md
+    severity: high
+    finding: SH-02 — acp.package-publish.sh used GNU-only sed -i.bak syntax
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: review-001
+    planned_in: null
+    notes: Replaced sed -i.bak with _sed_i helper from acp.common.sh (portable across GNU/BSD sed).
+
+  - finding_id: REVIEW-002-SC-03
+    audit_ref: agent/reports/review-001.md
+    severity: medium
+    finding: SC-03 — MermaidLightbox.tsx used dangerouslySetInnerHTML without DOMPurify sanitisation
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: review-001
+    planned_in: null
+    notes: Added import DOMPurify and sanitised svgHtml with USE_PROFILES: { svg: true }.
+
+  - finding_id: REVIEW-002-CH-03
+    audit_ref: agent/reports/review-001.md
+    severity: medium
+    finding: CH-03 — blockToParagraphs in exportDocx.ts was 93 lines handling 10+ tag types
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: review-001
+    planned_in: null
+    notes: Decomposed into 13 per-tag handler functions with dispatch via BLOCK_HANDLERS lookup map. blockToParagraphs now dispatches in ~10 lines.
+
   - finding_id: REVIEW-001-CR-012
     audit_ref: agent/reports/review-001.md
     severity: medium
@@ -975,3 +1017,90 @@ carryovers:
     verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
     planned_in: null
     notes: Updated to reflect true DOCX via docx library as canonical format, .doc HTML removed v0.5.1.
+  - finding_id: REVIEW-003-F1
+    audit_ref: agent/reports/review-002.md
+    severity: critical
+    finding: Mermaid SVG raw innerHTML injection with securityLevel loose (XSS). securityLevel changed to 'strict' + sanitizeSvg() wrapper strips event handlers and script tags before DOM injection.
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+  - finding_id: REVIEW-003-F2
+    audit_ref: agent/reports/review-002.md
+    severity: high
+    finding: Empty catch block in useTauriFileOpen.ts silently dropped errors. Added explicit comment noting browser context is expected and .catch() on the IIFE.
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+  - finding_id: REVIEW-003-F3
+    audit_ref: agent/reports/review-002.md
+    severity: high
+    finding: Unhandled promise rejections via void on async calls at 6+ call sites. Replaced all void with .catch(console.warn) or proper try/catch for Mermaid retry.
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+  - finding_id: REVIEW-003-F4
+    audit_ref: agent/reports/review-002.md
+    severity: high
+    finding: useToast overlapping timeouts bug — first timeout cleared toast even after newer message. Fixed with useRef to track timeout ID, clearing previous before setting new.
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+  - finding_id: REVIEW-003-F5
+    audit_ref: agent/reports/review-002.md
+    severity: medium
+    finding: as unknown as SVGSVGElement cast in exportDocx.ts without comment. Added inline comment explaining the cast rationale.
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+  - finding_id: REVIEW-003-F6
+    audit_ref: agent/reports/review-002.md
+    severity: medium
+    finding: Duplicate monospace TextRun creation in handlePre and handleCodeBlockWrapper. Extracted shared monospaceParagraph() helper and refactored both functions.
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+  - finding_id: REVIEW-003-F7
+    audit_ref: agent/reports/review-002.md
+    severity: medium
+    finding: 17 moderate npm audit vulns in dev deps (lighthouse → @sentry/node → @opentelemetry/core). Upgraded lighthouse to latest (13.4.0). Remaining vulns in transitive @sentry/node@9.47.1 (needs upstream fix).
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+  - finding_id: INT-001-IG67
+    audit_ref: agent/reports/integrity-001.md
+    severity: high
+    finding: CI workflow actions (actions/checkout@v4, actions/setup-node@v4) not pinned to commit SHA in .github/workflows/ci.yml. Pin to commit SHA per GitHub supply chain security guidance (IG-67).
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+    notes: |
+      Pinned to SHA:
+      - actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+      - actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
+      Applied across all 4 jobs in .github/workflows/ci.yml (8 total steps).
+  - finding_id: INT-001-SCRIPT
+    audit_ref: agent/reports/integrity-001.md
+    severity: low
+    finding: acp.dependency-diff.sh fails on Windows — 'File: unbound variable' bug. Script uses 'file' variable outside case statement scope.
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+    notes: Could not reproduce — no 'File' variable found in current script. Error may have been a transient Windows/Bash interaction. Script passed syntax check (bash -n clean). Closing as not reproducible.
+  - finding_id: INT-001-BOM
+    audit_ref: agent/reports/integrity-001.md
+    severity: low
+    finding: UTF-8 BOM marker in agent/design/requirements.md and agent/memory/audit-carryovers.md. Strip for cleaner text processing.
+    status: addressed
+    fix_applied_date: 2026-06-28
+    verified_in_audit: null
+    planned_in: null
+    notes: BOM stripped from both files via Python (3 bytes removed from each).

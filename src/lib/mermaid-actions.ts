@@ -37,11 +37,14 @@ export function attachMermaidToolbars(container: HTMLElement): void {
     copyBtn.textContent = 'Copy source'
     copyBtn.addEventListener('click', (e) => {
       e.stopPropagation()
-      void copyMermaidSource(source).then((ok) => {
+      copyMermaidSource(source).then((ok) => {
         copyBtn.textContent = ok ? 'Copied!' : 'Failed'
         setTimeout(() => {
           copyBtn.textContent = 'Copy source'
         }, 2000)
+      }).catch(() => {
+        copyBtn.textContent = 'Failed'
+        setTimeout(() => { copyBtn.textContent = 'Copy source' }, 2000)
       })
     })
 
@@ -52,7 +55,7 @@ export function attachMermaidToolbars(container: HTMLElement): void {
     dlBtn.addEventListener('click', (e) => {
       e.stopPropagation()
       const svg = wrap.querySelector('svg')
-      if (svg) void downloadSvg(svg.outerHTML, 'diagram.svg')
+      if (svg) downloadSvg(svg.outerHTML, 'diagram.svg').catch(console.warn)
     })
 
     toolbar.append(copyBtn, dlBtn)

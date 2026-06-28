@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.6.1] - 2026-06-28
+
+### Fixed (Review-002 remediation + security hardening)
+- **CRITICAL — Mermaid XSS**: `securityLevel` set to `'strict'` + `sanitizeSvg()` strips script/event attributes from rendered SVGs before DOM injection (defense-in-depth)
+- **useToast timerRef**: Fixed `TypeError` on multiple rapid calls — `useRef` initialized with `undefined` to match `ReturnType<typeof setTimeout>` signature
+- **Unhandled promise rejections**: Replaced `void` with explicit `.catch(console.warn)` in 5+ components (`StandaloneViewer`, `MermaidLightbox`, `MarkdownViewer`, `mermaid-actions`, `useTauriFileOpen`)
+- **CI supply chain**: Pinned `actions/checkout@v4` and `actions/setup-node@v4` to specific commit SHAs (IG-67)
+- **UTF-8 BOM**: Stripped BOM from `agent/design/requirements.md`
+
+### Changed
+- **exportDocx.ts** — extracted `monospaceParagraph()` shared helper for code blocks and `<pre>` elements; added inline type assertion comment
+- **MarkdownViewer.tsx** — added `.catch()` to `runMermaid()`, `runExportMermaid()`, clipboard, `exportDocx()`, and `exportPdf()` calls
+- **Tests** — expanded unit tests from 68 to 75 (DOCX export: 1→12); test baseline updated to v0.6.1
+
+### Documentation
+- `/acp-sync`: 6 milestone marker statuses corrected (draft/active → completed)
+- `test-baseline.md`, `requirements.md`, `progress.yaml` stale counts refreshed
+- ACP memory committed: sessions.md entry + `sync-marker-status-alignment-first` pattern
+
 ## [0.6.0] - 2026-06-27
 
 ### Added (DOCX formatting overhaul)

@@ -5,7 +5,7 @@ topic: docx, folder-browser, katex, mermaid-advanced
 description: Folder browser, true DOCX, KaTeX math, advanced Mermaid UX
 tasks: task-20..task-25
 spec: agent/design/requirements.md
-status: draft
+status: completed
 updated: 2026-06-14
 @acp.meta.end -->
 

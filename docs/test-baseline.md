@@ -1,8 +1,8 @@
 # Test Baseline — Markdown-tools
 
-**Date**: 2026-06-24  
-**Version**: 0.5.1  
-**Baseline for**: Post-M10 release hardening
+**Date**: 2026-06-28  
+**Version**: 0.6.0  
+**Baseline for**: Post-M10 release hardening + review-002 remediation
 
 ---
 
@@ -10,9 +10,9 @@
 
 | Suite | Files | Tests | Status |
 |-------|-------|-------|--------|
-| Unit (Vitest) | 13 | 68 | ✅ All pass |
+| Unit (Vitest) | 13 | 75 | ✅ All pass |
 | E2E (Playwright) | 3 | 13 | ✅ All pass |
-| **Total** | **16** | **81** | ✅ |
+| **Total** | **16** | **88** | ✅ |
 
 ## Coverage (src/markdown/*)
 
@@ -29,7 +29,7 @@ Coverage is collected via `@vitest/coverage-v8`. Run `npm run test:coverage` to 
 | Parse pipeline | `test/markdown/parse.test.ts` | 8 | GFM, code blocks, tables, anchors, extractMermaid, DOMPurify |
 | Math (KaTeX) | `test/markdown/math.test.ts` | 3 | Preprocess, restore, code-fence protection |
 | Export (PDF) | `test/markdown/export.test.ts` | 2 | HTML blob, title, filename |
-| Export (DOCX) | `test/markdown/export-docx.test.ts` | 1 | Tables, code, images, mermaid, headings |
+| Export (DOCX) | `test/markdown/export-docx.test.ts` | 12 | Tables, code, images, mermaid, headings, Mermaid export |
 | Component | `test/components/markdown-viewer.test.tsx` | 10 | Controlled mode, mermaid, scroll, toolbar |
 | File explorer | `test/components/file-explorer.test.tsx` | 3 | Collapse toggle, aria-hidden |
 | Document tabs | `test/components/document-tabs.test.tsx` | 3 | Tab bar render, select/close, arrow keys |

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { copyMermaidSource, downloadSvg } from '@/lib/mermaid-actions'
+import DOMPurify from 'dompurify'
 
 interface MermaidLightboxProps {
   svgHtml: string | null
@@ -68,7 +69,7 @@ export function MermaidLightbox({ svgHtml, source, onClose }: MermaidLightboxPro
             type="button"
             onClick={(e) => {
               e.stopPropagation()
-              void copyMermaidSource(source)
+              copyMermaidSource(source).catch(console.warn)
             }}
             className="px-3 py-2 rounded-lg bg-white/20 text-white text-sm hover:bg-white/30 transition-colors"
           >
@@ -79,7 +80,7 @@ export function MermaidLightbox({ svgHtml, source, onClose }: MermaidLightboxPro
           type="button"
           onClick={(e) => {
             e.stopPropagation()
-            void downloadSvg(svgHtml, 'diagram.svg')
+            downloadSvg(svgHtml, 'diagram.svg').catch(console.warn)
           }}
           className="px-3 py-2 rounded-lg bg-white/20 text-white text-sm hover:bg-white/30 transition-colors"
         >
@@ -105,7 +106,7 @@ export function MermaidLightbox({ svgHtml, source, onClose }: MermaidLightboxPro
       >
         <div
           style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}
-          dangerouslySetInnerHTML={{ __html: svgHtml }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svgHtml ?? '', { USE_PROFILES: { svg: true } }) }}
         />
       </div>
     </div>

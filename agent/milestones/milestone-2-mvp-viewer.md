@@ -5,7 +5,7 @@ topic: viewer, mermaid, export, drag-drop, gfm
 description: Feature-complete view-only viewer with Mermaid, TOC, and Word/PDF export
 tasks: task-7..task-14
 spec: agent/design/requirements.md
-status: draft
+status: completed
 updated: 2026-06-14
 @acp.meta.end -->
 

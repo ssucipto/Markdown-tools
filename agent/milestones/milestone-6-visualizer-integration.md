@@ -5,7 +5,7 @@ topic: visualizer, npm, embed, acp-visualizer, integration
 description: Publish @markdown-tools/react and replace DocsViewer in acp-visualizer
 tasks: task-29..task-35
 spec: agent/design/requirements.md
-status: draft
+status: completed
 updated: 2026-06-14
 @acp.meta.end -->
 

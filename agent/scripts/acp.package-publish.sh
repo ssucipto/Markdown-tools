@@ -3,7 +3,7 @@
 # Automated package publishing with validation, versioning, and testing
 # Version: 1.0.0
 
-set -e
+set -euo pipefail
 trap 'echo "ERROR: $(basename "$0") failed at line $LINENO -- check output above for details." >&2; exit 1' ERR
 
 # Source common utilities
@@ -259,7 +259,7 @@ echo ""
 
 # Update package.yaml version
 if command -v sed >/dev/null 2>&1; then
-    sed -i.bak "s/^version: .*/version: ${NEW_VERSION}/" package.yaml && rm package.yaml.bak
+    _sed_i "s/^version: .*/version: ${NEW_VERSION}/" package.yaml
     echo "${GREEN}✓${NC} Updated package.yaml (${CURRENT_VERSION} → ${NEW_VERSION})"
 else
     echo "${YELLOW}⚠️  Please update package.yaml version manually to ${NEW_VERSION}${NC}"

@@ -25,9 +25,10 @@ milestones:
     tasks_completed: 10
     tasks_total: 10
     notes: |
-      M10 complete 2026-06-24 — review-001 remediation, v0.5.1.
+      M10 complete 2026-06-24 — review-001 + review-002 remediation, v0.6.0.
       Async errors, useReducer, tab a11y, version sync, dompurify patch.
-      68 unit + 13 E2E tests pass.
+      Mermaid strict security + sanitizeSvg, CI pinning, useToast timerRef.
+      75 unit + 13 E2E tests pass (88 total).
 
   - id: M9
     name: Multi-Document Workspace — Tabs & Collapsible Explorer
@@ -541,7 +542,7 @@ tasks:
       estimated_hours: 8
       actual_hours: 0.5
       completed_date: 2026-06-14T17:30:00Z
-      notes: docx package; .doc HTML export removed in v0.5.1 (security: HTML smuggling false positives)
+      notes: "docx package; .doc HTML export removed in v0.5.1 (security: HTML smuggling false positives)"
     - id: task-22
       name: KaTeX Math Rendering
       priority: 1
@@ -1069,14 +1070,14 @@ documentation:
   milestone_documents: 11
   pattern_documents: 3
   task_documents: 86
-  audit_reports: 8
+  audit_reports: 12
   prd_version: "1.7.0"
-  readme_version: "0.5.1"
+  readme_version: "0.6.0"
   user_guide: docs/user-guide.md
   regression_checklist: docs/regression-checklist.md
   test_baseline: docs/test-baseline.md
-  last_updated: 2026-06-27
-  last_sync: 2026-06-27
+  last_updated: 2026-06-28
+  last_sync: 2026-06-28
   m9_design: agent/design/multi-document-workspace.md
   m10_design: agent/design/m10-m9-release-hardening.md
 
@@ -1094,6 +1095,27 @@ current_task:
   status: completed
 
 recent_work:
+  - date: 2026-06-28
+    description: |
+      /acp-update — session summary: review-002 remediation, integrity scan, CI hardening, validate, sync.
+    items:
+      - "✅ review-002 F1–F7 fixed: Mermaid strict+DOMPurify, useToast timerRef, void→.catch, monospaceParagraph"
+      - "✅ integrity scan: CI actions pinned to SHA (IG-67), BOM stripped from requirements.md, false positives cleared"
+      - "✅ /acp-validate: all findings addressed, CI pinning verified, BOM stripped, AGENTS.md/empty dirs no-ops"
+      - "✅ /acp-sync: 6 milestone markers corrected, test-baseline 68→75 unit, audit_reports 8→12, v0.5.1→v0.6.0"
+      - "✅ All quality gates: lint, typecheck, 75 unit tests pass"
+      - "📋 Deferred: review-002 F8 (e2e content review) — visual validation only"
+      - "✓ Artifacts: templates only (healthy)"
+  - date: 2026-06-28
+    description: |
+      /acp-sync — documentation sync after review-002 remediation, integrity scan, and CI hardening.
+    items:
+      - "✅ /acp-sync: 6 milestone marker statuses corrected (draft/active → completed)"
+      - "✅ /acp-sync: test-baseline.md updated (68→75 unit tests, DOCX 1→12, v0.5.1→v0.6.0)"
+      - "✅ /acp-sync: requirements.md reviewed date & task counts updated (60→86, M1–M7→M1–M10)"
+      - "✅ /acp-sync: progress.yaml audit_reports 8→12, readme_version 0.5.1→0.6.0"
+      - "📋 No spec drift — no spec files exist, no task markers with covers fields"
+      - "✓ Artifacts: templates only (healthy)"
   - date: 2026-06-27
     description: |
       /acp-validate + /acp-sync — full ACP document validation and stale doc sync.
@@ -1272,17 +1294,19 @@ recent_work:
 
 next_steps:
   - git push origin main (branch ahead of remote)
-  - Tag v0.5.1 (user approval)
-  - npm publish @markdown-tools/react@0.5.1 (after npm login)
+  - Tag v0.6.0 (user approval)
+  - npm publish @markdown-tools/react@0.6.0 (after npm login)
   - Manual Tauri smoke: multi-tab, explorer collapse, PDF export
   - Execute task-34 in ACPEnhanced-Visual per docs/visualizer-migration.md
 
 notes:
   - Viewer ported from ACPEnhanced-Visual v1.5.4 (one-time vendor copy)
   - ADR-001–007 in agent/memory/decisions.md
-  - M1–M10 complete at v0.5.1; review-001 carryovers closed
+  - M1–M10 complete at v0.6.0; review-001 + review-002 carryovers closed
   - Export stack: saveBlob.ts, write_export_file + print_html_document (src-tauri)
   - Pattern logged: controlled-content-undefined-not-empty (StandaloneViewer + MarkdownViewer)
+  - CI: GitHub Actions pinned to commit SHA (IG-67)
+  - Mermaid: strict security + sanitizeSvg defense-in-depth
 
 current_blockers:
   - npm publish requires npm login — blocked until credentials are configured
@@ -1292,7 +1316,7 @@ team:
   - role: Lead Developer
     name: Agent
     focus: |
-      Commit export fixes, verify desktop PDF print, push to remote, npm publish
+      Push to remote, tag v0.6.0, npm publish, visualizer migration task-34
 
 dependencies:
   libraries:
