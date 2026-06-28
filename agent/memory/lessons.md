@@ -20,3 +20,9 @@
   correction: "Every milestone plan must include a testing & security task as a final gate. This task must verify: (1) coverage baseline recorded in docs/test-baseline.md, (2) npm audit with --audit-level=high, (3) regression checklist in docs/regression-checklist.md, (4) CLI smoke tests, (5) DOMPurify/console.log hardening checks, (6) a 'test:all' convenience script. Reference OWASP Top 10:2025, ISO 25010, and NIST SP 800-53 in task definitions."
   priority: high
 
+
+- date: 2026-06-28
+  task_type: bug-fix-simple
+  mistake: "PDF export didn't preserve the markdown filename in the browser's 'Save as PDF' dialog — parent document title ('Markdown-tools') was used instead"
+  correction: "When printing via iframe, the browser's print dialog uses the parent document's <title> for the suggested PDF filename. Always extract the desired filename from the export path and temporarily set document.title before calling win.print(), restoring it on afterprint."
+  priority: high

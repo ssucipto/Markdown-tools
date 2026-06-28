@@ -218,3 +218,13 @@
     - m6-library-package → task-29
     - m4-folder-browser → task-20
   key_fact: "M3b closed all AUDIT-003 embed bugs; MarkdownViewer embed API is ready for acp-visualizer — only M6 npm publish blocks cutover"
+
+- date: 2026-06-28
+  executor: copilot
+  branch: main
+  tasks_completed:
+    - bug-pdf-export-filename-preservation
+  done:
+    - fix-pdf-export-preserve-markdown-filename
+  deferred: []
+  key_fact: "Browser 'Save as PDF' dialog uses parent document.title, not the iframe document title. Must temporarily set document.title before win.print() and restore on afterprint."
