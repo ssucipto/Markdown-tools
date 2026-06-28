@@ -2,6 +2,22 @@
 # Format: YAML blocks, last 3 loaded per session, auto-compacted at 15 entries
 # DO NOT edit manually — updated by /acp-commit
 
+- date: 2026-06-27
+  executor: cursor
+  branch: main
+  tasks_completed: []
+  done:
+    - acp-validate-all-documents-passed
+    - acp-sync-stale-doc-references-fixed
+    - acp-update-progress-tracking-refreshed
+  deferred:
+    - git-push-origin-main → branch ahead of remote
+    - tag-v0.5.1 → requires user approval
+    - npm-publish → requires npm login
+    - visualizer-migration-task-34 → cross-repo
+    - tauri-smoke-test → multi-tab, explorer collapse, PDF export
+  key_fact: "/acp-validate confirmed 172+ ACP documents valid with 0 errors. /acp-sync caught 9 stale references — progress.yaml had 'Word (.doc)' wording even though .doc HTML export was removed in v0.5.1; requirements.md had stale UI labels, known limitations, and Mermaid diagram referencing deleted exportWord.ts."
+
 - date: 2026-06-24
   executor: cursor
   branch: main

@@ -3,13 +3,13 @@
 
 project:
   name: markdown-tools
-  version: 0.5.1
+  version: 0.6.0
   started: 2026-06-14
   status: release_ready
   current_milestone: M10 (completed)
   description: |
     Desktop-first web app for viewing Markdown with drag-and-drop, sophisticated
-    Mermaid diagrams, and export to Word (.doc) and PDF. Ports viewer from
+    Mermaid diagrams, and export to DOCX and PDF. Ports viewer from
     ACPEnhanced-Visual v1.5.4.
 
 milestones:
@@ -327,7 +327,7 @@ tasks:
       completed_date: 2026-06-14T13:30:00Z
       notes: ""
     - id: task-13
-      name: Word Export (.doc)
+      name: Word Export (.docx) — true DOCX via docx library
       priority: 0
       status: completed
       started: 2026-06-14T00:00:00Z
@@ -541,7 +541,7 @@ tasks:
       estimated_hours: 8
       actual_hours: 0.5
       completed_date: 2026-06-14T17:30:00Z
-      notes: docx package; .doc fallback retained.
+      notes: docx package; .doc HTML export removed in v0.5.1 (security: HTML smuggling false positives)
     - id: task-22
       name: KaTeX Math Rendering
       priority: 1
@@ -1067,16 +1067,16 @@ tasks:
 documentation:
   design_documents: 4
   milestone_documents: 11
-  pattern_documents: 2
+  pattern_documents: 3
   task_documents: 86
-  audit_reports: 4
+  audit_reports: 8
   prd_version: "1.7.0"
   readme_version: "0.5.1"
   user_guide: docs/user-guide.md
   regression_checklist: docs/regression-checklist.md
   test_baseline: docs/test-baseline.md
-  last_updated: 2026-06-24
-  last_sync: 2026-06-24
+  last_updated: 2026-06-27
+  last_sync: 2026-06-27
   m9_design: agent/design/multi-document-workspace.md
   m10_design: agent/design/m10-m9-release-hardening.md
 
@@ -1094,6 +1094,16 @@ current_task:
   status: completed
 
 recent_work:
+  - date: 2026-06-27
+    description: |
+      /acp-validate + /acp-sync — full ACP document validation and stale doc sync.
+    items:
+      - "✅ /acp-validate: 172 documents validated, 0 errors, passed with warnings"
+      - "✅ /acp-sync: 9 stale references fixed (progress.yaml, requirements.md)"
+      - "✅ progress.yaml: Word (.doc) → DOCX, pattern_docs 2→3, audit_reports 4→8"
+      - "✅ requirements.md: UI button label, tooltip, known limitations, Mermaid diagram"
+      - "📋 No spec drift — all tasks completed, no spec directory"
+      - "✓ Artifacts: templates only (healthy)"
   - date: 2026-06-24
     description: |
       /acp-proceed M10 — release hardening v0.5.1 (tasks 77–86).

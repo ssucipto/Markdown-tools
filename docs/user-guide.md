@@ -406,7 +406,7 @@ Math inside **fenced code blocks** is not transformed — only prose math is ren
 
 Try [sample-math.md](sample-math.md).
 
-**Export note**: DOCX export shows math as `[math]` text placeholders; Word HTML export includes rendered KaTeX HTML where supported.
+**Export note**: DOCX export shows math as `[math]` text placeholders.
 
 ---
 
@@ -417,7 +417,6 @@ Use the toolbar buttons at the bottom-right. Exports use the **rendered** view (
 | Button | Format | Notes |
 |--------|--------|-------|
 | **W** | `.docx` | True Word document (headings, tables, code, diagrams as images) |
-| **.doc** | `.doc` | HTML-based Word format (legacy fallback) — Save dialog when supported, otherwise Downloads folder |
 | **📄** | PDF | Opens the system print dialog — browser uses in-page print; desktop app uses native Tauri print (no popup) |
 
 ### Tips for reliable export

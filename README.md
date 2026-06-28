@@ -2,11 +2,11 @@
 
 A **desktop-first** markdown viewer and **embeddable npm library** (`@markdown-tools/react`) for [ACPEnhanced-Visual](https://github.com/ssucipto/acp-enhanced) and standalone use.
 
-Drop `.md` files, read richly rendered GitHub-flavored preview, **Mermaid** diagrams, **KaTeX** math, and one-click **Word / DOCX / PDF** export — all client-side, no upload.
+Drop `.md` files, read richly rendered GitHub-flavored preview, **Mermaid** diagrams, **KaTeX** math, and one-click **DOCX / PDF** export — all client-side, no upload.
 
 > Viewer ported from `acp-visualizer` v1.5.4 (`DocsViewer.tsx`). See [ADR-006](agent/memory/decisions.md).
 
-**Current release**: v0.5.1 (M1–M10 complete)
+**Current release**: v0.6.0 (DOCX formatting overhaul)
 
 ---
 
@@ -129,7 +129,7 @@ Track progress: [agent/progress.yaml](agent/progress.yaml) · Release notes: [CH
 | GFM, syntax highlighting, TOC | ✅ |
 | Mermaid + zoom/pan lightbox | ✅ |
 | KaTeX math (`$inline$`, `$$block$$`) | ✅ |
-| Word (`.doc`) + DOCX + PDF export | ✅ |
+| DOCX + PDF export | ✅ |
 | View source toggle | ✅ |
 | DOMPurify XSS hardening | ✅ |
 | Embed props for acp-visualizer | ✅ |
@@ -198,7 +198,7 @@ src/
 ├── markdown/parse.ts               # marked → DOMPurify → KaTeX
 ├── markdown/math.ts                # KaTeX preprocess/restore
 ├── markdown/exportDocx.ts          # True .docx export
-├── markdown/exportWord.ts          # .doc HTML export
+├── markdown/exportPdf.ts           # PDF export (prepare HTML + Tauri native print)
 ├── lib/saveBlob.ts                 # Export save targets (Tauri dialog + browser picker)
 ├── markdown/exportPdf.ts           # PDF print (iframe browser / Tauri native)
 ├── index.ts                        # Library entry (@markdown-tools/react)

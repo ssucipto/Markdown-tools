@@ -1,4 +1,4 @@
-# Audit Carryovers
+﻿# Audit Carryovers
 # Actionable findings from /acp-audit — pick up in future sessions
 # Schema: finding_id, audit_ref, severity, finding, status, fix_applied_date, verified_in_audit, planned_in
 
@@ -186,11 +186,12 @@ carryovers:
   - finding_id: AUDIT-003-G2
     audit_ref: agent/reports/audit-3-m1-m3-implementation-review.md
     severity: high
-    finding: Test coverage 51% on src/markdown vs task-19/M3 target 60%; exportWord untested
+    finding: Test coverage 51% on src/markdown vs task-19/M3 target 60%; exportWord.ts removed in v0.5.1 (AUDIT-013)
     status: addressed
-    fix_applied_date: 2026-06-14
-    verified_in_audit: audit-4-carryover-verification
-    planned_in: M3b task-44, task-45
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-export-cleanup
+    planned_in: null
+    notes: exportWordDocument removed; exportPdfDocument merged into exportPdf.ts. Coverage gate now scoped to remaining modules.
 
   - finding_id: AUDIT-003-G3
     audit_ref: agent/reports/audit-3-m1-m3-implementation-review.md
@@ -773,3 +774,204 @@ carryovers:
     verified_in_audit: M10-task-81
     planned_in: M10 task-81
     notes: e2e/tabs.spec.ts chevron both ways
+
+  - finding_id: AUDIT-013-F1
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: critical
+    finding: exportWord.ts only contains exportPdfDocument — misleading filename; chain exportPdf.ts → exportWord.ts is backward. Should rename to exportPdfDocument.ts or merge into exportPdf.ts.
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: src/markdown/exportWord.ts, src/markdown/exportPdf.ts
+
+  - finding_id: AUDIT-013-F2
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: critical
+    finding: docs/user-guide.md still documents removed .doc export button in export table (line 420) and references Word HTML export (line 409)
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: docs/user-guide.md:409-421
+
+  - finding_id: AUDIT-013-F3
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: critical
+    finding: agent/design/requirements.md FR-5.1 out of sync — still defines .doc HTML blob export as P0 requirement. File tree and Phase 2 notes also stale.
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: agent/design/requirements.md:248,395,546,692
+
+  - finding_id: AUDIT-013-F4
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: high
+    finding: README.md project tree shows exportWord.ts as .doc HTML export (line 201)
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: README.md:201
+
+  - finding_id: AUDIT-013-F5
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: high
+    finding: agent/design/architecture.md has stale exportWord references in module group list (line 26), file descriptions (line 59), and export article note (line 92)
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: agent/design/architecture.md:26,59,92
+
+  - finding_id: AUDIT-013-F6
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: high
+    finding: docs/test-baseline.md has outdated test counts — Word export says 6 tests (now 2 PDF tests) and E2E smoke says 8 tests (now 7)
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: docs/test-baseline.md:31,42
+
+  - finding_id: AUDIT-013-F7
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: high
+    finding: CHANGELOG.md v0.4.0 says .doc HTML fallback retained — needs update. No CHANGELOG entry for the .doc export removal.
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: CHANGELOG.md:91
+
+  - finding_id: AUDIT-013-F8
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: high
+    finding: agent/patterns/local.tauri-export-native-save-and-print.md shows stale exportWordDocument code example (line 16)
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: agent/patterns/local.tauri-export-native-save-and-print.md:16
+
+  - finding_id: AUDIT-013-F9
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: medium
+    finding: agent/memory/patterns.md contains stale exportWordDocument usage in code template (line 30)
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: agent/memory/patterns.md:30
+
+  - finding_id: AUDIT-013-F10
+    audit_ref: agent/reports/audit-1-docx-export-cleanup.md
+    severity: medium
+    finding: agent/memory/audit-carryovers.md has old entry exportWord untested (line 189) — should mark as addressed
+    status: addressed
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: null
+    notes: agent/memory/audit-carryovers.md:189 (AUDIT-003-G2)
+
+
+  - finding_id: AUDIT-001-CR-001
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: high
+    finding: DOCX inline formatting lost — bold, italic, code, links within paragraphs flattened to plain text. DOM walker in blockToParagraphs uses textContent only; does not inspect child <strong>/<em>/<code>/<a>/<img> elements.
+    status: addressed
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
+    planned_in: M11-docx-rich-formatting
+    notes: Implemented childTextRuns() DOM walker with TextSegment intermediate format. Handles <strong>/<b> (bold), <em>/<i> (italics), <code> (Courier New), <a> (blue color), <del> (strikethrough), <u>/<ins> (underline), <sub>/<sup>, <mark> (highlight), and <img> ([Image: alt] placeholder). All paragraphs, headings, list items, table cells, and blockquotes now use childTextRuns.
+
+  - finding_id: AUDIT-001-CR-002
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: high
+    finding: DOCX nested lists flattened — blockToParagraphs handles <LI> as plain paragraphs. No <ul>/<ol> container traversal means multi-level indentation and bullet/number styles are lost.
+    status: addressed
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
+    planned_in: M11-docx-rich-formatting
+    notes: Implemented buildListParagraphs() with recursive ul/ol handling. Output uses indentation (depth × 360 twips) with bullet prefix ("• ") for UL and numbered prefix ("1. ", "2. ", ...) for OL. Nested lists within LI children are recursively traversed with incremented depth.
+
+  - finding_id: AUDIT-001-CR-003
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: medium
+    finding: DOCX blockquotes silently dropped — <blockquote> falls through to return [] in blockToParagraphs.
+    status: addressed
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
+    planned_in: M11-docx-rich-formatting
+    notes: <BLOCKQUOTE> now renders with left indent (720 twips) and blue left border (BorderStyle.SINGLE, size 6, color "3b82f6"). Text extracted via childTextRuns() for rich inline formatting.
+
+  - finding_id: AUDIT-001-CR-004
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: medium
+    finding: DOCX fixed image dimensions — inline images forced to 400x250, Mermaid to 500x300. No aspect ratio preservation from natural image dimensions.
+    status: addressed
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
+    planned_in: M11-docx-rich-formatting
+    notes: fitDimensions() reads naturalWidth/naturalHeight from HTMLImageElement and SVG width/height attributes. ImageRun uses proportional dimensions capped at maxWidth=500. If natural dimensions unavailable, defaults to 500×312 (5:3 ratio). Mermaid SVGs similarly use parsed SVG width/height with same fitDimensions logic.
+
+  - finding_id: AUDIT-001-CR-005
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: medium
+    finding: PDF is print-dialog-only — no programmatic PDF generation. Relies on OS print dialog and user selecting "Save as PDF". FR-5.7 (P3) deferred.
+    status: deferred
+    fix_applied_date: null
+    verified_in_audit: null
+    planned_in: P3 research milestone
+    notes: DEFERRED — programmatic PDF generation requires architectural evaluation (pdf-lib vs jsPDF vs server-side). Current print-dialog approach is functional and correctly avoids popup blockers in both browser and Tauri paths. FR-5.7 remains P3 research. No timeline.
+
+  - finding_id: AUDIT-001-CR-006
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: low
+    finding: Mermaid export failures silently swallowed — when SVG->PNG conversion times out (5s) or fails, no user feedback. Diagram is omitted from both DOCX and PDF.
+    status: addressed
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
+    planned_in: M11-docx-rich-formatting
+    notes: DOCX blockToParagraphs mermaid case returns "[Diagram: rendering unavailable]" placeholder paragraph with italics: true, color: "999999" when mermaidImageParagraph returns null (no SVG or conversion failed). PDF exportPdfDocument replaces failed SVG with <p> element with same text and gray italic styling.
+
+  - finding_id: AUDIT-001-CR-007
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: low
+    finding: Deprecated PDF functions still exported in public API — openPdfPrintWindow() and populateAndPrintPdf() marked @deprecated but still in exportPdf.ts exports.
+    status: addressed
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
+    planned_in: M11-docx-rich-formatting
+    notes: Removed openPdfPrintWindow(), populateAndPrintPdf(), openPrintWindow(), and printHtmlInWindow() from exportPdf.ts public API. Verified zero external consumers via grep across src/ and test/. Only internal references were the deprecated wrappers themselves.
+
+  - finding_id: AUDIT-001-CR-008
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: medium
+    finding: requirements.md had 2 stale references — "Known limitations" #1 said Word export offers both .docx and .doc; mermaid component diagram showed EW[markdown/exportWord.ts]. Both fixed during this audit.
+    status: addressed
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
+    planned_in: null
+    notes: Fixed line 679 (known limitations #1) and line 740 (mermaid diagram node ED[markdown/exportDocx.ts]).
+
+  - finding_id: AUDIT-001-CR-009
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: medium
+    finding: README.md had stale "Word / DOCX / PDF" wording on line 5 and "Word (.doc) + DOCX + PDF export" in feature table on line 132. Both fixed during this audit.
+    status: addressed
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
+    planned_in: null
+    notes: Line 5: "Word / DOCX / PDF" -> "DOCX / PDF". Line 132: "Word (.doc) + DOCX + PDF export" -> "DOCX + PDF export".
+
+  - finding_id: AUDIT-001-CR-010
+    audit_ref: agent/reports/audit-1-docx-pdf-export-security-and-correctness.md
+    severity: medium
+    finding: ADR-005 in decisions.md said ".doc remains fallback" — stale since .doc HTML-as-Word was removed in v0.5.1. Fixed during this audit.
+    status: addressed
+    fix_applied_date: 2026-06-27
+    verified_in_audit: audit-1-docx-pdf-export-security-and-correctness
+    planned_in: null
+    notes: Updated to reflect true DOCX via docx library as canonical format, .doc HTML removed v0.5.1.

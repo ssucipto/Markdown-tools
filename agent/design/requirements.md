@@ -1,4 +1,4 @@
-# Product Requirements Document — Markdown-tools
+﻿# Product Requirements Document — Markdown-tools
 
 **Project Name**: Markdown-tools  
 **Created**: 2026-06-14  
@@ -12,7 +12,7 @@
 
 ## Overview
 
-**Markdown-tools** is a desktop-first web application for viewing, navigating, and exporting Markdown documents. Users open files via drag-and-drop, file picker, or folder browser; read richly rendered content (Mermaid diagrams, KaTeX math); and export to Word (`.doc`), DOCX, or PDF — all client-side.
+**Markdown-tools** is a desktop-first web application for viewing, navigating, and exporting Markdown documents. Users open files via drag-and-drop, file picker, or folder browser; read richly rendered content (Mermaid diagrams, KaTeX math); and export to DOCX or PDF — all client-side.
 
 The product also ships as **`@markdown-tools/react`** for embedding in ACPEnhanced-Visual and third-party React apps. A **Tauri 2** desktop build provides native file associations and offline install.
 
@@ -94,7 +94,7 @@ Teams need a single, fast viewer that matches modern documentation UX (GitHub, D
 | Gap | Current state | PRD requirement |
 |-----|---------------|-----------------|
 | Syntax highlighting | `lowlight`/`rehype-highlight` in deps but **unused** | ✅ **Implemented** — `highlight.ts` + lowlight (M2) |
-| Word export | HTML blob as `.doc` + true `.docx` via `docx` library | ✅ **Implemented** — M4 + M7 parity |
+| Word export | True `.docx` via `docx` library (`.doc` HTML blob removed v0.5.1) | ✅ **Implemented** — M4 + M7 parity |
 | PDF export | Browser print dialog | ✅ MVP; programmatic PDF deferred |
 | Mermaid UX | Zoom, pan, copy source, download SVG | ✅ M3b pan + M4 copy/download |
 | XSS surface | `dangerouslySetInnerHTML` + inline `onclick` | Sanitize untrusted MD; React event delegation for copy |
@@ -245,7 +245,7 @@ PDF export must preserve:
 
 | ID | Requirement | Priority | Source |
 |----|-------------|----------|--------|
-| FR-5.1 | Export to Word (`.doc` HTML blob — labeled “Word (.doc)” in UI) | P0 | `exportWord` + native/browser save |
+| FR-5.1 | Export to true DOCX via `docx` library (headings, tables, code, images) | P0 | `exportDocx` + native/browser save |
 | FR-5.2 | Mermaid → PNG in Word export via `svg-to-png.ts` | P0 | DocsViewer |
 | FR-5.3 | Export to PDF via print-optimized HTML + system print dialog | P0 | Browser: hidden iframe `print()`; Tauri: `print_html_document` Rust command |
 | FR-5.4 | Toast feedback during export; clear errors when save/print fails | P0 | `toastForSaveResult` / save dialog before async prep |
@@ -392,7 +392,7 @@ c:\Project\Markdown-tools\
 │   ├── markdown/
 │   │   ├── parse.ts                # marked pipeline helpers
 │   │   ├── renderMermaid.ts
-│   │   ├── exportWord.ts
+│   │   ├── exportDocx.ts
 │   │   └── exportPdf.ts
 │   ├── lib/
 │   │   └── svg-to-png.ts           # port verbatim
@@ -543,7 +543,6 @@ c:\Project\Markdown-tools\
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| HTML-as-Word breaks in some Word versions | Medium | Document limitation; Phase 2 DOCX |
 | PDF blocked by popup blocker | Medium | Clear toast; document user action |
 | Mermaid bundle size | Medium | Dynamic import; load only when needed |
 | `dangerouslySetInnerHTML` XSS | High | Sanitize in Phase 1b; trusted-local default |
@@ -622,26 +621,14 @@ Five open questions were reviewed against project goals, source audit, and compe
 
 ---
 
-### 4. DOCX fidelity — **HTML-as-Word acceptable for MVP**
+### 4. DOCX fidelity — **True DOCX via `docx` library, `.doc` HTML removed**
 
-| Option | Verdict |
-|--------|---------|
-| Ship `.doc` HTML blob (current source behavior) | **Selected for MVP** |
-| True `.docx` in MVP | Rejected |
+The `.doc` HTML-as-Word export was removed in v0.5.1 due to email security false-positives (`.doc` files containing HTML trigger HTML smuggling rules in Microsoft 365 Defender and similar scanners). Only true DOCX export via the `docx` library is available.
 
-**Rationale**
-
-- ACPEnhanced-Visual already ships this pattern; diagrams via `svg-to-png` are the hard part — already solved.
-- True DOCX needs new dependency (`html-to-docx`, `docx`, or Pandoc sidecar) and style-mapping work.
-- HTML-as-Word opens in Word 2016+ and LibreOffice for typical tech docs (headings, tables, code, PNG diagrams).
-- Risk is documented; mitigation is Phase 2 true DOCX.
-
-**Implications**
-
-- UI button label: **“Export Word (.doc)”** — not “DOCX”.
-- In-app tooltip or help: “Opens in Microsoft Word; for native .docx use Phase 2 update.”
+- UI button label: **“Export to DOCX”** — true .docx via docx library.
+- In-app tooltip or help: “Opens in Microsoft Word; for native .docx format.”
 - Acceptance criterion unchanged: file opens in Word with visible diagram images.
-- Phase 2 promotes FR-5.6 to P1 and deprecates HTML-as-Word as default (keep as fallback).
+- Phase 2 implemented true DOCX; .doc HTML-as-Word export was removed in v0.5.1 (security: email false positives).
 
 ---
 
@@ -676,7 +663,7 @@ Five open questions were reviewed against project goals, source audit, and compe
 | 1 | Desktop wrapper | Web SPA; Tauri later | MVP–2: web · 3: Tauri |
 | 2 | Editing | View-only | MVP–2: view · 3: editor optional |
 | 3 | Math | KaTeX deferred | Phase 2 |
-| 4 | DOCX fidelity | HTML-as-Word OK for MVP | MVP: `.doc` · Phase 2: `.docx` |
+| 4 | DOCX fidelity | True DOCX via `docx` library | ✅ Implemented (`.doc` HTML removed v0.5.1) |
 | 5 | Source repo | Vendor copy once; publish npm for visualizer | Phase 0 port · M6 publish |
 | 6 | Visualizer integration | `@markdown-tools/react` embed | M6 |
 
@@ -689,7 +676,7 @@ Five open questions were reviewed against project goals, source audit, and compe
 
 ### Known limitations (v0.4.2 — communicate in README and [user guide](../../docs/user-guide.md))
 
-1. Word export offers both `.docx` (primary) and `.doc` (HTML fallback).
+1. Word export uses true DOCX via `docx` library (`.doc` HTML fallback removed in v0.5.1).
 2. PDF export uses the browser print dialog (popup must be allowed).
 3. No in-app markdown editing (view-only).
 4. DOCX math exports as `[math]` text placeholder — no OMML yet.
@@ -750,7 +737,7 @@ flowchart LR
     MV[MarkdownViewer.tsx]
     PARSE[markdown/parse.ts]
     MER[markdown/renderMermaid.ts]
-    EW[markdown/exportWord.ts]
+    ED[markdown/exportDocx.ts]
     EP[markdown/exportPdf.ts]
     LIB[svg-to-png.ts]
     STYLES[prose-doc.css]
@@ -758,7 +745,7 @@ flowchart LR
   DV --> MV
   DV --> PARSE
   DV --> MER
-  DV --> EW
+  DV --> ED
   DV --> EP
   PNG --> LIB
   CSS --> STYLES

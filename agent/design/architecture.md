@@ -23,7 +23,7 @@ Markdown-tools is a **client-only Vite SPA** that also ships as an **embeddable 
 │         ▼                                      │ props                   │
 │  ┌─────────────────────────────────────────────▼─────────────────────┐  │
 │  │ MarkdownViewer + Toolbar + TOC + MermaidLightbox                  │  │
-│  │ parse · math · renderMermaid · exportWord/Docx/Pdf                │  │
+│  │ parse · math · renderMermaid · exportDocx/Pdf                │  │
 │  └───────────────────────────────────────────────────────────────────┘  │
 │         │ FileReader / folder API (standalone) or injected content       │
 └──────────────────────────────────────────────────────────────────────────┘
@@ -56,9 +56,8 @@ Markdown-tools is a **client-only Vite SPA** that also ships as an **embeddable 
 | `src/markdown/math.ts` | KaTeX preprocess/restore; code-fence protection |
 | `src/markdown/highlight.ts` | lowlight syntax highlighting |
 | `src/markdown/renderMermaid.ts` | Async mermaid lifecycle |
-| `src/markdown/exportWord.ts` | DOM clone + PNG diagrams → `.doc` blob; `exportPdfDocument` HTML |
 | `src/markdown/exportDocx.ts` | `docx` library — tables, code, images, mermaid |
-| `src/markdown/exportPdf.ts` | `printHtmlDocument` — browser iframe print; Tauri `print_html_document` invoke |
+| `src/markdown/exportPdf.ts` | `exportPdfDocument` HTML prep; `printHtmlDocument` — browser iframe print; Tauri `print_html_document` invoke |
 | `src/lib/saveBlob.ts` | Save dialog before async prep; Tauri `write_export_file`; browser File System Access API |
 | `src/lib/tauri.ts` | `isTauriRuntime()` detection |
 | `src/lib/embed-url.ts` | `parseDocsSearchParams` / `buildDocsSearchParams` |
@@ -89,7 +88,7 @@ Order is **fixed** (regression risk if changed):
 10. Memoized `innerHtml` → `dangerouslySetInnerHTML`
 11. `renderMermaid()` in `useEffect` — lazy `import('mermaid')`
 
-Hidden **export article** (`exportRef`) mirrors rendered HTML for Word/DOCX/PDF when view-source mode is active.
+Hidden **export article** (`exportRef`) mirrors rendered HTML for DOCX/PDF when view-source mode is active.
 
 ---
 

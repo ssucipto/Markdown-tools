@@ -10,7 +10,6 @@ interface ToolbarProps {
   exportDisabled?: boolean
   onToggleDark: () => void
   onToggleFont: () => void
-  onExportWord: () => void
   onExportDocx: () => void
   onExportPdf: () => void
   onScrollTop: () => void
@@ -34,7 +33,6 @@ export function Toolbar({
   exportDisabled = false,
   onToggleDark,
   onToggleFont,
-  onExportWord,
   onExportDocx,
   onExportPdf,
   onScrollTop,
@@ -122,16 +120,6 @@ export function Toolbar({
         aria-label="Export to DOCX"
       >
         {exporting ? '⏳' : 'W'}
-      </button>
-      <button
-        type="button"
-        onClick={onExportWord}
-        title={exportDisabled ? 'Switch to rendered view to export' : 'Export to Word (.doc)'}
-        disabled={exporting || exportDisabled}
-        className={`${btn} disabled:opacity-50 text-xs`}
-        aria-label="Export to Word HTML"
-      >
-        .doc
       </button>
       <button
         type="button"

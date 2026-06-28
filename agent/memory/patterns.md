@@ -27,7 +27,7 @@
   template: |
     // Save: dialog first, then async export, then Rust write
     const target = await acquireSaveTarget({ filename, mimeType, description })
-    const { blob } = await exportWordDocument(el, path)
+    const { blob } = await exportDocxDocument(el, path)
     await commitSaveTarget(target, blob, filename)
 
     // PDF: invoke native print (not window.open / iframe)

@@ -41,16 +41,6 @@ test('invalid file shows toast', async ({ page }) => {
   await expect(page.getByRole('status')).toContainText(/Only .md files/i)
 })
 
-test('export word downloads document', async ({ page }) => {
-  await page.goto('/')
-  await filePicker(page).setInputFiles(basicDoc)
-  await expect(page.getByRole('heading', { name: 'Sample Basic' })).toBeVisible()
-  const downloadPromise = page.waitForEvent('download')
-  await page.getByLabel('Export to Word HTML').click()
-  const download = await downloadPromise
-  expect(download.suggestedFilename()).toMatch(/\.doc$/)
-})
-
 test('view source toggle shows raw markdown', async ({ page }) => {
   await page.goto('/')
   await filePicker(page).setInputFiles(basicDoc)

@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.6.0] - 2026-06-27
+
+### Added (DOCX formatting overhaul)
+- **DOCX inline formatting** — bold (`<strong>`/`<b>`), italic (`<em>`/`<i>`), code (`Courier New`), links (blue), strikethrough (`<del>`), underline (`<u>`/`<ins>`), sub/superscript, highlight (`<mark>` — yellow), and inline images (`[Image: alt]` placeholder)
+- **DOCX nested lists** — recursive `<ul>`/`<ol>` handling with depth-based indentation and numbered prefixes
+- **DOCX blockquotes** — rendered as indented paragraphs with blue left border (`BorderStyle.SINGLE`)
+- **DOCX image aspect ratio** — `fitDimensions` preserves natural proportions, capped at 500px max width
+- **Mermaid error feedback** — failed SVG→PNG conversions show `[Diagram: rendering unavailable]` placeholder (italic, gray) in DOCX and PDF exports
+
+### Changed
+- **exportDocx.ts** — refactored with `childTextRuns` DOM walker, `InlineFormat`/`TextSegment` types, and `collapseTextSegments` for merged adjacent styled runs
+- **exportPdf.ts** — removed four deprecated functions (`openPdfPrintWindow`, `populateAndPrintPdf`, `openPrintWindow`, `printHtmlInWindow`)
+- **Tests** — expanded DOCX unit tests from 1 to 12 (inline formatting, lists, blockquotes, HR, mermaid fallback, filename derivation)
+- **Documentation** — `/acp-validate` confirmed 172+ documents valid; `/acp-sync` fixed 9 stale references across `progress.yaml`, `requirements.md`, and Mermaid diagrams
+
 ## [0.5.1] - 2026-06-24
 
 ### Fixed (M10 — Release hardening)
@@ -8,6 +23,7 @@
 - **Workspace state** — `useReducer` replaces nested `setState` updaters; lazy `localStorage` init on mount
 - **Tab accessibility** — WAI-ARIA keyboard navigation (arrow keys, Home/End); `Ctrl+T`/`Ctrl+W` shortcuts
 - **dompurify** — upgraded to patched release (GHSA-cmwh-pvxp-8882)
+- **Removed `.doc` HTML export** — triggers email security false-positives (HTML smuggled as `.doc`/`application/msword`); only true DOCX export via `docx` library remains
 
 ### Changed
 - Extracted `useShellTheme`, `useWorkspaceKeyboard` from `StandaloneViewer`
@@ -88,7 +104,7 @@
 
 ### Added (M4 Enhanced Product)
 - Folder browser via File System Access API + webkitdirectory fallback
-- True `.docx` export (docx library) with Word heading styles; `.doc` HTML fallback retained
+- True `.docx` export (docx library) with Word heading styles (`".doc" HTML removed in v0.5.1)
 - KaTeX math rendering (`$inline$`, `$$block$$`); `docs/sample-math.md` fixture
 - Mermaid copy source + download SVG (container toolbar + lightbox)
 - View source toggle (read-only raw markdown panel)

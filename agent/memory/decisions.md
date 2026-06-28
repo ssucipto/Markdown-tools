@@ -75,7 +75,7 @@
 
 **Context**: True DOCX requires new libraries and style mapping. Source already ships HTML-as-Word with PNG diagrams.
 
-**Decision**: MVP (M2) ships **Export Word (.doc)**. M4 adds **true .docx** as default; `.doc` remains fallback.
+**Decision**: M4 ships **true .docx** via `docx` library. The `.doc` HTML-as-Word export was removed in v0.5.1 due to email security false-positives (HTML smuggling pattern).
 
 **Consequences**: UI must label format clearly; README lists limitation.
 

@@ -5,7 +5,6 @@ import { decodeDataAttribute } from '@/lib/html-entities'
 import { attachMermaidToolbars } from '@/lib/mermaid-actions'
 import { exportDocxDocument } from '@/markdown/exportDocx'
 import { printHtmlDocument, exportPdfDocument } from '@/markdown/exportPdf'
-import { exportWordDocument } from '@/markdown/exportWord'
 import { acquireSaveTarget, commitSaveTarget, deriveExportFilename, toastForSaveResult } from '@/lib/saveBlob'
 import { parseMarkdown } from '@/markdown/parse'
 import { renderMermaidDiagrams, resetMermaidForTheme, type MermaidError } from '@/markdown/renderMermaid'
@@ -256,31 +255,6 @@ export function MarkdownViewer({
     return exportRef.current
   }, [])
 
-  const exportWord = useCallback(async () => {
-    const el = getExportRoot()
-    if (!el) return
-    const filename = deriveExportFilename(exportPath, '.doc')
-    setExporting(true)
-    try {
-      const target = await acquireSaveTarget({
-        filename,
-        mimeType: 'application/msword',
-        description: 'Word Document',
-      })
-      if (target === 'cancelled') {
-        showToast('Export cancelled')
-        return
-      }
-      showToast('📄 Preparing export…')
-      const { blob } = await exportWordDocument(el, exportPath)
-      toastForSaveResult(await commitSaveTarget(target, blob, filename), filename, showToast)
-    } catch {
-      showToast('⚠️ Export failed — could not save file')
-    } finally {
-      setExporting(false)
-    }
-  }, [exportPath, showToast, getExportRoot])
-
   const exportDocx = useCallback(async () => {
     const el = getExportRoot()
     if (!el) return
@@ -439,7 +413,6 @@ export function MarkdownViewer({
         showOpenFolder={Boolean(onOpenFolder)}
         onToggleDark={handleToggleDark}
         onToggleFont={() => setFontSize((f) => (f === 'sm' ? 'md' : f === 'md' ? 'lg' : 'sm'))}
-        onExportWord={() => void exportWord()}
         onExportDocx={() => void exportDocx()}
         onExportPdf={() => void exportPdf()}
         exportDisabled={viewSource}
