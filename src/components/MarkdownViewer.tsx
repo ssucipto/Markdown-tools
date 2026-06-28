@@ -309,8 +309,8 @@ export function MarkdownViewer({
 
     showToast('📄 Preparing PDF…')
     try {
-      const { html: pdfHtml } = await exportPdfDocument(el, exportPath)
-      if (!(await printHtmlDocument(pdfHtml))) {
+      const { html: pdfHtml, title } = await exportPdfDocument(el, exportPath)
+      if (!(await printHtmlDocument(pdfHtml, title))) {
         showToast('⚠️ PDF export failed — could not open print dialog')
         return
       }

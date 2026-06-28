@@ -62,7 +62,7 @@ export async function exportPdfDocument(
   return { html, title: name }
 }
 
-function printHtmlInIframe(html: string): boolean {
+function printHtmlInIframe(html: string, title?: string): boolean {
   const iframe = document.createElement('iframe')
   iframe.setAttribute('aria-hidden', 'true')
   iframe.style.cssText =
@@ -80,7 +80,13 @@ function printHtmlInIframe(html: string): boolean {
   doc.write(html)
   doc.close()
 
+  // Temporarily set parent document title so the browser's "Save as PDF"
+  // dialog suggests the markdown filename instead of the app title.
+  const originalTitle = title ? document.title : undefined
+  if (title) document.title = title
+
   const cleanup = (): void => {
+    if (originalTitle !== undefined) document.title = originalTitle
     iframe.remove()
   }
 
@@ -107,10 +113,13 @@ async function printHtmlInTauri(html: string): Promise<boolean> {
  * Print HTML for PDF export.
  * - Tauri: native hidden webview + OS print dialog (no popups).
  * - Browser: hidden iframe to avoid popup blockers.
+ *
+ * @param title - Optional document title used as the suggested PDF filename
+ *                in the browser print dialog (only applies to browser path).
  */
-export async function printHtmlDocument(html: string): Promise<boolean> {
+export async function printHtmlDocument(html: string, title?: string): Promise<boolean> {
   if (isTauriRuntime()) {
     return printHtmlInTauri(html)
   }
-  return printHtmlInIframe(html)
+  return printHtmlInIframe(html, title)
 }
